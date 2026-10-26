@@ -133,7 +133,7 @@
 - 対応: AC-010
 - 依存: M2-T06
 - 関係するファイル: `scripts/world/wildlife.gd`, `data/recipes.json`
-- やること: ウサギがうろつき、狩人が狩って肉を得る。肉→料理のレシピ
+- やること: ウサギがうろつき、狩人が狩って肉と毛皮を得る。肉→料理のレシピ
 - 受け入れ条件: AC-010(料理レシピ)
 - 検証コマンド: テスト
 
@@ -159,6 +159,14 @@
 - 関係するファイル: `scripts/world/stockpile.gd`, `tests/test_stockpile.gd`
 - やること: 倉庫ごとに置ける物の種類と優先度を設定。運搬タスクはこれに従う
 - 受け入れ条件: AC-042
+- 検証コマンド: テスト
+
+### M2-T12: 建物の設備の仕組みと家の設備
+- 対応: AC-043, AC-045
+- 依存: M2-T07, M2-T02
+- 関係するファイル: `scripts/world/building_fixture.gd`, `data/fixtures.json`, `tests/test_fixtures.gd`
+- やること: 設備のデータ定義、建設予約、効果の反映。家のベッド(わら寝床→木のベッド)と飾り。数値は BUILDINGS.md の設備表
+- 受け入れ条件: AC-043, AC-045
 - 検証コマンド: テスト
 
 ## M3: 差別化の3本柱(審査・襲撃と村長・霧)
@@ -227,6 +235,14 @@
 - 関係するファイル: `data/buildings.json`, `scripts/world/watchtower.gd`, `tests/test_watchtower.gd`
 - やること: 見張り台の建物。視界が広く、視界に魔物が入ったら襲撃の警告を出す
 - 受け入れ条件: AC-034
+- 検証コマンド: テスト
+
+### M3-T09: 救護室の設備
+- 対応: AC-044
+- 依存: M2-T12, M3-T06
+- 関係するファイル: `data/fixtures.json`, `scripts/villagers/health_state.gd`, `scripts/chief/chief.gd`, `tests/test_infirmary_fixtures.gd`
+- やること: ベッド追加で同時治療数が増える。医療器具で治療時間-25%(村長も)
+- 受け入れ条件: AC-044
 - 検証コマンド: テスト
 
 ## M4: 画面(サイドバー・警告・一時停止・村レベル)
@@ -399,4 +415,7 @@
 | AC-040 | M4-T06 |
 | AC-041 | M4-T07 |
 | AC-042 | M2-T11 |
+| AC-043 | M2-T12 |
+| AC-044 | M3-T09 |
+| AC-045 | M2-T12 |
 | 基盤 | M1-T01, M6-T01, M6-T03, M6-T04 |
