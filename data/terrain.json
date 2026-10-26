@@ -1,0 +1,54 @@
+{
+	"size": [
+		256,
+		64,
+		256
+	],
+	"blocks": {
+		"air": 0,
+		"grass": 1,
+		"dirt": 2,
+		"stone": 3,
+		"water": 4,
+		"sand": 5,
+		"wood_wall": 6
+	},
+	"block_colors": {
+		"grass": "#6b9a3c",
+		"dirt": "#7a5534",
+		"stone": "#8a8780",
+		"water": "#3f6fa8",
+		"sand": "#d8c48a",
+		"wood_wall": "#a0703c"
+	},
+	"base_height": 20,
+	"hill_amplitude": 3.0,
+	"hill_frequency": 0.02,
+	"dirt_depth": 4,
+	"start_radius": 16,
+	"river": {
+		"min_offset": 48,
+		"max_offset": 80,
+		"half_width": 3,
+		"depth": 3,
+		"amplitude": 18.0,
+		"frequency": 0.03
+	},
+	"mountain": {
+		"min_distance": 60,
+		"max_distance": 90,
+		"radius": 28.0,
+		"peak_height": 30.0,
+		"noise_amplitude": 6.0,
+		"stone_above": 4
+	},
+	"forest": {
+		"frequency": 0.04,
+		"threshold": 0.15,
+		"tree_chance": 0.12,
+		"seed_center_radius": 14.0,
+		"min_distance": 30,
+		"max_distance": 50
+	},
+	"tree_color": "#2f5d2a"
+}
