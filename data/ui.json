@@ -49,5 +49,22 @@
 		"ruin": "#9a958a",
 		"applicant": "#7b4fa3",
 		"task": "#e08a1e"
+	},
+	"models": {
+		"villager_gatherer": "res://assets/voxel/villager_gatherer.vox",
+		"villager_builder": "res://assets/voxel/villager_builder.vox",
+		"villager_hunter": "res://assets/voxel/villager_hunter.vox",
+		"villager_guard": "res://assets/voxel/villager_guard.vox",
+		"chief": "res://assets/voxel/chief.vox",
+		"applicant": "res://assets/voxel/applicant.vox",
+		"goblin": "res://assets/voxel/goblin.vox",
+		"rabbit": "res://assets/voxel/rabbit.vox",
+		"house": "res://assets/voxel/house.vox",
+		"storage": "res://assets/voxel/storage.vox",
+		"workbench": "res://assets/voxel/workbench.vox",
+		"infirmary": "res://assets/voxel/infirmary.vox",
+		"fence": "res://assets/voxel/fence.vox",
+		"watchtower": "res://assets/voxel/watchtower.vox",
+		"ruin": "res://assets/voxel/ruin.vox"
 	}
 }

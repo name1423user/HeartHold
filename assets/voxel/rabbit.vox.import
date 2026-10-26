@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bpy2bvolp10fv"
+path="res://.godot/imported/rabbit.vox-d4aba347b6815c9e1e44868e0042f188.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/rabbit.vox"
+dest_files=["res://.godot/imported/rabbit.vox-d4aba347b6815c9e1e44868e0042f188.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

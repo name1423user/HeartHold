@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://vcxbn5dncqwn"
+path="res://.godot/imported/villager_hunter.vox-cdcf820cf81929f9e886639bb6a387bf.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_hunter.vox"
+dest_files=["res://.godot/imported/villager_hunter.vox-cdcf820cf81929f9e886639bb6a387bf.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

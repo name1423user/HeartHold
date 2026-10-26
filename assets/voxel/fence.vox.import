@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://r17xkp7igx4q"
+path="res://.godot/imported/fence.vox-9c7231ae56da6b309cec69dd819b68e8.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/fence.vox"
+dest_files=["res://.godot/imported/fence.vox-9c7231ae56da6b309cec69dd819b68e8.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

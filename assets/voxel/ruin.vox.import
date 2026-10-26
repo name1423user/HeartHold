@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bb88c3818f5ss"
+path="res://.godot/imported/ruin.vox-42186336726b11f9bf66f61444e85a42.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/ruin.vox"
+dest_files=["res://.godot/imported/ruin.vox-42186336726b11f9bf66f61444e85a42.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

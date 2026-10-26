@@ -1,6 +1,7 @@
 class_name EntityView
 extends Node3D
-## 村人・魔物・ウサギ・建物・地面の物・遺跡・移住希望者・予約の印を表示する(仮の箱。M6-T01 で置き換え)。
+## 村人・魔物・ウサギ・建物・地面の物・遺跡・移住希望者・予約の印を表示する。
+## 見た目は assets/voxel/*.vox(tools/make_vox.py で作る自作素材)。なければ色の箱で代わりに出す。
 ## 霧の中の魔物とウサギは表示しない(AC-022)。
 
 var village: Village
@@ -50,14 +51,18 @@ func surface(pos: Vector2) -> Vector3:
 func _sync_villagers() -> void:
 	for v in village.villagers:
 		var node: Node3D = _villagers.get(v.id)
-		if node == null:
-			var job_key: String = "chief" if v.is_chief else v.job
-			node = _figure(Vector3(0.6, 1.6, 0.6), _ui_color("villager_colors", job_key))
+		var job_key: String = "chief" if v.is_chief else v.job
+		if node == null or node.get_meta("job") != job_key:
+			if node != null:
+				node.queue_free()
+			var model: String = "chief" if v.is_chief else "villager_" + v.job
+			node = _figure(model, Vector3(0.6, 1.6, 0.6), _ui_color("villager_colors", job_key))
+			node.set_meta("job", job_key)
 			add_child(node)
 			_villagers[v.id] = node
 		node.visible = v.state != Villager.State.DEAD and v.state != Villager.State.IN_TREATMENT
-		node.position = surface(v.pos) + Vector3(0, 0.8, 0)
-		var body: MeshInstance3D = node.get_child(0)
+		_move(node, surface(v.pos))
+		var body: Node3D = node.get_child(0)
 		body.rotation.z = PI * 0.5 if v.state == Villager.State.UNCONSCIOUS else 0.0
 		var label: Label3D = node.get_child(1)
 		label.text = v.display_name + ("\n「%s」" % v.complaint if not v.complaint.is_empty() else "")
@@ -69,10 +74,10 @@ func _sync_monsters() -> void:
 		alive[m.id] = true
 		var node: Node3D = _monsters.get(m.id)
 		if node == null:
-			node = _figure(Vector3(0.7, 1.1, 0.7), _ui_color("entity_colors", "monster"), str(m.def()["name"]))
+			node = _figure(m.type, Vector3(0.7, 1.1, 0.7), _ui_color("entity_colors", "monster"), str(m.def()["name"]))
 			add_child(node)
 			_monsters[m.id] = node
-		node.position = surface(m.pos) + Vector3(0, 0.55, 0)
+		_move(node, surface(m.pos))
 		node.visible = village.fog.is_monster_visible(m)
 	_remove_missing(_monsters, alive)
 
@@ -83,11 +88,11 @@ func _sync_rabbits() -> void:
 		alive[id] = true
 		var node: Node3D = _rabbits.get(id)
 		if node == null:
-			node = _box(Vector3(0.4, 0.35, 0.5), _ui_color("entity_colors", "rabbit"))
+			node = _figure("rabbit", Vector3(0.4, 0.35, 0.5), _ui_color("entity_colors", "rabbit"))
 			add_child(node)
 			_rabbits[id] = node
 		var pos: Vector2 = village.wildlife.animals[id]["pos"]
-		node.position = surface(pos) + Vector3(0, 0.2, 0)
+		_move(node, surface(pos))
 		node.visible = village.fog.is_visible(village.wildlife.cell_of(id))
 	_remove_missing(_rabbits, alive)
 
@@ -101,18 +106,17 @@ func _sync_buildings() -> void:
 		var size: Vector2i = b.size()
 		var height: float = float(heights.get(b.type, 2.0))
 		if node == null:
-			node = _figure(Vector3(size.x - 0.1, height, size.y - 0.1), _ui_color("building_colors", b.type), "")
+			node = _figure(b.type, Vector3(size.x - 0.1, height, size.y - 0.1), _ui_color("building_colors", b.type), "", size)
 			add_child(node)
 			_buildings[b.id] = node
 		var ground: float = village.world.top_y(b.cell) + 1.0
-		var mesh_node: MeshInstance3D = node.get_child(0)
-		var built: float = 1.0 if b.is_complete() else 0.25
-		mesh_node.scale = Vector3(1.0, built, 1.0)
-		mesh_node.transparency = 0.0 if b.is_complete() else 0.5
-		node.position = Vector3(b.cell.x + size.x * 0.5, ground + height * built * 0.5, b.cell.y + size.y * 0.5)
+		var body: Node3D = node.get_child(0)
+		# 建設中は低く半透明に見せる
+		body.scale = Vector3(1.0, 1.0 if b.is_complete() else 0.3, 1.0)
+		_set_transparency(body, 0.0 if b.is_complete() else 0.5)
+		node.position = Vector3(b.cell.x + size.x * 0.5, ground, b.cell.y + size.y * 0.5)
 		var label: Label3D = node.get_child(1)
 		label.text = Texts.t("building_short") if b.short else ""
-		label.position.y = height * 0.5 + 0.8
 	_remove_missing(_buildings, alive)
 
 
@@ -122,10 +126,10 @@ func _sync_piles() -> void:
 		alive[cell] = true
 		var node: Node3D = _piles.get(cell)
 		if node == null:
-			node = _box(Vector3(0.6, 0.3, 0.6), _ui_color("entity_colors", "pile"))
+			node = _figure("", Vector3(0.6, 0.3, 0.6), _ui_color("entity_colors", "pile"))
 			add_child(node)
 			_piles[cell] = node
-		node.position = surface(Vector2(cell) + Vector2(0.5, 0.5)) + Vector3(0, 0.15, 0)
+		node.position = surface(Vector2(cell) + Vector2(0.5, 0.5))
 	_remove_missing(_piles, alive)
 
 
@@ -134,12 +138,12 @@ func _sync_ruins() -> void:
 		var id: int = int(site["id"])
 		var node: Node3D = _ruins.get(id)
 		if node == null:
-			node = _figure(Vector3(1.2, 2.0, 1.2), _ui_color("entity_colors", "ruin"), Texts.t("ruin_label"))
+			node = _figure("ruin", Vector3(1.2, 2.0, 1.2), _ui_color("entity_colors", "ruin"), Texts.t("ruin_label"))
 			add_child(node)
 			_ruins[id] = node
-		node.position = surface(Vector2(site["cell"]) + Vector2(0.5, 0.5)) + Vector3(0, 1.0, 0)
+		node.position = surface(Vector2(site["cell"]) + Vector2(0.5, 0.5))
 		node.visible = village.fog.is_explored(site["cell"])
-		(node.get_child(0) as MeshInstance3D).transparency = 0.6 if site["looted"] else 0.0
+		_set_transparency(node.get_child(0), 0.6 if site["looted"] else 0.0)
 
 
 func _sync_applicant() -> void:
@@ -149,10 +153,10 @@ func _sync_applicant() -> void:
 			_applicant.visible = false
 		return
 	if _applicant == null:
-		_applicant = _figure(Vector3(0.6, 1.6, 0.6), _ui_color("entity_colors", "applicant"), "")
+		_applicant = _figure("applicant", Vector3(0.6, 1.6, 0.6), _ui_color("entity_colors", "applicant"), "")
 		add_child(_applicant)
 	_applicant.visible = true
-	_applicant.position = surface(current.body.pos) + Vector3(0, 0.8, 0)
+	_move(_applicant, surface(current.body.pos))
 	(_applicant.get_child(1) as Label3D).text = Texts.t("applicant_label", {"name": current.display_name})
 
 
@@ -174,11 +178,19 @@ func _remove_missing(nodes: Dictionary, alive: Dictionary) -> void:
 			nodes.erase(key)
 
 
-## 箱1つとラベル1つの組
-func _figure(size: Vector3, color: Color, text: String = "") -> Node3D:
+## 足元を原点にした体(.vox のモデルか色の箱)とラベルの組。footprint を渡すと向きを合わせる
+func _figure(model: String, size: Vector3, color: Color, text: String = "", footprint: Vector2i = Vector2i.ZERO) -> Node3D:
 	var root := Node3D.new()
-	var body := MeshInstance3D.new()
-	body.mesh = _box_mesh(size, color)
+	var body: Node3D = _model(model, footprint)
+	var height: float = size.y
+	if body == null:
+		var box := MeshInstance3D.new()
+		box.mesh = _box_mesh(size, color)
+		box.position.y = size.y * 0.5
+		body = Node3D.new()
+		body.add_child(box)
+	else:
+		height = float(body.get_meta("height"))
 	root.add_child(body)
 	var label := Label3D.new()
 	label.font = UiTheme.font()
@@ -189,16 +201,47 @@ func _figure(size: Vector3, color: Color, text: String = "") -> Node3D:
 	label.outline_size = 8
 	label.modulate = Color.WHITE
 	label.outline_modulate = UiTheme.color("ink")
-	label.position = Vector3(0, size.y * 0.5 + 0.5, 0)
+	label.position = Vector3(0, height + 0.5, 0)
 	label.text = text
 	root.add_child(label)
 	return root
 
 
-func _box(size: Vector3, color: Color) -> Node3D:
-	var body := MeshInstance3D.new()
-	body.mesh = _box_mesh(size, color)
-	return body
+## .vox のモデルを、足元の中心が原点になるように包む
+func _model(model: String, footprint: Vector2i) -> Node3D:
+	var path: String = str(GameData.get_dict("ui")["models"].get(model, ""))
+	if path.is_empty() or not ResourceLoader.exists(path):
+		return null
+	var scene: PackedScene = load(path)
+	var instance: Node3D = scene.instantiate()
+	var meshes: Array[Node] = instance.find_children("*", "MeshInstance3D", true, false)
+	if meshes.is_empty():
+		instance.free()
+		return null
+	var aabb: AABB = (meshes[0] as MeshInstance3D).get_aabb()
+	var wrapper := Node3D.new()
+	var pivot := Node3D.new()
+	wrapper.add_child(pivot)
+	pivot.add_child(instance)
+	instance.position = Vector3(-aabb.size.x * 0.5, 0.0, -aabb.size.z * 0.5) - Vector3(aabb.position.x, aabb.position.y, aabb.position.z)
+	# 建物の向きを敷地(幅×奥行き)に合わせる
+	if footprint != Vector2i.ZERO and (aabb.size.x > aabb.size.z) != (footprint.x > footprint.y) and footprint.x != footprint.y:
+		pivot.rotation.y = PI * 0.5
+	wrapper.set_meta("height", aabb.size.y)
+	return wrapper
+
+
+## 動いた向きに体を向ける
+func _move(node: Node3D, target: Vector3) -> void:
+	var delta: Vector3 = target - node.position
+	if Vector2(delta.x, delta.z).length() > 0.01:
+		(node.get_child(0) as Node3D).rotation.y = atan2(delta.x, delta.z)
+	node.position = target
+
+
+func _set_transparency(body: Node, value: float) -> void:
+	for mesh in body.find_children("*", "MeshInstance3D", true, false):
+		(mesh as MeshInstance3D).transparency = value
 
 
 func _box_mesh(size: Vector3, color: Color) -> BoxMesh:

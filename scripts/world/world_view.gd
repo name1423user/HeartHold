@@ -29,7 +29,7 @@ func setup(new_world: WorldData) -> void:
 	terrain.bounds = AABB(Vector3.ZERO, Vector3(world.size))
 	terrain.max_view_distance = 512
 	_terrain_material = _fog_material(true, Color.WHITE)
-	_tree_material = _fog_material(false, Color(GameData.get_dict("terrain").get("tree_color", "#2f5d2a")))
+	_tree_material = _fog_material(true, Color.WHITE)
 	terrain.material_override = _terrain_material
 	add_child(terrain)
 	_build_trees()
@@ -57,6 +57,30 @@ func update_fog() -> void:
 		_fog_texture.update(image)
 	for material in [_terrain_material, _tree_material]:
 		material.set_shader_parameter("fog_mask", _fog_texture)
+
+
+## 木: 幹と葉の2つの箱(頂点色つき)。足元が原点
+func _tree_mesh() -> ArrayMesh:
+	var cfg: Dictionary = GameData.get_dict("terrain")
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	_add_box(tool, Vector3(0, TREE_TRUNK_HEIGHT * 0.35, 0), Vector3(0.35, TREE_TRUNK_HEIGHT * 0.7, 0.35), Color(cfg.get("trunk_color", "#6e4b2a")))
+	_add_box(tool, Vector3(0, TREE_TRUNK_HEIGHT * 0.85, 0), Vector3(1.4, TREE_TRUNK_HEIGHT * 0.6, 1.4), Color(cfg.get("tree_color", "#2f5d2a")))
+	tool.generate_normals()
+	var mesh: ArrayMesh = tool.commit()
+	mesh.surface_set_material(0, _tree_material)
+	return mesh
+
+
+func _add_box(tool: SurfaceTool, center: Vector3, size: Vector3, color: Color) -> void:
+	var box := BoxMesh.new()
+	box.size = size
+	var arrays: Array = box.get_mesh_arrays()
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	for index in indices:
+		tool.set_color(color)
+		tool.add_vertex(vertices[index] + center)
 
 
 func _fog_material(vertex_color: bool, base: Color) -> ShaderMaterial:
@@ -131,9 +155,7 @@ func _build_trees() -> void:
 		_trees = MultiMeshInstance3D.new()
 		_trees.name = "Trees"
 		add_child(_trees)
-	var mesh := BoxMesh.new()
-	mesh.size = Vector3(0.6, TREE_TRUNK_HEIGHT, 0.6)
-	mesh.material = _tree_material
+	var mesh: ArrayMesh = _tree_mesh()
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.mesh = mesh
@@ -142,5 +164,5 @@ func _build_trees() -> void:
 	for i in _tree_cells.size():
 		var cell: Vector2i = _tree_cells[i]
 		var base_y: float = world.top_y(cell) + 1.0
-		multimesh.set_instance_transform(i, Transform3D(Basis(), Vector3(cell.x + 0.5, base_y + TREE_TRUNK_HEIGHT * 0.5, cell.y + 0.5)))
+		multimesh.set_instance_transform(i, Transform3D(Basis(), Vector3(cell.x + 0.5, base_y, cell.y + 0.5)))
 	_trees.multimesh = multimesh

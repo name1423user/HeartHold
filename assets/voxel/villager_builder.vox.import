@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://b5ybjvs0jq85x"
+path="res://.godot/imported/villager_builder.vox-8d6c30214abadbb9d8e6f9f563658ce2.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_builder.vox"
+dest_files=["res://.godot/imported/villager_builder.vox-8d6c30214abadbb9d8e6f9f563658ce2.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

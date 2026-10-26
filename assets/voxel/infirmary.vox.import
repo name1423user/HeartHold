@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://ch77p02fjvdhy"
+path="res://.godot/imported/infirmary.vox-5af733236b8e96abbd014d65937b0986.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/infirmary.vox"
+dest_files=["res://.godot/imported/infirmary.vox-5af733236b8e96abbd014d65937b0986.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

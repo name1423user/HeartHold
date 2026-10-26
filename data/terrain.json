@@ -50,7 +50,8 @@
 		"min_distance": 30,
 		"max_distance": 50
 	},
-	"tree_color": "#2f5d2a",
+	"tree_color": "#5a9a40",
 	"max_dig_depth": 4,
-	"max_step": 1
+	"max_step": 1,
+	"trunk_color": "#8a5a33"
 }

@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bm5m5tucfpelt"
+path="res://.godot/imported/villager_guard.vox-331064c025981e08377b5646413f036b.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_guard.vox"
+dest_files=["res://.godot/imported/villager_guard.vox-331064c025981e08377b5646413f036b.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true
