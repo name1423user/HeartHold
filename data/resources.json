@@ -1,6 +1,18 @@
 {
 	"logs_per_tree": 2,
-	"block_drops": {"grass": "dirt", "dirt": "dirt", "sand": "dirt", "stone": "stone", "wood_wall": "plank"},
-	"work_minutes": {"chop": 20.0, "dig": 10.0},
-	"start_items": {"meal": 20, "log": 10}
+	"block_drops": {
+		"grass": "dirt",
+		"dirt": "dirt",
+		"sand": "dirt",
+		"stone": "stone",
+		"wood_wall": "plank"
+	},
+	"work_minutes": {
+		"chop": 20.0,
+		"dig": 10.0
+	},
+	"start_items": {
+		"meal": 40,
+		"log": 10
+	}
 }

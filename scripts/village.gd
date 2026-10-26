@@ -65,6 +65,32 @@ static func create(seed: int) -> Village:
 	return Village.new(TerrainGenerator.generate(seed))
 
 
+## 新しいゲーム: 霧の中に村長と村人3人、開始地点に最初の物資
+static func new_game(seed: int) -> Village:
+	var village: Village = create(seed)
+	village.chief.spawn()
+	var names: Array = village.villager_cfg["names"]
+	for i in int(village.villager_cfg["start_count"]):
+		village.add_villager(str(names[i % names.size()]))
+	var items: Dictionary = GameData.get_dict("resources")["start_items"]
+	for item: String in items:
+		village.drop_on_ground(village.world.start + Vector2i(2, 2), item, int(items[item]))
+	return village
+
+
+## 互いを参照している仕組みを切り離す(ロードや終了で古い村を捨てるとき)
+func dispose() -> void:
+	speed_modifiers.clear()
+	if editor.block_changed.is_connected(_on_block_changed):
+		editor.block_changed.disconnect(_on_block_changed)
+	wildlife = null
+	inspection = null
+	raids = null
+	chief = null
+	fog = null
+	ruins = null
+
+
 # --- 村人 ---------------------------------------------------------------
 
 func add_villager(display_name: String, at: Vector2i = NO_CELL) -> Villager:
