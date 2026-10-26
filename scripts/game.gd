@@ -15,6 +15,7 @@ var alerts: AlertLog
 var level: VillageLevel
 var hints: Hints
 var autosave: Autosave
+var audio: AudioDirector
 ## 今の操作: "select" / "chop" / "dig" / "build:<種類>" / "move"
 var tool: String = "select"
 var selected_villager: int = -1
@@ -74,6 +75,9 @@ func start(new_village: Village) -> void:
 	hints.step = int(village.loaded_extra.get("hints_step", 0))
 	autosave = Autosave.new(village)
 	autosave.extra_source = func() -> Dictionary: return {"hints_step": hints.step}
+	audio = AudioDirector.new()
+	add_child(audio)
+	audio.setup(village, alerts)
 	hud = Hud.new()
 	add_child(hud)
 	hud.setup(self)

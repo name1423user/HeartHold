@@ -8,6 +8,8 @@ signal block_changed(pos: Vector3i, id: int)
 signal trees_changed
 signal building_changed(building: Building)
 signal villager_added(villager: Villager)
+## 効果音を鳴らす合図(伐採・採掘・建設完了)
+signal sound_event(sound: String)
 
 const MAX_STEP_MINUTES: float = 1.0
 const NO_CELL := Vector2i(-1, -1)
@@ -696,6 +698,7 @@ func _complete_task(v: Villager, task: JobTask) -> void:
 			trees_changed.emit()
 			_give(v, "log", int(GameData.get_dict("resources").get("logs_per_tree", 1)))
 			wear_tool(v, "chop")
+			sound_event.emit("chop")
 		"dig":
 			var id: int = world.get_block(task.pos)
 			var result: Dictionary = editor.break_block(task.pos)
@@ -705,6 +708,7 @@ func _complete_task(v: Villager, task: JobTask) -> void:
 				if not item.is_empty():
 					_give(v, item, 1)
 			wear_tool(v, "dig")
+			sound_event.emit("dig")
 		_:
 			_complete_task_extra(v, task)
 	tasks.remove(task.id)
@@ -730,6 +734,7 @@ func _complete_task_extra(v: Villager, task: JobTask) -> void:
 				_on_building_completed(b)
 				building_changed.emit(b)
 				raise_alert("built", Texts.t("alert_built", {"name": b.display_name()}), b.cell)
+				sound_event.emit("build_done")
 
 
 ## 道具の耐久を減らす。合う道具でなければ減らない

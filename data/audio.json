@@ -1,0 +1,19 @@
+{
+	"sounds": {
+		"raid": "res://assets/audio/alert_raid.wav",
+		"applicant": "res://assets/audio/alert_applicant.wav",
+		"faint": "res://assets/audio/alert_faint.wav",
+		"hunger": "res://assets/audio/alert_hunger.wav",
+		"death": "res://assets/audio/alert_death.wav",
+		"notice": "res://assets/audio/alert_notice.wav",
+		"chop": "res://assets/audio/sfx_chop.wav",
+		"dig": "res://assets/audio/sfx_dig.wav",
+		"build_done": "res://assets/audio/sfx_build_done.wav"
+	},
+	"bgm": {
+		"day": "res://assets/audio/bgm_day.wav",
+		"night": "res://assets/audio/bgm_night.wav"
+	},
+	"buses": ["Master", "BGM", "SFX"],
+	"sfx_players": 6
+}
