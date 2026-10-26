@@ -12,5 +12,6 @@
 	"cannot_build_here": "そこには建てられません",
 	"order_unreachable": "そこへは行けません",
 	"order_cannot_move": "今は動けません",
-	"task_no_station": "作業台がありません"
+	"task_no_station": "作業台がありません",
+	"alert_built": "{name}が完成しました"
 }

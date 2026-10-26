@@ -18,6 +18,8 @@ var filter: Array = []
 var priority: int = 0
 ## 設置済みの設備(M2-T12)。設備ID の列
 var fixtures: Array = []
+## 素材不足で建設が止まっている(不足アイコンを出す)
+var short: bool = false
 
 
 func def() -> Dictionary:

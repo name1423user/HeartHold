@@ -56,6 +56,7 @@ func add_villager(display_name: String, at: Vector2i = NO_CELL) -> Villager:
 	v.display_name = display_name
 	v.place_at(_free_cell_near(world.start if at == NO_CELL else at))
 	villagers.append(v)
+	assign_homes()
 	villager_added.emit(v)
 	return v
 
@@ -449,6 +450,13 @@ func _complete_task_extra(v: Villager, task: JobTask) -> void:
 	match task.type:
 		"craft":
 			Crafting.complete(self, v, task)
+		"build":
+			var b: Building = buildings.get(task.building_id) as Building
+			if b != null:
+				b.state = Building.State.COMPLETE
+				_on_building_completed(b)
+				building_changed.emit(b)
+				raise_alert("built", Texts.t("alert_built", {"name": b.display_name()}), b.cell)
 
 
 ## 道具の耐久を減らす(M2-T09 で中身を入れる)
@@ -560,6 +568,10 @@ func _step_supply(v: Villager) -> void:
 		v.plan.push_front({"op": "goto", "target": source["cell"], "adjacent": source["kind"] == "building", "building": source.get("id", -1)})
 		return
 	raise_alert("material", Texts.t("alert_missing_materials"), task.cell)
+	var short: Building = buildings.get(task.building_id) as Building
+	if short != null:
+		short.short = true
+		building_changed.emit(short)
 	_abort_plan(v, "missing_materials")
 
 
@@ -568,6 +580,11 @@ func supply_site(task: JobTask) -> Dictionary:
 	match task.type:
 		"craft":
 			return Crafting.supply_site(self, task)
+		"build":
+			var b: Building = buildings.get(task.building_id) as Building
+			if b == null:
+				return {"cell": NO_CELL, "missing": {}, "error": "unreachable"}
+			return {"cell": b.cell, "missing": b.missing_materials(), "building": b.id}
 	return {"cell": task.cell, "missing": {}}
 
 
@@ -583,6 +600,13 @@ func _step_deliver(v: Villager) -> void:
 
 
 func deliver_to_site(task: JobTask, item: String, count: int) -> void:
+	if task.type == "build":
+		var b: Building = buildings.get(task.building_id) as Building
+		if b != null:
+			b.delivered[item] = int(b.delivered.get(item, 0)) + count
+			b.state = Building.State.BUILDING
+			building_changed.emit(b)
+		return
 	var delivered: Dictionary = task.extra.get("delivered", {})
 	delivered[item] = int(delivered.get(item, 0)) + count
 	task.extra["delivered"] = delivered
@@ -627,16 +651,58 @@ func add_building(type: String, cell: Vector2i, complete: bool = false) -> Build
 	return b
 
 
-## 建設予約(M2-T07)
+## 建設予約。予約 → 建設中(素材が届き始めた)→ 完成。素材が足りなければ保留になる
 func plan_building(type: String, cell: Vector2i) -> Dictionary:
 	var error: String = building_error(type, cell)
 	if not error.is_empty():
 		return {"ok": false, "message": Texts.t(error)}
-	return {"ok": true, "building": add_building(type, cell)}
+	var b: Building = add_building(type, cell)
+	for v in villagers:
+		if world.blocked.get(v.cell(), -1) == b.id:
+			v.place_at(_free_cell_near(v.cell()))
+			v.path.clear()
+			for step in v.plan:
+				step.erase("dest")
+	var task := JobTask.new()
+	task.type = "build"
+	task.building_id = b.id
+	task.cell = b.cell
+	task.work_needed = float(b.def().get("work", 60.0))
+	tasks.add(task)
+	return {"ok": true, "building": b}
 
 
-func _on_building_completed(_b: Building) -> void:
-	pass
+func _on_building_completed(b: Building) -> void:
+	b.short = false
+	if b.def().has("residents"):
+		assign_homes()
+
+
+## 家のない村人を、空きのある家に住まわせる
+func assign_homes() -> void:
+	for v in living_villagers():
+		if v.home_id != -1 and buildings.has(v.home_id):
+			continue
+		for b: Building in buildings.values():
+			if b.is_complete() and residents_of(b).size() < int(b.def().get("residents", 0)):
+				v.home_id = b.id
+				break
+
+
+func residents_of(b: Building) -> Array[Villager]:
+	var result: Array[Villager] = []
+	for v in living_villagers():
+		if v.home_id == b.id:
+			result.append(v)
+	return result
+
+
+func houses() -> Array[Building]:
+	var result: Array[Building] = []
+	for b: Building in buildings.values():
+		if b.is_complete() and b.def().has("residents"):
+			result.append(b)
+	return result
 
 
 # --- 物と倉庫 -----------------------------------------------------------
