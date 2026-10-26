@@ -11,12 +11,9 @@ static func color(key: String) -> Color:
 
 static func font() -> Font:
 	if _font == null:
-		var file := FontFile.new()
-		var data: PackedByteArray = FileAccess.get_file_as_bytes(str(GameData.get_dict("ui")["font"]))
-		if data.is_empty():
-			return ThemeDB.fallback_font
-		file.data = data
-		_font = file
+		# 書き出したゲームでは .ttf は取り込み済みのリソースとして入るので、load で読む
+		var path: String = str(GameData.get_dict("ui")["font"])
+		_font = load(path) as Font if ResourceLoader.exists(path) else ThemeDB.fallback_font
 	return _font
 
 

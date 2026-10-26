@@ -3,3 +3,7 @@
 /android/
 *.translation
 export_presets.cfg.bak
+
+# 書き出し(M6-T04)。テンプレートは Voxel Tools のリリースから各自取得する
+export_templates/
+build/
