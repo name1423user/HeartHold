@@ -127,3 +127,38 @@ func _without(state: Dictionary, key: String) -> Dictionary:
 	var copy: Dictionary = state.duplicate(true)
 	copy.erase(key)
 	return copy
+
+
+func test_version_two_saves_systems_and_version_one_still_loads() -> void:
+	var village: Village = Village.new_game(12345)
+	(village.system("era") as EraSystem).current = "iron"
+	(village.system("reputation") as Reputation).value = 77.0
+	(village.system("schedule") as Schedule).set_slot(12, "work")
+	village.villagers[1].traits = ["brave"]
+	village.villagers[1].age = 33.0
+	village.calendar().weather = "rain"
+	var farm: Building = village.add_building("field", village.world.start + Vector2i(-10, 6), true)
+	(village.system("farming") as Farming).fields[farm.id]["stage"] = "growing"
+	assert_eq(SaveGame.save_village(village, "v2"), OK)
+	var loaded: Village = SaveGame.load_village("v2")
+	assert_not_null(loaded)
+	assert_eq(loaded.era(), "iron")
+	assert_eq((loaded.system("reputation") as Reputation).value, 77.0)
+	assert_eq((loaded.system("schedule") as Schedule).table[12], "work")
+	assert_eq(loaded.villagers[1].traits, ["brave"])
+	assert_almost_eq(loaded.villagers[1].age, 33.0, 0.001)
+	assert_eq(loaded.calendar().weather, "rain")
+	assert_eq((loaded.system("farming") as Farming).fields[farm.id]["stage"], "growing")
+	# バージョン1(systems なし)も読める
+	var state: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SaveGame.path("v2", "json")))
+	state["format_version"] = 1
+	state.erase("systems")
+	var file := FileAccess.open(SaveGame.path("v2", "json"), FileAccess.WRITE)
+	file.store_string(JSON.stringify(state))
+	file.close()
+	var old: Village = SaveGame.load_village("v2")
+	assert_not_null(old, "形式バージョン1も読める")
+	assert_eq(old.era(), "stone")
+	village.dispose()
+	loaded.dispose()
+	old.dispose()

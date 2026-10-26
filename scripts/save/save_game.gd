@@ -88,7 +88,16 @@ static func to_state(village: Village, extra: Dictionary) -> Dictionary:
 		"ruins": village.ruins.to_dict(),
 		"level": village.level.level,
 		"extra": extra,
+		"systems": _systems_state(village),
 	}
+
+
+## 後から足した仕組み(VillageSystem)の状態。形式バージョン2から
+static func _systems_state(village: Village) -> Dictionary:
+	var out: Dictionary = {}
+	for system in village.systems_order:
+		out[system.key()] = system.to_dict()
+	return out
 
 
 static func _terrain_chunks(world: WorldData) -> Dictionary:
@@ -136,7 +145,10 @@ static func load_village(save_name: String) -> Village:
 
 ## 形式のバージョンと必須項目を確かめる
 static func validate(state: Dictionary) -> bool:
-	if int(state.get("format_version", -1)) != int(cfg()["format_version"]):
+	var version: int = int(state.get("format_version", -1))
+	if not (cfg()["readable_versions"] as Array).any(func(v: Variant) -> bool: return int(v) == version):
+		return false
+	if state.has("systems") and not state["systems"] is Dictionary:
 		return false
 	var required: Dictionary = {
 		"seed": TYPE_FLOAT, "size": TYPE_ARRAY, "clock": TYPE_FLOAT, "rng_state": TYPE_STRING, "trees": TYPE_ARRAY,
@@ -228,6 +240,11 @@ static func from_state(state: Dictionary, chunks: Dictionary) -> Village:
 	village.ruins.from_dict(state["ruins"])
 	village.level.level = int(state["level"])
 	village.loaded_extra = state.get("extra", {})
+	# バージョン1のセーブには systems がない。その場合は新しく始めた状態のまま
+	var systems_state: Dictionary = state.get("systems", {})
+	for system in village.systems_order:
+		if systems_state.has(system.key()) and systems_state[system.key()] is Dictionary:
+			system.from_dict(systems_state[system.key()])
 	return village
 
 
