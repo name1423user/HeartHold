@@ -1,80 +1,72 @@
 # HANDOFF — Hearthold
 
-最終更新: 2026-10-26 18:35 JST(毎ターン更新して push する)
+最終更新: 2026-10-26 18:48 JST(毎ターン更新して push する)
 
 ## 現在のタスク
-- M5(セーブ・ロード)まで完了。次は M6-T01(自作ボクセル素材)から(ユーザー指示「全部できるところまで」)
+- M1〜M6 の全43タスクを、このコンテナでできるところまで実装した(ユーザー指示「全部できるところまで」)
+- 残りは **ユーザーの手元でしかできない確認**(最低環境での性能、手での操作、Windows/macOS での起動)
 
 ## 終わったこと
 ### M1(PoC)
-- Voxel Tools 1.7 の Linux エディタビルド(`godot.linuxbsd.editor.x86_64.zip`、SHA-256 35c92e9f…dea)を取得し、headless で VoxelTerrain / VoxelBlockSerializer / VoxelAStarGrid3D が使えることを確認
-- M1-T02 `TerrainGenerator` / `WorldData` / `WorldView`(VoxelTerrain + 木の MultiMesh)/ `scenes/world/world.tscn`。数値は `data/terrain.json`
-  - 並びは VoxelBuffer と同じ(y→x→z)。VoxelTerrain は 16bit なので Image の R8→RG8 変換で広げて写す
-- M1-T03 `TerrainEditor`(4段まで掘れる)。文言は `data/texts.json` + `Texts.t()`
-- M1-T04 `Pathing`(AStar2D、段差1まで)と `scenes/bench/bench_30.tscn`(結果は `user://logs/bench_30.log` に追記)
-- M1-T05 `SavePrototype`(変わったチャンクだけ VoxelBlockSerializer の ZSTD、他は JSON)
+- Voxel Tools 1.7 の Linux エディタビルドを取得し、headless で動くことを確認(VoxelTerrain / VoxelBlockSerializer / VoxelAStarGrid3D)
+- `TerrainGenerator` / `WorldData` / `WorldView`、`TerrainEditor`(4段まで)、`Pathing`(AStar2D)、`bench_30.tscn`、`SavePrototype`
 
 ### M2(中核)
-- M2-T01 `CameraRig`(回転・ズーム・平行移動、ズームと俯角の制限、地表より下に入らない)
-- M2-T02 `Village`(村全体のシミュレーション。村人は plan=手順の列をこなす)、`Villager`、`Needs`、`GameClock`
-- M2-T03 `Designation`(伐る・掘る・建てる予約。深すぎる掘削は「これ以上は掘れません」、行けない仕事は「行けません」で保留)
-- M2-T04 `Job`(data/jobs.json の順で拾う)/ M2-T05 `DirectOrder`(行けない所は「そこへは行けません」)
-- M2-T06 `Crafting`(data/recipes.json、原木1→木材4、3段の連鎖をデータだけで確認)
-- M2-T07 建設(予約→建設中→完成、素材不足で保留と不足アイコン、倉庫満杯で地面に置いて警告)
-- M2-T08 `Wildlife`(ウサギ、狩人が肉と毛皮を倉庫へ運ぶ、肉→料理)
-- M2-T09 `Equipment`(data/equipment.json、石のみ使える、耐久0で壊れて警告、倉庫から自分で取りに行く)
-- M2-T10 `Proficiency` / M2-T11 `Stockpile`(区分けと優先度)/ M2-T12 `BuildingFixture`(data/fixtures.json)
+- `CameraRig`、`Village`(村全体のシミュレーション。村人は plan=手順の列をこなす)、`Villager`、`Needs`、`GameClock`
+- `Designation`、`Job`、`DirectOrder`、`Crafting`、建設、`Wildlife`(ウサギ)、`Equipment`、`Proficiency`、`Stockpile`、`BuildingFixture`
 
-### M3(差別化の3本柱)
-- M3-T01/T02 `Inspection` / `Applicant` / `ScoreCard`(data/applicants.json, scoring.json, specialties.json)。5〜7日ごとに来訪、家→倉庫→救護室の順に見回り、加重平均60点以上で合格。不合格者は再来訪なし。重みは採点表まで出さない
-- M3-T03 `RaidDirector`(5日目終了まで来ない、3日のクールタイム、豊かさで数が増える)/ M3-T04 `Monster` と `Combat`(衛兵は迎撃、他は家か救護室へ避難)
-- M3-T05 `HealthState`(気絶→救護室へ運ぶ、半日で死亡、村人0人でも続く)/ M3-T06 `Chief`(方針は1日1回、治療中はバフなし、実時間3分で復帰)
-- M3-T07 `Fog` / M3-T08 `Watchtower`(早めの警告、台の上の投石紐は射程1.5倍)/ M3-T09 救護室の設備(寝台で+1人、医療器具で-25%)/ M3-T10 `Ruins`
-- 確認手順のテスト `tests/test_simulation.gd`: シード12345で7日進めて審査1回・襲撃1回
+### M3(審査・襲撃と村長・霧)
+- `Inspection` / `Applicant` / `ScoreCard`、`RaidDirector` / `Monster` / `Combat`、`HealthState`、`Chief`、`Fog`、`Watchtower`、`Ruins`
 
 ### M4(画面)
-- プレイ画面 `scenes/game.tscn`(`Game`)、タイトル `scenes/ui/title.tscn`(起動時のシーン)、一時停止メニュー `scenes/ui/pause_menu.tscn`
-- `Hud`: 上部バー(村Lv・資源・食料あと◯日分・時刻・一時停止)、中央上の警告マーク(クリックでその地点へ)、アクティビティバー+サイドバー4パネル(村人/指示・役職/建設/村の状態)、審査結果、ヒント、建物の説明
-- `AlertLog`(履歴、同じ警告の連発をまとめる)、`VillageLevel`(data/milestones.json)、`Hints`(data/hints.json)、`SpeechBubble`(不満の一言)、`FoodStock`
+- プレイ画面 `scenes/game.tscn`(`Game`)、タイトル `scenes/ui/title.tscn`(起動時)、一時停止メニュー `scenes/ui/pause_menu.tscn`
+- `Hud`(上部バー・警告マーク・サイドバー4パネル・審査結果・ヒント・建物の説明)、`AlertLog`、`VillageLevel`、`Hints`、`SpeechBubble`、`FoodStock`
 - 入力: スペース=一時停止、1〜4=パネル、Esc=メニュー、左ドラッグ=範囲指示、右クリック=解除
-- 霧は地形のシェーダーで暗くする(`scripts/world/terrain_fog.gdshader`)
-- フォント: BIZ UDPゴシック(OFL、`assets/fonts/`)。GitHub の googlefonts/morisawa-biz-ud-gothic から取得
 
 ### M5(セーブ・ロード)
-- `SaveGame`(user://saves/<名前>.json と .terrain、形式バージョン1、一時ファイルに書いてから置き換え、地形は SHA-256 で検査)
-- `Autosave`(実時間5分ごと、auto_1〜auto_3、失敗したら警告して前のセーブを残す)、タイトルでセーブ削除(確認あり)
+- `SaveGame`(user://saves、形式バージョン1、一時ファイル経由、地形は SHA-256 で検査、壊れていたら読まずに「このセーブは読み込めません」)
+- `Autosave`(実時間5分、auto_1〜3、失敗したら警告して前のセーブを残す)、タイトルでセーブ削除(確認あり)
 
-### 自分で判断したこと(確認してほしい)
+### M6(仕上げ)
+- M6-T01 自作ボクセル素材 `assets/voxel/*.vox`(`tools/make_vox.py` で生成、Voxel Tools の取り込みで縮尺0.1)。木は幹と葉の形。`CREDITS.md`
+- M6-T05 音 `assets/audio/*.wav`(`tools/make_audio.py` で合成した自作)。警告の種類ごとの音、伐採・採掘・建設完了、昼夜の BGM、全体・BGM・効果音の音量
+- M6-T02 計測シーン `scenes/bench/bench_game.tscn`(本番の画面で村人30人+魔物10体)。**最低環境での実測は未実施**
+- M6-T03 通し確認: `tests/test_e2e.gd`(完成条件1〜3)と `E2E_CHECKLIST.md`。手での確認は未
+- M6-T04 `export_presets.cfg`(Windows / Linux / macOS)、README(遊び方・動作環境・リリース手順)、CONTRIBUTING.md、SECURITY.md、`tools/release_checksums.sh`
+
+## 自分で判断したこと(確認してほしい)
 - 料理は作業台で作る(焚き火は BUILDINGS.md で「推奨」=未承認のため)
-- 木は地形ブロックにせず、列の印(world.trees)で持つ。建物も地形ブロックにせず、足元の列をふさぐ
-- 狩りの仕事は、狩人の人数ぶんだけ近いウサギに自動で予約する(プレイヤーの「狩る」指示は SPEC にないため)
-- 家の数値(素材・作業時間)は仮の値。BUILDINGS.md に数値がないので `data/buildings.json` に置いた
-- 採点の各項目の出し方(data/scoring.json)は仮: 食料=あと何日分×10点、住居=空き寝床、安全=衛兵・柵・見張り台、施設=建物の種類、満足度=気分の平均
-- 襲撃の「村の境界」= 開始地点から、建物のある範囲+6ブロック(最低20)の円
-- 「視界内の衛兵」= 衛兵の視界16ブロック以内の魔物を迎え撃つ。見えなければ村の中心へ寄る
-- 最初の食料を料理20→40にした(4人で約5日分)。20だと狩人なしで5日目に全員倒れた
-- 村レベルは0から始め、最初の課題(家1軒・倉庫1つ)で Lv1 になり見張り台が解放される。AC-025 の課題(家3軒・住人5人・満足度60)は Lv2
+- 木は地形ブロックにせず列の印(world.trees)で持つ。建物も地形ブロックにせず、足元の列をふさぐ
+- 狩りの仕事は、狩人の人数ぶんだけ近いウサギに自動で予約する(プレイヤーの「狩る」指示は SPEC にない)
+- 建物の素材・作業時間、採点の出し方(data/scoring.json)、村の境界(建物の範囲+6、最低20)、衛兵の視界16 は仮の値
+- 村レベルは0から。最初の課題(家1軒・倉庫1つ)で Lv1 になり見張り台が解放。AC-025 の課題は Lv2
+- 最初の食料は料理40(4人で約5日分)。20だと狩人なしで5日目に全員倒れた
+- フォントは BIZ UDPゴシック(OFL)。音とボクセル素材は自作で、作るスクリプトを `tools/` に置いた(SPEC 11章のディレクトリにない `tools/` を足した)
+- 審査の「住居」は、新しい人の寝床が空いていないと0点。最初の4人(村長+3人)と新しい1人で寝床5つ=家3軒が要る
 
-## 次にやること
-- M6-T01 素材 → M6-T05 音 → M6-T02 性能(最低環境、要ユーザー)→ M6-T03 通し確認 → M6-T04 公開準備
+## 次にやること(ユーザーの手元で)
+1. **POC-001 / M6-T02**: 最低環境(第7世代Intel・内蔵GPU・Windows 11)で `scenes/bench/bench_30.tscn` と `scenes/bench/bench_game.tscn` を実行し、`user://logs/*.log` の平均/最低fps を見る。Forward+ と Compatibility の両方(UD-005 を決める)
+2. **M6-T03**: `E2E_CHECKLIST.md` の「手での確認」を通す(マウス操作・ダイアログ・セーブ→タイトル→続きから)
+3. **M6-T04**: Windows 版と macOS 版を起動して確かめる。macOS 用の Voxel Tools テンプレートはリリースに見当たらなかった
+4. 気になった数値やバランスの調整、BUILDINGS.md の「推奨」の建物の承認
 
 ## 検証結果
-- テスト: 111/111 passed(`godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit`、Voxel Tools 1.7 ビルド、約139秒)
-- 画面: Xvfb+ソフトウェア描画でスクリーンショットを撮り、HUD・サイドバー・霧・建物の表示を目で確認
+- テスト: **118/118 passed**(`godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit`、Voxel Tools 1.7 ビルド、約159秒)
 - POC-002: 1000ブロック変更+30人で一致、ロード 0.5〜0.7秒(コンテナ)
-- POC-001: **最低環境では未計測**。コンテナ(CPU 4コア、GPUなし)では headless で 145fps(処理だけ)、Xvfb+ソフトウェア描画で 7.5fps
-- M2/M4 の「確認手順」のうち手で触る部分(ドラッグ操作・カメラ・クリック)は、このコンテナではマウス操作ができないため未確認。ロジックと表示はテストとスクリーンショットで確認済み
+- 性能(コンテナ、参考): headless(描画なし)で bench_30 が 145fps、bench_game が 108fps。Xvfb+ソフトウェア描画ではどちらも 7.5fps。**最低環境では未計測**
+- 書き出し: Linux 版を Xvfb で起動し、タイトル画面と日本語フォントを確認。Windows 版は書き出しのみ(起動は未確認)
+- 画面: Xvfb のスクリーンショットで、地形・霧・ボクセル素材・HUD・サイドバーを目で確認
 
 ## 未解決・ユーザーへの質問
-- POC-001 を最低環境(第7世代Intel・内蔵GPU)で `bench_30.tscn` を実行して fps を測ってほしい。Forward+ と Compatibility の両方
-- 欲求の値をJSONに保存すると最下位の桁がずれる(1e-9 未満)。テストは 1e-9 の許容で比較している
+- 上の「次にやること」1〜3 はこのコンテナではできない(GPU・マウス・Windows/macOS がない)
+- 欲求の値を JSON に保存すると最下位の桁がずれる(1e-9 未満)。テストは 1e-9 の許容で比較
 - FIRST_PROMPT.md は当時の指示として 4.6/1.6 表記のまま
-- BUILDINGS.md の「推奨」ラベルの建物の承認(前回から継続)
+- BUILDINGS.md の「推奨」ラベルの建物(焚き火・狩猟小屋など)の承認
 
 ## 触ったファイル
-- data/*.json(terrain, texts, time, needs, villagers, items, jobs, resources, buildings, recipes, wildlife, equipment, proficiency, stockpile, fixtures, camera)
-- scripts/(game_data, texts, game_clock, village)、scripts/world/、scripts/villagers/、scripts/jobs/、scripts/needs/、scripts/save/、scripts/bench/、scripts/ui/camera_rig.gd
-- scenes/world/world.tscn, scenes/bench/bench_30.tscn, tests/*.gd
+- data/*.json(33ファイル)、scripts/ 以下すべて、scenes/(game, world, bench, ui)、tests/*.gd
+- assets/(fonts, voxel, audio)、tools/(make_vox.py, make_audio.py, release_checksums.sh)
+- project.godot, export_presets.cfg, .gitignore, README.md, CONTRIBUTING.md, SECURITY.md, CREDITS.md, E2E_CHECKLIST.md, HANDOFF.md
 
 ## サブエージェントの利用
 - なし
