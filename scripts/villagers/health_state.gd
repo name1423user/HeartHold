@@ -111,6 +111,8 @@ static func recover(village: Village, v: Villager) -> void:
 	for key in ["down_minutes", "infirmary", "treatment_left", "waiting_at", "carried_by"]:
 		v.timers.erase(key)
 	v.clear_plan()
+	# 回復してもしばらくは負傷で作業が遅い(M7-T03)
+	v.timers["injured_until"] = village.clock.minutes + float(Illness.cfg()["injury"]["days"]) * GameClock.MINUTES_PER_DAY
 	village.raise_alert("recovered", Texts.t("alert_recovered", {"name": v.display_name}), v.cell())
 
 

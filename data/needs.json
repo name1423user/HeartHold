@@ -1,7 +1,20 @@
 {
 	"max": 100.0,
-	"start": {"food": 80.0, "sleep": 80.0, "mood": 60.0, "health": 100.0},
-	"decay_per_hour": {"food": 4.0, "sleep": 5.0},
+	"start": {
+		"food": 80.0,
+		"sleep": 80.0,
+		"mood": 60.0,
+		"health": 100.0,
+		"fun": 70.0,
+		"social": 70.0,
+		"hygiene": 80.0,
+		"warmth": 80.0,
+		"calm": 80.0
+	},
+	"decay_per_hour": {
+		"food": 4.0,
+		"sleep": 5.0
+	},
 	"sleep_recovery_per_hour": 12.5,
 	"ground_sleep_multiplier": 0.8,
 	"mood_baseline": 60.0,
@@ -13,5 +26,52 @@
 	"eat_below": 40.0,
 	"sleep_below": 25.0,
 	"night_sleep_below": 70.0,
-	"warning_below": 20.0
+	"warning_below": 20.0,
+	"extended": {
+		"keys": [
+			"fun",
+			"social",
+			"hygiene",
+			"warmth",
+			"calm"
+		],
+		"decay_per_hour": {
+			"fun": 3.0,
+			"social": 2.0,
+			"hygiene": 2.0
+		},
+		"social_radius": 3.0,
+		"social_gain_per_hour": 5.0,
+		"comfort_temperature": 10.0,
+		"cold_loss_per_degree_hour": 0.4,
+		"warm_gain_per_hour": 8.0,
+		"indoor_bonus": 12.0,
+		"campfire_bonus": 8.0,
+		"campfire_radius": 5.0,
+		"hypothermia_health_per_hour": 3.0,
+		"calm_recovery_per_hour": 2.0,
+		"calm_raid_loss_per_hour": 6.0,
+		"calm_death_shock": 20.0,
+		"low_below": 30.0,
+		"low_mood_per_hour": 1.5,
+		"seek_below": {
+			"hygiene": 35.0,
+			"warmth": 35.0,
+			"fun": 30.0
+		},
+		"relax_minutes": 40.0,
+		"warm_minutes": 40.0,
+		"relax_gain_per_hour": {
+			"tavern": 45.0,
+			"campfire": 25.0,
+			"none": 12.0
+		},
+		"wash_gain": {
+			"bathhouse": 100.0,
+			"well": 60.0,
+			"river": 40.0
+		},
+		"river_search_radius": 90,
+		"clothes_wear_per_day": 1
+	}
 }

@@ -3,6 +3,9 @@ extends RefCounted
 ## 欲求4つ(食事・睡眠・気分・体力)。値は 0〜max。数値は data/needs.json(AC-009)。
 
 const KEYS: Array[String] = ["food", "sleep", "mood", "health"]
+## 後から足した欲求(M7-T02)。値が低いほど困っている
+const EXTRA_KEYS: Array[String] = ["fun", "social", "hygiene", "warmth", "calm"]
+const ALL_KEYS: Array[String] = ["food", "sleep", "mood", "health", "fun", "social", "hygiene", "warmth", "calm"]
 
 var values: Dictionary = {}
 var cfg: Dictionary = {}
@@ -60,5 +63,5 @@ func to_dict() -> Dictionary:
 
 
 func from_dict(data: Dictionary) -> void:
-	for key in KEYS:
-		set_value(key, float(data.get(key, values[key])))
+	for key in ALL_KEYS:
+		set_value(key, float(data.get(key, values.get(key, cfg["start"].get(key, 50.0)))))

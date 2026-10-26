@@ -16,13 +16,20 @@ static func is_equipment(item: String) -> bool:
 
 
 ## 今の時代で使える装備か(素材の段階: 石 → 鉄 → 鋼。MVP は石のみ)
-static func is_available(item: String) -> bool:
-	return str(def(item).get("era", "")) == str(cfg()["current_era"])
+## 今の時代で使える装備か(素材の段階: 石 → 鉄 → 鋼)
+static func is_available(item: String, era: String = "") -> bool:
+	var current: String = era if not era.is_empty() else str(cfg()["current_era"])
+	return Era.index_of(str(def(item).get("era", "stone"))) <= Era.index_of(current)
 
 
 static func equip(v: Villager, item: String) -> void:
 	var d: Dictionary = def(item)
 	v.equipment[str(d["slot"])] = {"id": item, "durability": int(d["durability"])}
+
+
+static func insulation(v: Villager) -> float:
+	var clothes: String = equipped(v, "clothes")
+	return float(def(clothes).get("insulation", 0.0)) if not clothes.is_empty() else 0.0
 
 
 static func equipped(v: Villager, slot: String) -> String:
@@ -73,9 +80,10 @@ static func wear(village: Village, v: Villager, slot: String, kind: String = "")
 
 ## 役職に合う装備のうち、空いた枠に入れられて倉庫にあるもの
 static func wanted_item(village: Village, v: Villager) -> String:
-	for item: String in cfg()["wanted"].get(v.job, []):
+	var wanted: Array = (cfg()["wanted"].get(v.job, []) as Array) + (cfg().get("wanted_all", []) as Array)
+	for item: String in wanted:
 		var slot: String = str(def(item)["slot"])
-		if not equipped(v, slot).is_empty() or not is_available(item):
+		if not equipped(v, slot).is_empty() or not is_available(item, village.era()):
 			continue
 		if village.stock_count(item) > 0:
 			return item

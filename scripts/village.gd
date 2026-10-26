@@ -99,7 +99,8 @@ static func new_game(seed: int) -> Village:
 	village.chief.spawn()
 	var names: Array = village.villager_cfg["names"]
 	for i in int(village.villager_cfg["start_count"]):
-		village.add_villager(str(names[i % names.size()]))
+		var v: Villager = village.add_villager(str(names[i % names.size()]))
+		v.traits = Traits.roll(village.rng)
 	var items: Dictionary = GameData.get_dict("resources")["start_items"]
 	for item: String in items:
 		village.drop_on_ground(village.world.start + Vector2i(2, 2), item, int(items[item]))
@@ -129,6 +130,7 @@ func add_villager(display_name: String, at: Vector2i = NO_CELL) -> Villager:
 	v.id = next_villager_id
 	next_villager_id += 1
 	v.display_name = display_name
+	v.age = rng.randf_range(18.0, 40.0)
 	v.place_at(_free_cell_near(world.start if at == NO_CELL else at))
 	villagers.append(v)
 	assign_homes()
@@ -256,6 +258,61 @@ func is_indoors(v: Villager) -> bool:
 
 func calendar() -> Calendar:
 	return system("calendar") as Calendar
+
+
+## 今の時代(M8-T01)
+func era() -> String:
+	var era_system: EraSystem = system("era") as EraSystem
+	return era_system.current if era_system != null else "stone"
+
+
+## 完成した建物のうち、種類が types のどれかで一番近いもの(types が空なら null)
+func nearest_building(from: Vector2, types: Array) -> Building:
+	var best: Building = null
+	var best_distance: float = INF
+	for b: Building in buildings.values():
+		if b.is_complete() and types.has(b.type):
+			var distance: float = from.distance_to(b.center())
+			if distance < best_distance:
+				best = b
+				best_distance = distance
+	return best
+
+
+func near_building_type(from: Vector2, type: String, radius: float) -> bool:
+	var b: Building = nearest_building(from, [type])
+	return b != null and from.distance_to(b.center()) <= radius
+
+
+## 近くの水辺(水のブロックの隣の、立てる列)
+func nearest_water(from: Vector2i, radius: int) -> Vector2i:
+	var best: Vector2i = NO_CELL
+	var best_distance: int = 1 << 30
+	for dz in range(-radius, radius + 1):
+		for dx in range(-radius, radius + 1):
+			var cell: Vector2i = from + Vector2i(dx, dz)
+			if not world.in_bounds_2d(cell) or world.get_block(Vector3i(cell.x, world.top_y(cell), cell.y)) != world.water_id:
+				continue
+			var distance: int = absi(dx) + absi(dz)
+			if distance < best_distance:
+				best = cell
+				best_distance = distance
+	return best
+
+
+## 家の暖房(暖炉などの設備)
+func heating_bonus(v: Villager) -> float:
+	var home: Building = buildings.get(v.home_id) as Building
+	return BuildingFixture.sum_effect(home, "heating") if home != null else 0.0
+
+
+## 安心の回復倍率(礼拝堂などの建物)
+func calm_rate(_v: Villager) -> float:
+	var rate: float = 1.0
+	for b: Building in buildings.values():
+		if b.is_complete():
+			rate += float(b.def().get("effects", {}).get("calm_rate", 0.0))
+	return rate
 
 
 ## 家や救護室に避難して、魔物に狙われない状態か(M3-T04)

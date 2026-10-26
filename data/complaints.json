@@ -1,4 +1,25 @@
 {
-	"order": ["health", "food", "home", "sleep", "mood"],
-	"below": {"food": 30.0, "sleep": 25.0, "mood": 30.0, "health": 40.0}
+	"order": [
+		"health",
+		"warmth",
+		"food",
+		"home",
+		"sleep",
+		"calm",
+		"hygiene",
+		"fun",
+		"social",
+		"mood"
+	],
+	"below": {
+		"food": 30.0,
+		"sleep": 25.0,
+		"mood": 30.0,
+		"health": 40.0,
+		"warmth": 30.0,
+		"calm": 30.0,
+		"hygiene": 25.0,
+		"fun": 25.0,
+		"social": 20.0
+	}
 }

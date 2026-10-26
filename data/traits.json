@@ -1,0 +1,16 @@
+{
+	"per_villager": [1, 2],
+	"traits": {
+		"lazy": {"name": "怠け者", "work_speed": 0.85, "rest_extra_hours": 1},
+		"diligent": {"name": "働き者", "work_speed": 1.1},
+		"brave": {"name": "勇敢", "attack": 1.2, "calm_decay": 0.5},
+		"coward": {"name": "臆病", "attack": 0.8, "calm_decay": 1.6},
+		"glutton": {"name": "食いしん坊", "food_decay": 1.3},
+		"cheerful": {"name": "陽気", "mood_rate": 1.2},
+		"sociable": {"name": "人なつこい", "social_decay": 0.6},
+		"loner": {"name": "一匹狼", "social_decay": 0.4, "social_gain": 0.5},
+		"hardy": {"name": "丈夫", "disease_chance": 0.5, "cold_loss": 0.7},
+		"curious": {"name": "好奇心旺盛", "fun_decay": 1.4, "vision": 1.3}
+	},
+	"exclusive": [["lazy", "diligent"], ["brave", "coward"], ["sociable", "loner"]]
+}

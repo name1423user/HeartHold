@@ -56,6 +56,9 @@ func test_chop_build_house_and_one_applicant_passes() -> void:
 	village.plan_building("house", start + Vector2i(2, -9))
 	village.plan_building("infirmary", start + Vector2i(7, -8))
 	Job.assign(village, hunter, "guard")
+	Equipment.equip(hunter, "wooden_spear")
+	# 安全を重く見る希望者にも備えて、見張り台も建てる
+	village.add_building("watchtower", start + Vector2i(10, 2), true)
 	# ここから数日分の狩りの成果を足して、希望者の来る日まで進める
 	village.stockpiles()[0].inventory["meal"] = int(village.stockpiles()[0].inventory.get("meal", 0)) + 60
 	village.stockpiles()[0].inventory["plank"] = int(village.stockpiles()[0].inventory.get("plank", 0)) + 30

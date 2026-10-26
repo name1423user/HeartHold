@@ -97,5 +97,30 @@
 		},
 		"work": 15.0,
 		"skill": "craft"
+	},
+	"fur_coat": {
+		"name": "毛皮の上着",
+		"station": "workbench",
+		"inputs": {
+			"fur": 3
+		},
+		"outputs": {
+			"fur_coat": 1
+		},
+		"work": 20.0,
+		"skill": "craft"
+	},
+	"wool_cloak": {
+		"name": "羊毛の外套",
+		"station": "workbench",
+		"inputs": {
+			"wool": 4
+		},
+		"outputs": {
+			"wool_cloak": 1
+		},
+		"work": 25.0,
+		"skill": "craft",
+		"era": "iron"
 	}
 }

@@ -68,5 +68,17 @@
 	"sling": {
 		"name": "投石紐",
 		"category": "equipment"
+	},
+	"fur_coat": {
+		"name": "毛皮の上着",
+		"category": "equipment"
+	},
+	"wool_cloak": {
+		"name": "羊毛の外套",
+		"category": "equipment"
+	},
+	"wool": {
+		"name": "羊毛",
+		"category": "material"
 	}
 }

@@ -1,0 +1,9 @@
+{
+	"order": ["stone", "iron", "medieval", "early_modern"],
+	"eras": {
+		"stone": {"name": "石と木の時代"},
+		"iron": {"name": "鉄の時代", "requires": {"level": 2, "buildings": {"workbench": 1, "house": 3}, "residents": 5}},
+		"medieval": {"name": "中世", "requires": {"level": 3, "buildings": {"smithy": 1, "field": 1}, "residents": 8, "stock": {"iron_ingot": 10}}},
+		"early_modern": {"name": "近世", "requires": {"level": 4, "buildings": {"chapel": 1, "windmill": 1, "barracks": 1}, "residents": 12, "stock": {"steel_ingot": 10}}}
+	}
+}

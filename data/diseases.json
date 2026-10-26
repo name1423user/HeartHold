@@ -1,0 +1,21 @@
+{
+	"diseases": {
+		"cold": {
+			"name": "風邪",
+			"base_chance_per_hour": 0.0005,
+			"hygiene_below": 30.0,
+			"hygiene_chance_per_hour": 0.004,
+			"warmth_below": 30.0,
+			"warmth_chance_per_hour": 0.008,
+			"contagion_radius": 2.0,
+			"contagion_chance_per_hour": 0.01,
+			"duration_hours": 48.0,
+			"work_speed": 0.6,
+			"health_per_hour": -0.5,
+			"rest_multiplier": 1.5,
+			"cabinet_multiplier": 3.0
+		}
+	},
+	"injury": {"days": 3.0, "work_speed": 0.7},
+	"rest_minutes": 120.0
+}

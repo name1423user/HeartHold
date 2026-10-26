@@ -5,7 +5,7 @@ extends VBoxContainer
 
 static func need_entries(village: Village, v: Villager) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	for key in Needs.KEYS:
+	for key in Needs.ALL_KEYS:
 		var warning: bool = v.needs.is_low(key)
 		out.append({
 			"key": key, "label": Texts.t("need_" + key), "value": roundi(v.needs.get_value(key)), "warning": warning,

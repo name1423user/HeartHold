@@ -113,6 +113,7 @@ func finish() -> void:
 		accepted.append(current.id)
 		var v: Villager = village.add_villager(current.display_name, current.body.cell())
 		v.specialty = current.specialty
+		v.traits = Traits.roll(village.rng)
 		village.raise_alert("accepted", Texts.t("alert_accepted", {"name": current.display_name}), v.cell())
 	else:
 		rejected.append(current.id)
