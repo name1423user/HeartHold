@@ -44,6 +44,7 @@ func _init(target: WorldData) -> void:
 	rng.seed = world.seed
 	wildlife = Wildlife.new(self)
 	speed_modifiers.append(Equipment.speed)
+	speed_modifiers.append(Proficiency.speed)
 
 
 static func create(seed: int) -> Village:

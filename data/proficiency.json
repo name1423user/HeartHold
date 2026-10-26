@@ -1,0 +1,6 @@
+{
+	"minutes_per_level": 120.0,
+	"speed_per_level": 0.05,
+	"max_level": 10,
+	"skills": {"chop": "伐採", "dig": "採掘", "build": "建設", "fixture": "設備", "craft": "加工", "cook": "料理", "hunt": "狩り", "combat": "戦い"}
+}
