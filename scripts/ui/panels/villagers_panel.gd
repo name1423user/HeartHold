@@ -60,6 +60,11 @@ func _details(game: Game, v: Villager, parent: Control) -> void:
 	var village: Village = game.village
 	if not v.specialty.is_empty():
 		_label("%s: %s" % [Texts.t("specialty_label"), Specialty.display_name(v.specialty)], parent)
+	if not v.traits.is_empty():
+		_label("%s: %s" % [Texts.t("traits_label"), "・".join(Traits.names(v))], parent)
+	_label("%s: %d" % [Texts.t("age_label"), int(v.age)], parent)
+	if not v.line.is_empty():
+		_label("「%s」" % v.line, parent)
 	var tool: String = Equipment.equipped(v, "tool")
 	var weapon: String = Equipment.equipped(v, "weapon")
 	_label("%s: %s / %s" % [Texts.t("equipment_label"),

@@ -61,7 +61,7 @@ func vision_sources() -> Array[Dictionary]:
 	var sources: Array[Dictionary] = []
 	for v in village.villagers:
 		if v.state == Villager.State.NORMAL:
-			sources.append({"cell": v.cell(), "radius": int(cfg["vision_radius"])})
+			sources.append({"cell": v.cell(), "radius": roundi(float(cfg["vision_radius"]) * Traits.product(v, "vision"))})
 	for b: Building in village.buildings.values():
 		if b.is_complete() and b.def().has("vision"):
 			sources.append({"cell": Vector2i(b.center()), "radius": int(b.def()["vision"])})

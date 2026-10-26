@@ -59,6 +59,33 @@ static func need_decay(v: Villager) -> Dictionary:
 	}
 
 
+## 一言セリフ(US-017)。ときどき、状況や個性に合ったことを言う
+func update_villager(v: Villager, dt: float) -> void:
+	var cfg_lines: Dictionary = GameData.get_dict("lines")
+	if float(v.timers.get("line_until", 0.0)) < village.clock.minutes:
+		v.line = ""
+	if village.rng.randf() >= float(cfg_lines["chance_per_hour"]) * dt / 60.0:
+		return
+	var pool: Array = []
+	var lines: Dictionary = cfg_lines["lines"]
+	var situation: String = "task" if v.plan_kind == "task" else "idle"
+	if village.raid_alarm:
+		situation = "raid"
+	elif not Illness.disease_of(v).is_empty():
+		situation = "sick"
+	elif village.calendar().weather in ["rain", "storm"]:
+		situation = "rain"
+	elif village.calendar().weather == "snow":
+		situation = "snow"
+	pool.append_array(lines.get(situation, []))
+	for t: String in v.traits:
+		pool.append_array(lines.get(t, []))
+	if pool.is_empty():
+		return
+	v.line = str(pool[village.rng.randi_range(0, pool.size() - 1)])
+	v.timers["line_until"] = village.clock.minutes + float(cfg_lines["show_minutes"])
+
+
 func work_speed(v: Villager, kind: String) -> float:
 	return product(v, "work_speed") if kind != "combat" else 1.0
 

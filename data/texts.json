@@ -190,5 +190,7 @@
 	"alert_disease": "{name}が{disease}にかかりました",
 	"alert_cured": "{name}の{disease}が治りました",
 	"state_sick": "病気",
-	"state_injured": "負傷"
+	"state_injured": "負傷",
+	"traits_label": "個性",
+	"age_label": "年齢"
 }

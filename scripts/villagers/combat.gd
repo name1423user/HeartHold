@@ -8,7 +8,7 @@ static func cfg() -> Dictionary:
 
 ## 攻撃力 = 武器 × 特技「槍の心得」 × 村長の方針「守り」
 static func attack_damage(village: Village, v: Villager) -> float:
-	return Equipment.attack(v) * Specialty.speed(v, "combat") * village.chief.guard_attack(v)
+	return Equipment.attack(v) * Specialty.speed(v, "combat") * village.chief.guard_attack(v) * Traits.product(v, "attack")
 
 
 ## 衛兵に見えている一番近い魔物

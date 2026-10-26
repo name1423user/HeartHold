@@ -65,7 +65,8 @@ func _sync_villagers() -> void:
 		var body: Node3D = node.get_child(0)
 		body.rotation.z = PI * 0.5 if v.state == Villager.State.UNCONSCIOUS else 0.0
 		var label: Label3D = node.get_child(1)
-		label.text = v.display_name + ("\n「%s」" % v.complaint if not v.complaint.is_empty() else "")
+		var said: String = v.complaint if not v.complaint.is_empty() else v.line
+		label.text = v.display_name + ("\n「%s」" % said if not said.is_empty() else "")
 
 
 func _sync_monsters() -> void:
