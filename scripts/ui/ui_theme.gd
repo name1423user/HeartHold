@@ -53,6 +53,10 @@ static func build() -> Theme:
 	theme.set_color("font_disabled_color", "Button", color("wood_light"))
 	theme.set_color("font_color", "Label", color("ink"))
 	theme.set_color("font_color", "CheckBox", color("ink"))
+	theme.set_color("font_hover_color", "CheckBox", color("wood"))
+	theme.set_color("font_pressed_color", "CheckBox", color("ink"))
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+		theme.set_stylebox(state, "CheckBox", StyleBoxEmpty.new())
 	theme.set_color("font_color", "LineEdit", color("ink"))
 	var edit := StyleBoxFlat.new()
 	edit.bg_color = Color.WHITE
