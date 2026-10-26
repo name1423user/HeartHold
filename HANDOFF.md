@@ -1,33 +1,33 @@
 # HANDOFF — Hearthold
 
-最終更新: 2026-10-26 17:14(毎ターン更新して push する)
+最終更新: 2026-10-26 17:19 JST(毎ターン更新して push する)
 
 ## 現在のタスク
-- 要件定義が完了。実装はまだ始めていない
+- M1-T01 プロジェクトの初期設定(完了)
 
 ## このターンで終わったこと
-- ユーザーが判断を任せたため、残りの観点を Claude の判断で採用
-  - 武器: MVPは木の槍・投石紐、見張り台に遠距離の衛兵。後回しは相性・防具・罠・魔法の武器・上位の武器
-  - 探索: MVPは遺跡の跡。後回しは魔物の巣、他の村の手がかり
-  - 音: MVPは警告音・効果音・昼夜のBGM・音量設定
-  - 操作: MVPはキーボードの近道と説明表示。後回しは実績・くわしいチュートリアル・キー割り当て変更
-  - 時代の進め方: 研究ツリーは作らず、節目の課題で進む(後回し)
-- ITEMS.md(道具・武器・防具の仮の数値)を追加
-- SPEC.md に US-028〜031、AC-046〜050。PLAN.md に M3-T10、M4-T08、M6-T05(全43タスク)
+- バージョン確認: Voxel Tools v1.7(Godot 4.7.2 向け、2026-08-20)が出ていたため、ユーザー判断で Godot 4.7.2 + Voxel Tools 1.7 + GUT 9.7.1 を採用
+  - SPEC.md(AS-011、8章、決定ログ)、CLAUDE.md、PLAN.md の 4.6/1.6 表記を更新
+- SPEC 11章のディレクトリを作成(空のものは .gitkeep)
+- `project.godot`(features 4.7、GUTプラグイン有効)、`addons/gut/`(9.7.1)、`tests/test_smoke.gd`、`.gitignore`、`LICENSE`(MIT)、`README.md`(バージョン表)
+- 作業ブランチ `m1-t01` で作業(SPEC 11章「main + 作業ブランチ」)
 
 ## 次にやること
-- 新しいセッションで FIRST_PROMPT.md を貼り、M1-T01(プロジェクトの初期設定)だけを実装する
+- `m1-t01` を main へマージするか、ユーザーに確認(PRはまだ作っていない)
+- その後 M1-T02(シード付き地形生成)。M1-T02 から Voxel Tools 1.7 のカスタムビルドが必要
 
 ## 検証結果
-- テスト: まだなし(コードなし)
-- SPEC.md と PLAN.md の AC の対応: 全AC(001〜050)にタスクあり
+- テスト(公式 Godot 4.7.2-stable linux、SHA-512一致を確認して使用): 1/1 passed、exit 0
+- Voxel Tools 入りのカスタムビルドではまだ実行していない(このコンテナでは取得していない。M1-T01 はボクセル機能を使わない)
 
 ## 未解決・ユーザーへの質問
-- Godot 4.6 / Voxel Tools 1.6 / GUT の対応版を M1-T01 の最初に確認する(SPEC 8章「要確認」)
-- BUILDINGS.md の「推奨」ラベルの建物の承認
+- `m1-t01` を main にマージしてよいか(PRを作るか、直接マージか)
+- LICENSE の著作権者名を `name1423user` にした。別の名前がよければ指示を
+- FIRST_PROMPT.md は当時の指示として 4.6/1.6 表記のまま残した
+- BUILDINGS.md の「推奨」ラベルの建物の承認(前回から継続)
 
 ## 触ったファイル
-- SPEC.md, PLAN.md, ITEMS.md, HANDOFF.md
+- project.godot, addons/gut/, tests/test_smoke.gd, .gitignore, LICENSE, README.md, SPEC.md, CLAUDE.md, PLAN.md, HANDOFF.md, data/ scenes/ scripts/ assets/ の .gitkeep
 
 ## サブエージェントの利用
-- なし
+- なし(バージョン確認はメインで実施)
