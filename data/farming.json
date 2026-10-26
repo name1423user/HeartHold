@@ -1,0 +1,19 @@
+{
+	"crops": {
+		"wheat": {"name": "小麦", "seasons": ["spring", "summer"], "grow_days": 6.0, "yield": {"wheat": 8, "hay": 4}},
+		"cabbage": {"name": "キャベツ", "seasons": ["spring", "summer", "autumn"], "grow_days": 4.0, "yield": {"cabbage": 6}}
+	},
+	"default_crop": "wheat",
+	"sow_minutes": 30.0,
+	"harvest_minutes": 30.0,
+	"animals": {
+		"chicken": {"name": "ニワトリ", "product": "egg", "every_days": 1.0, "per_animal": 1, "feed_per_day": 0.25},
+		"sheep": {"name": "ヒツジ", "product": "wool", "every_days": 7.0, "per_animal": 2, "feed_per_day": 0.5}
+	},
+	"barn_start": {"chicken": 3, "sheep": 2},
+	"feed_item": "hay",
+	"feed_minutes": 15.0,
+	"collect_minutes": 10.0,
+	"breed_days": 5.0,
+	"starve_days": 4.0
+}

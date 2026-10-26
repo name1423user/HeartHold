@@ -43,4 +43,5 @@ func test_hunter_and_guard_keep_shared_work() -> void:
 func test_unknown_job_is_rejected() -> void:
 	var a: Villager = village.add_villager("オットー")
 	assert_false(Job.assign(village, a, "wizard"))
-	assert_eq(Job.ids().size(), 4)
+	for job in ["gatherer", "builder", "hunter", "guard"]:
+		assert_has(Job.ids(), job)

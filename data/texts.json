@@ -201,5 +201,17 @@
 	"tooltip_tool_plant": "ドラッグで囲んだ範囲に苗木を植える予約をします",
 	"tool_hint_plant": "植える範囲をドラッグ(右クリックで解除)",
 	"plant_created": "{count}か所に植える予約をしました",
-	"task_type_plant": "植える"
+	"task_type_plant": "植える",
+	"alert_crop_lost": "冬の寒さで畑の作物が枯れました",
+	"alert_animal_died": "えさが足りず、家畜が死にました",
+	"task_type_sow": "種まき",
+	"task_type_harvest": "収穫",
+	"task_type_feed": "えさやり",
+	"task_type_collect": "家畜の世話",
+	"field_status": "畑: {crop}({stage})",
+	"barn_status": "家畜: {list}",
+	"crop_label": "作る作物",
+	"stage_empty": "空き",
+	"stage_growing": "育成中",
+	"stage_ripe": "実り"
 }

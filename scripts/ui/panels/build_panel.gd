@@ -71,6 +71,7 @@ func refresh(game: Game) -> void:
 		add_child(button)
 	if b.capacity() > 0 and b.is_complete():
 		_stockpile_settings(game, b)
+	_farm_settings(game, b)
 	if b.type == "watchtower" and b.is_complete():
 		var station := Button.new()
 		station.text = Texts.t("station_guard")
@@ -79,6 +80,29 @@ func refresh(game: Game) -> void:
 			var result: Dictionary = Watchtower.station(village, b, v) if v != null else {"ok": false, "message": Texts.t("select_villager_first")}
 			game.hud.toast(str(result.get("message", "")) if not result["ok"] else ""))
 		add_child(station)
+
+
+func _farm_settings(game: Game, b: Building) -> void:
+	var farming: Farming = game.village.system("farming") as Farming
+	var cfg: Dictionary = farming.cfg()
+	if farming.fields.has(b.id):
+		var f: Dictionary = farming.fields[b.id]
+		_label(Texts.t("field_status", {"crop": cfg["crops"][f["crop"]]["name"], "stage": Texts.t("stage_" + str(f["stage"]))}))
+		var option := OptionButton.new()
+		var crops: Array = cfg["crops"].keys()
+		for i in crops.size():
+			option.add_item(str(cfg["crops"][crops[i]]["name"]), i)
+			if crops[i] == f["crop"]:
+				option.select(i)
+		option.tooltip_text = Texts.t("crop_label")
+		option.item_selected.connect(func(index: int) -> void: farming.set_crop(b, crops[index]))
+		add_child(option)
+	if farming.barns.has(b.id):
+		var parts: Array[String] = []
+		var animals: Dictionary = farming.barns[b.id]["animals"]
+		for species: String in animals:
+			parts.append("%s%d" % [cfg["animals"][species]["name"], int(animals[species])])
+		_label(Texts.t("barn_status", {"list": "、".join(parts)}))
 
 
 func _stockpile_settings(game: Game, b: Building) -> void:

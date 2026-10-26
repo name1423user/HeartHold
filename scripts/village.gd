@@ -1065,9 +1065,11 @@ func add_building(type: String, cell: Vector2i, complete: bool = false) -> Build
 	b.cell = cell
 	b.state = Building.State.COMPLETE if complete else Building.State.PLANNED
 	buildings[b.id] = b
-	for c in b.cells():
-		world.blocked[c] = b.id
-		pathing.update_cell(c)
+	# 畑や罠のように上を歩ける建物は列をふさがない
+	if not bool(b.def().get("walkable", false)):
+		for c in b.cells():
+			world.blocked[c] = b.id
+			pathing.update_cell(c)
 	if complete:
 		_on_building_completed(b)
 	building_changed.emit(b)

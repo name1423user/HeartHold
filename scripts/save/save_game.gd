@@ -196,8 +196,9 @@ static func from_state(state: Dictionary, chunks: Dictionary) -> Village:
 	for entry: Dictionary in state["buildings"]:
 		var b: Building = Building.from_dict(entry)
 		buildings[b.id] = b
-		for c in b.cells():
-			world.blocked[c] = b.id
+		if not bool(b.def().get("walkable", false)):
+			for c in b.cells():
+				world.blocked[c] = b.id
 	# 地形・木・建物を戻してから村を作ると、経路探索もそれに合わせて作られる
 	var village := Village.new(world)
 	village.buildings = buildings

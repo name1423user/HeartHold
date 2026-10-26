@@ -1,8 +1,115 @@
 {
-	"house": {"name": "家", "size": [3, 3], "materials": {"plank": 8, "log": 4}, "work": 120.0, "residents": 2, "unlock_level": 0},
-	"storage": {"name": "倉庫", "size": [3, 3], "materials": {"log": 6}, "work": 60.0, "capacity": 200, "unlock_level": 0},
-	"workbench": {"name": "作業台", "size": [2, 1], "materials": {"log": 3}, "work": 40.0, "unlock_level": 0},
-	"infirmary": {"name": "救護室", "size": [3, 3], "materials": {"plank": 10, "stone": 6}, "work": 150.0, "unlock_level": 0},
-	"fence": {"name": "柵", "size": [1, 1], "materials": {"fence_post": 1}, "work": 10.0, "unlock_level": 0},
-	"watchtower": {"name": "見張り台", "size": [2, 2], "materials": {"plank": 12, "log": 4}, "work": 120.0, "vision": 24, "unlock_level": 1}
+	"house": {
+		"name": "家",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"plank": 8,
+			"log": 4
+		},
+		"work": 120.0,
+		"residents": 2,
+		"unlock_level": 0,
+		"era": "stone"
+	},
+	"storage": {
+		"name": "倉庫",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"log": 6
+		},
+		"work": 60.0,
+		"capacity": 200,
+		"unlock_level": 0,
+		"era": "stone"
+	},
+	"workbench": {
+		"name": "作業台",
+		"size": [
+			2,
+			1
+		],
+		"materials": {
+			"log": 3
+		},
+		"work": 40.0,
+		"unlock_level": 0,
+		"era": "stone"
+	},
+	"infirmary": {
+		"name": "救護室",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"plank": 10,
+			"stone": 6
+		},
+		"work": 150.0,
+		"unlock_level": 0,
+		"era": "stone"
+	},
+	"fence": {
+		"name": "柵",
+		"size": [
+			1,
+			1
+		],
+		"materials": {
+			"fence_post": 1
+		},
+		"work": 10.0,
+		"unlock_level": 0,
+		"era": "stone"
+	},
+	"watchtower": {
+		"name": "見張り台",
+		"size": [
+			2,
+			2
+		],
+		"materials": {
+			"plank": 12,
+			"log": 4
+		},
+		"work": 120.0,
+		"vision": 24,
+		"unlock_level": 1,
+		"era": "stone"
+	},
+	"field": {
+		"name": "畑",
+		"size": [
+			4,
+			4
+		],
+		"materials": {
+			"plank": 4
+		},
+		"work": 40.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"walkable": true
+	},
+	"barn": {
+		"name": "家畜小屋",
+		"size": [
+			4,
+			3
+		],
+		"materials": {
+			"plank": 16,
+			"log": 6
+		},
+		"work": 120.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"capacity_animals": 8
+	}
 }

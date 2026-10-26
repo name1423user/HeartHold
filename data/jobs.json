@@ -32,6 +32,28 @@
 		"investigate",
 		"chop",
 		"dig",
-		"plant"
-	]
+		"plant",
+		"harvest",
+		"sow",
+		"feed",
+		"collect"
+	],
+	"farmer": {
+		"name": "農夫",
+		"priority": [
+			"sow",
+			"harvest"
+		],
+		"era": "iron",
+		"requires_building": "field"
+	},
+	"herder": {
+		"name": "牧夫",
+		"priority": [
+			"feed",
+			"collect"
+		],
+		"era": "iron",
+		"requires_building": "barn"
+	}
 }
