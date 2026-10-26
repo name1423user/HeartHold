@@ -1,0 +1,10 @@
+{
+	"name": "村長エルンスト",
+	"policies": {
+		"diligent": {"name": "勤勉", "work_speed": 1.1, "guard_attack": 1.0, "mood_rate": 1.0},
+		"defense": {"name": "守り", "work_speed": 1.0, "guard_attack": 1.2, "mood_rate": 1.0},
+		"comfort": {"name": "安らぎ", "work_speed": 1.0, "guard_attack": 1.0, "mood_rate": 1.2}
+	},
+	"default_policy": "diligent",
+	"changes_per_day": 1
+}

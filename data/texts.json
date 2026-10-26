@@ -26,5 +26,7 @@
 	"alert_raid": "魔物が近づいています",
 	"alert_recovered": "{name}が回復しました",
 	"alert_death": "{name}が亡くなりました",
-	"alert_chief_dying": "村長{name}が瀕死です"
+	"alert_chief_dying": "村長{name}が瀕死です",
+	"chief_policy_once_a_day": "方針の変更はゲーム内1日に1回までです",
+	"order_chief": "村長には命令できません"
 }

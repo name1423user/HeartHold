@@ -4,6 +4,8 @@ extends RefCounted
 
 
 static func move(village: Village, v: Villager, target: Vector2i) -> Dictionary:
+	if v.is_chief:
+		return {"ok": false, "message": Texts.t("order_chief")}
 	if not v.is_active():
 		return {"ok": false, "message": Texts.t("order_cannot_move")}
 	if not village.world.is_walkable(target) or not village.pathing.is_reachable(v.cell(), target):

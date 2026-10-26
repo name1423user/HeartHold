@@ -2,23 +2,13 @@ class_name Combat
 extends RefCounted
 ## 迎撃と避難(AC-015)。魔物が村の境界に入ったら、衛兵は迎え撃ち、他の村人は家か救護室へ避難する。
 
-## 攻撃力にかかる倍率を足す口(特技「槍の心得」、村長の方針「守り」など)
-static var attack_modifiers: Array[Callable] = [Combat.specialty_attack]
-
-
 static func cfg() -> Dictionary:
 	return GameData.get_dict("combat")
 
 
-static func specialty_attack(_village: Village, v: Villager) -> float:
-	return Specialty.speed(v, "combat")
-
-
+## 攻撃力 = 武器 × 特技「槍の心得」 × 村長の方針「守り」
 static func attack_damage(village: Village, v: Villager) -> float:
-	var damage: float = Equipment.attack(v)
-	for modifier in attack_modifiers:
-		damage *= float(modifier.call(village, v))
-	return damage
+	return Equipment.attack(v) * Specialty.speed(v, "combat") * village.chief.guard_attack(v)
 
 
 ## 衛兵に見えている一番近い魔物

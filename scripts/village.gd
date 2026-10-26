@@ -36,6 +36,7 @@ var inspection: Inspection
 var raids: RaidDirector
 ## 魔物が村の境界に入っている(迎撃・避難の合図)
 var raid_alarm: bool = false
+var chief: Chief
 
 
 func _init(target: WorldData) -> void:
@@ -53,6 +54,7 @@ func _init(target: WorldData) -> void:
 	inspection = Inspection.new(self)
 	raids = RaidDirector.new(self)
 	inspection.is_raid_active = func() -> bool: return raids.active
+	chief = Chief.new(self)
 
 
 static func create(seed: int) -> Village:
@@ -299,6 +301,8 @@ func _choose_need_plan(v: Villager) -> bool:
 
 ## 役職に合う装備が倉庫にあれば、自分で取りに行く(AC-038)
 func _choose_equipment_plan(v: Villager) -> bool:
+	if v.is_chief:
+		return false
 	var item: String = Equipment.wanted_item(self, v)
 	if item.is_empty():
 		return false
@@ -315,6 +319,8 @@ func _choose_equipment_plan(v: Villager) -> bool:
 
 ## 役職の優先順位(data/jobs.json)で仕事を拾う
 func _choose_task_plan(v: Villager) -> bool:
+	if v.is_chief:
+		return false
 	var task: JobTask = tasks.find_for(task_types_for(v), v.cell(), clock.minutes)
 	if task == null:
 		return false
@@ -349,6 +355,8 @@ func plan_for_task(_v: Villager, task: JobTask) -> Array[Dictionary]:
 
 
 func _choose_haul_plan(v: Villager) -> bool:
+	if v.is_chief:
+		return false
 	for cell: Vector2i in ground_items:
 		if ground_reserved.has(cell):
 			continue
@@ -1074,7 +1082,7 @@ func mood_rate(v: Villager) -> float:
 	var home: Building = buildings.get(v.home_id) as Building
 	if home != null and home.is_complete():
 		rate += BuildingFixture.sum_effect(home, "mood_rate_bonus")
-	return rate
+	return rate * chief.mood_rate()
 
 
 func _on_block_changed(pos: Vector3i, id: int) -> void:
