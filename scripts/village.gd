@@ -249,6 +249,11 @@ func _abort_plan(v: Villager, reason: String) -> void:
 	v.clear_plan()
 
 
+## 外から今の行動をやめさせる(役職変更・個人命令など)。持ち物は次の行動で片付ける
+func release_plan(v: Villager) -> void:
+	_abort_plan(v, "")
+
+
 func _finish_plan(v: Villager) -> void:
 	_abort_plan(v, "")
 
