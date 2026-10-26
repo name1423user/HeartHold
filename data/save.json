@@ -1,0 +1,7 @@
+{
+	"format_version": 1,
+	"directory": "user://saves",
+	"autosave_seconds": 300.0,
+	"autosave_keep": 3,
+	"chunk_size": 16
+}

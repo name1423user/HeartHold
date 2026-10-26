@@ -157,6 +157,21 @@ func _before_villagers(dt: float) -> void:
 func _after_villagers(dt: float) -> void:
 	fog.update(dt)
 	ruins.update()
+	_check_hunger()
+
+
+## 食事が警告の線を下回ったら1回だけ警告する(回復したらまた出せる)
+func _check_hunger() -> void:
+	for v in villagers:
+		v.complaint = SpeechBubble.complaint(self, v)
+		if v.state != Villager.State.NORMAL:
+			continue
+		var low: bool = v.needs.is_low("food")
+		if low and not v.timers.has("hunger_alerted"):
+			v.timers["hunger_alerted"] = true
+			raise_alert("hunger", Texts.t("alert_hunger", {"name": v.display_name}), v.cell())
+		elif not low:
+			v.timers.erase("hunger_alerted")
 
 
 func _update_villager(v: Villager, dt: float) -> void:
@@ -931,6 +946,14 @@ func plan_building(type: String, cell: Vector2i) -> Dictionary:
 	task.work_needed = float(b.def().get("work", 60.0))
 	tasks.add(task)
 	return {"ok": true, "building": b}
+
+
+## 村レベルの解放条件も見る建設予約(画面から使う)
+func plan_building_checked(type: String, cell: Vector2i, village_level: int) -> Dictionary:
+	var unlock: int = int(GameData.get_dict("buildings").get(type, {}).get("unlock_level", 0))
+	if unlock > village_level:
+		return {"ok": false, "message": Texts.t("locked_level", {"level": unlock})}
+	return plan_building(type, cell)
 
 
 func _on_building_completed(b: Building) -> void:

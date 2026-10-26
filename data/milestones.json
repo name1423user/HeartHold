@@ -1,0 +1,25 @@
+{
+	"start_level": 0,
+	"levels": [
+		{"level": 1, "name": "開拓地", "era": "stone", "goals": [
+			{"type": "building_count", "building": "house", "count": 1, "label": "家1軒"},
+			{"type": "building_count", "building": "storage", "count": 1, "label": "倉庫1つ"}
+		]},
+		{"level": 2, "name": "小さな村", "era": "stone", "goals": [
+			{"type": "building_count", "building": "house", "count": 3, "label": "家3軒"},
+			{"type": "residents", "count": 5, "label": "住人5人"},
+			{"type": "satisfaction", "value": 60.0, "label": "満足度平均60以上"}
+		]},
+		{"level": 3, "name": "村", "era": "stone", "goals": [
+			{"type": "building_count", "building": "watchtower", "count": 1, "label": "見張り台1つ"},
+			{"type": "residents", "count": 8, "label": "住人8人"},
+			{"type": "food_days", "days": 7, "label": "食料7日分"}
+		]}
+	],
+	"eras": {
+		"stone": {"name": "石と木の時代", "playable": true},
+		"iron": {"name": "鉄の時代", "playable": false},
+		"medieval": {"name": "中世", "playable": false},
+		"early_modern": {"name": "近世", "playable": false}
+	}
+}

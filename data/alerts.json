@@ -1,0 +1,12 @@
+{
+	"dedupe_minutes": 30.0,
+	"max_history": 100,
+	"kinds": {
+		"raid": {"icon": "⚔", "sound": "raid"},
+		"applicant": {"icon": "✉", "sound": "applicant"},
+		"faint": {"icon": "✚", "sound": "faint"},
+		"hunger": {"icon": "🍖", "sound": "hunger"},
+		"death": {"icon": "✝", "sound": "death"},
+		"default": {"icon": "!", "sound": "notice"}
+	}
+}

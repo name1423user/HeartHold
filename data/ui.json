@@ -1,0 +1,53 @@
+{
+	"font": "res://assets/fonts/BIZUDPGothic-Regular.ttf",
+	"base_font_size": 15,
+	"text_scales": [
+		1.0,
+		1.25,
+		1.5
+	],
+	"colors": {
+		"parchment": "#f2e4c2",
+		"parchment_dark": "#e2cf9f",
+		"wood": "#7a4e2a",
+		"wood_light": "#a8763f",
+		"ink": "#3a2816",
+		"warning": "#b3261e",
+		"good": "#2f6b2a",
+		"highlight": "#d9902b"
+	},
+	"sidebar_width": 340,
+	"refresh_seconds": 0.5,
+	"alert_seconds": 8.0,
+	"villager_colors": {
+		"gatherer": "#c9a14a",
+		"builder": "#b5652b",
+		"hunter": "#4f7a3a",
+		"guard": "#45618c",
+		"chief": "#8c2f6b"
+	},
+	"building_colors": {
+		"house": "#b07a45",
+		"storage": "#8a6a3d",
+		"workbench": "#9c7b52",
+		"infirmary": "#d8d0bf",
+		"fence": "#6e4b2a",
+		"watchtower": "#7d5a37"
+	},
+	"building_heights": {
+		"house": 3.0,
+		"storage": 2.0,
+		"workbench": 1.0,
+		"infirmary": 3.0,
+		"fence": 1.5,
+		"watchtower": 6.0
+	},
+	"entity_colors": {
+		"monster": "#a3241c",
+		"rabbit": "#efe9dc",
+		"pile": "#6b4a2b",
+		"ruin": "#9a958a",
+		"applicant": "#7b4fa3",
+		"task": "#e08a1e"
+	}
+}
