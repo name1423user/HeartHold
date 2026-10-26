@@ -290,5 +290,10 @@
 	"refuse": "断る",
 	"alert_refused": "{name}を断りました(評判が下がります)",
 	"decision_hint": "合格しました。迎えるか断るか選べます",
-	"nest_label": "魔物の巣"
+	"nest_label": "魔物の巣",
+	"alert_achievement": "実績「{name}」を達成しました",
+	"achievements_label": "実績 {done}/{total}",
+	"tutorial_next": "次へ",
+	"tutorial_stop": "チュートリアルをやめる",
+	"title_tutorial": "チュートリアルで始める"
 }

@@ -4,4 +4,4 @@ extends RefCounted
 
 
 static func classes() -> Array[GDScript]:
-	return [EraSystem, Reputation, BuildingEffects, BuildingDamage, Mining, Calendar, Traits, Illness, ExtendedNeeds, Schedule, FoodSpoilage, Regrowth, Farming, Festivals, LifeCycle, Traps, Nests, Expeditions, Trade, VillageClues, Magic, Story]
+	return [EraSystem, Reputation, BuildingEffects, BuildingDamage, Mining, Calendar, Traits, Illness, ExtendedNeeds, Schedule, FoodSpoilage, Regrowth, Farming, Festivals, LifeCycle, Traps, Nests, Expeditions, Trade, VillageClues, Magic, Story, Achievements]

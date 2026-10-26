@@ -42,10 +42,12 @@ func _rebuild() -> void:
 	seed_edit.text = str(randi() % 100000)
 	seed_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(seed_edit)
-	_button(Texts.t("title_new"), func() -> void:
-		Game.pending_seed = int(seed_edit.text) if seed_edit.text.is_valid_int() else seed_edit.text.hash()
-		Game.pending_save = ""
-		get_tree().change_scene_to_file("res://scenes/game.tscn"))
+	for tutorial in [false, true]:
+		_button(Texts.t("title_tutorial") if tutorial else Texts.t("title_new"), func() -> void:
+			Game.pending_seed = int(seed_edit.text) if seed_edit.text.is_valid_int() else seed_edit.text.hash()
+			Game.pending_save = ""
+			Game.pending_tutorial = tutorial
+			get_tree().change_scene_to_file("res://scenes/game.tscn"))
 	var saves: Array[String] = SaveGame.list_saves()
 	var continue_button: Button = _button(Texts.t("title_continue"), func() -> void: _open_save(saves[0]))
 	continue_button.disabled = saves.is_empty()

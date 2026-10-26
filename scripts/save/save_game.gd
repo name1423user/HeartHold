@@ -25,7 +25,7 @@ static func path(save_name: String, extension: String) -> String:
 # --- 保存 ---------------------------------------------------------------
 
 static func save_game(game: Game, save_name: String) -> Error:
-	return save_village(game.village, save_name, {"hints_step": game.hints.step})
+	return save_village(game.village, save_name, game.extra_state())
 
 
 static func save_village(village: Village, save_name: String, extra: Dictionary = {}) -> Error:

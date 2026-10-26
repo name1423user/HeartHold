@@ -5,6 +5,8 @@ extends Node3D
 ## タイトル画面から渡す新規ゲームのシード、またはロードするセーブ名
 static var pending_seed: int = 12345
 static var pending_save: String = ""
+## タイトルで「チュートリアルで始める」を選んだ
+static var pending_tutorial: bool = false
 
 var village: Village
 var world_view: WorldView
@@ -14,6 +16,7 @@ var hud: Hud
 var alerts: AlertLog
 var level: VillageLevel
 var hints: Hints
+var tutorial: Tutorial
 var autosave: Autosave
 var audio: AudioDirector
 ## 今の操作: "select" / "chop" / "dig" / "build:<種類>" / "move"
@@ -76,8 +79,11 @@ func start(new_village: Village) -> void:
 	level = village.level
 	hints = Hints.new(village)
 	hints.step = int(village.loaded_extra.get("hints_step", 0))
+	tutorial = Tutorial.new(village)
+	tutorial.active = bool(village.loaded_extra.get("tutorial_active", pending_tutorial and pending_save.is_empty()))
+	tutorial.step = int(village.loaded_extra.get("tutorial_step", 0))
 	autosave = Autosave.new(village)
-	autosave.extra_source = func() -> Dictionary: return {"hints_step": hints.step}
+	autosave.extra_source = func() -> Dictionary: return extra_state()
 	audio = AudioDirector.new()
 	add_child(audio)
 	audio.setup(village, alerts)
@@ -93,6 +99,7 @@ func _process(delta: float) -> void:
 	village.tick(village.clock.real_to_minutes(delta))
 	autosave.update(delta)
 	hints.update()
+	tutorial.update()
 	entities.update_view()
 	_viewer.position = camera.position
 	_rain.position = camera.position + Vector3(0, 25, 0)
@@ -144,6 +151,11 @@ func load_save(save_name: String) -> void:
 		hud.toast(SaveGame.last_error)
 		return
 	start(loaded)
+
+
+## セーブに入れる画面側の状態
+func extra_state() -> Dictionary:
+	return {"hints_step": hints.step, "tutorial_active": tutorial.active, "tutorial_step": tutorial.step}
 
 
 func toggle_pause() -> void:

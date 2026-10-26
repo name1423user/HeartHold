@@ -19,6 +19,9 @@ var tool_label: Label
 var toast_label: Label
 var hint_label: Label
 var tooltip_label: Label
+var tutorial_box: PanelContainer
+var tutorial_label: Label
+var tutorial_next: Button
 var pause_menu: PauseMenu
 var score_dialog: PanelContainer
 var _refresh_timer: float = 0.0
@@ -39,6 +42,7 @@ func setup(target: Game) -> void:
 	_build_sidebar()
 	_build_alert_banner()
 	_build_bottom()
+	_build_tutorial()
 	pause_menu = preload("res://scenes/ui/pause_menu.tscn").instantiate() as PauseMenu
 	root.add_child(pause_menu)
 	pause_menu.setup(game)
@@ -135,6 +139,37 @@ func _build_bottom() -> void:
 	root.add_child(tooltip_label)
 
 
+func _build_tutorial() -> void:
+	tutorial_box = PanelContainer.new()
+	tutorial_box.anchor_left = 0.5
+	tutorial_box.anchor_right = 0.5
+	tutorial_box.anchor_top = 1.0
+	tutorial_box.anchor_bottom = 1.0
+	tutorial_box.position = Vector2(-260, -170)
+	tutorial_box.custom_minimum_size = Vector2(520, 0)
+	root.add_child(tutorial_box)
+	var box := VBoxContainer.new()
+	tutorial_box.add_child(box)
+	tutorial_label = Label.new()
+	tutorial_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tutorial_label.custom_minimum_size = Vector2(500, 0)
+	box.add_child(tutorial_label)
+	var row := HBoxContainer.new()
+	box.add_child(row)
+	tutorial_next = Button.new()
+	tutorial_next.text = Texts.t("tutorial_next")
+	tutorial_next.pressed.connect(func() -> void:
+		game.tutorial.next()
+		refresh_now())
+	row.add_child(tutorial_next)
+	var stop := Button.new()
+	stop.text = Texts.t("tutorial_stop")
+	stop.pressed.connect(func() -> void:
+		game.tutorial.stop()
+		refresh_now())
+	row.add_child(stop)
+
+
 func _floating_label(preset: Control.LayoutPreset, offset: Vector2) -> Label:
 	var label := Label.new()
 	label.set_anchors_preset(preset)
@@ -208,7 +243,12 @@ func refresh_now() -> void:
 	top_bar.refresh()
 	if current_panel >= 0:
 		panels[current_panel].call("refresh", game)
-	var hint: String = game.hints.current_text()
+	var tutorial_on: bool = not game.tutorial.is_finished()
+	tutorial_box.visible = tutorial_on
+	if tutorial_on:
+		tutorial_label.text = "(%d/%d) %s" % [game.tutorial.step + 1, Tutorial.steps().size(), game.tutorial.current()["text"]]
+		tutorial_next.visible = game.tutorial.needs_next_button()
+	var hint: String = "" if tutorial_on else game.hints.current_text()
 	hint_label.text = hint
 	hint_label.visible = not hint.is_empty()
 

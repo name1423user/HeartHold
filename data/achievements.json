@@ -1,0 +1,20 @@
+{
+	"achievements": [
+		{"id": "first_house", "name": "最初の灯り", "desc": "家を建てる", "cond": {"type": "building", "building": "house"}},
+		{"id": "ten_residents", "name": "にぎやかな村", "desc": "住人が10人になる", "cond": {"type": "residents", "count": 10}},
+		{"id": "first_settler", "name": "ようこそ", "desc": "移住審査で1人迎える", "cond": {"type": "counter", "name": "accepted", "count": 1}},
+		{"id": "raid_repelled", "name": "村を守る者", "desc": "襲撃を退ける", "cond": {"type": "counter", "name": "raid_end", "count": 1}},
+		{"id": "five_raids", "name": "鉄壁", "desc": "襲撃を5回退ける", "cond": {"type": "counter", "name": "raid_end", "count": 5}},
+		{"id": "nest_destroyed", "name": "根を断つ", "desc": "魔物の巣を潰す", "cond": {"type": "counter", "name": "nest_destroyed", "count": 1}},
+		{"id": "iron_age", "name": "鉄の響き", "desc": "鉄の時代になる", "cond": {"type": "era", "value": "iron"}},
+		{"id": "medieval", "name": "鐘の鳴る町", "desc": "中世になる", "cond": {"type": "era", "value": "medieval"}},
+		{"id": "early_modern", "name": "時を告げる塔", "desc": "近世になる", "cond": {"type": "era", "value": "early_modern"}},
+		{"id": "first_birth", "name": "新しい命", "desc": "村で子どもが生まれる", "cond": {"type": "counter", "name": "birth", "count": 1}},
+		{"id": "first_feast", "name": "宴だ!", "desc": "宴を開く", "cond": {"type": "counter", "name": "feast", "count": 1}},
+		{"id": "trader", "name": "広がる道", "desc": "交易相手が3つになる", "cond": {"type": "partners", "count": 3}},
+		{"id": "famous", "name": "名の知れた村", "desc": "評判が90になる", "cond": {"type": "reputation", "value": 90.0}},
+		{"id": "survive_year", "name": "一年を越えて", "desc": "2年目を迎える", "cond": {"type": "year", "value": 2}},
+		{"id": "landmark", "name": "村の顔", "desc": "村の象徴を建てる", "cond": {"type": "counter", "name": "landmark", "count": 1}},
+		{"id": "mage", "name": "星の知恵", "desc": "魔法を唱える", "cond": {"type": "counter", "name": "magic", "count": 1}}
+	]
+}
