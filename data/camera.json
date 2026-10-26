@@ -1,0 +1,13 @@
+{
+	"min_distance": 12.0,
+	"max_distance": 180.0,
+	"start_distance": 60.0,
+	"min_pitch_degrees": 30.0,
+	"max_pitch_degrees": 75.0,
+	"start_pitch_degrees": 50.0,
+	"rotate_speed": 0.01,
+	"key_rotate_speed": 1.5,
+	"zoom_step": 1.15,
+	"pan_speed": 40.0,
+	"ground_clearance": 3.0
+}
