@@ -1,0 +1,99 @@
+{
+	"max_partners": 5,
+	"start_partners": 1,
+	"currency": "coin",
+	"default_sell_multiplier": 0.6,
+	"caravan_days": [
+		5.0,
+		7.0
+	],
+	"caravan_stay_minutes": 720.0,
+	"proposal_days": 3.0,
+	"proposal_bonus": 1.3,
+	"proposal_minutes": 1440.0,
+	"peddler_chance_per_day": 0.12,
+	"peddler_stay_minutes": 480.0,
+	"peddler_stock": {
+		"salt": 4,
+		"herb": 4,
+		"smoked_meat": 6,
+		"fur": 2
+	},
+	"peddler_markup": 1.4,
+	"merchant_discount": 0.9,
+	"reputation_price": {
+		"low": 1.2,
+		"high": 0.85
+	},
+	"partners": {
+		"wolfsbach": {
+			"name": "ヴォルフスバッハ村",
+			"travel_days": 1.0,
+			"buys": {
+				"fur": 1.3,
+				"plank": 1.1,
+				"meat": 1.2
+			},
+			"sells": {
+				"salt": 1.0,
+				"wool": 1.0,
+				"herb": 1.0,
+				"smoked_meat": 1.1
+			}
+		},
+		"eisenberg": {
+			"name": "アイゼンベルク鉱山町",
+			"travel_days": 2.0,
+			"buys": {
+				"bread": 1.4,
+				"cabbage": 1.3,
+				"smoked_meat": 1.3
+			},
+			"sells": {
+				"iron_ingot": 1.1,
+				"iron_ore": 1.0,
+				"coal": 1.0
+			}
+		},
+		"lindenhof": {
+			"name": "リンデンホーフ修道院",
+			"travel_days": 2.0,
+			"buys": {
+				"wool": 1.3,
+				"egg": 1.2,
+				"flour": 1.2
+			},
+			"sells": {
+				"herb": 0.9,
+				"medicine": 1.0,
+				"salt": 1.1
+			}
+		},
+		"seehafen": {
+			"name": "港町ゼーハーフェン",
+			"travel_days": 3.0,
+			"buys": {
+				"steel_ingot": 1.3,
+				"iron_ingot": 1.2,
+				"plank": 1.2
+			},
+			"sells": {
+				"salt": 0.8,
+				"mana_crystal": 1.4,
+				"wool": 1.0
+			}
+		},
+		"sternwald": {
+			"name": "星の森の魔術師たち",
+			"travel_days": 3.0,
+			"buys": {
+				"herb": 1.4,
+				"mana_crystal": 1.2
+			},
+			"sells": {
+				"mana_crystal": 1.2,
+				"magic_staff": 1.3
+			}
+		}
+	}
+}

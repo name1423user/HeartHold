@@ -3,7 +3,7 @@ extends CanvasLayer
 ## プレイ画面の UI。上部バー・中央上の警告マーク・左のアクティビティバーと開閉サイドバー(AC-008)、
 ## 一時停止メニュー、審査結果、ヒント、マウスを乗せたときの説明。
 
-const PANEL_KEYS: Array[String] = ["villagers", "orders", "build", "status"]
+const PANEL_KEYS: Array[String] = ["villagers", "orders", "build", "status", "trade"]
 
 var game: Game
 var root: Control
@@ -44,6 +44,7 @@ func setup(target: Game) -> void:
 	pause_menu.setup(game)
 	game.alerts.added.connect(_on_alert)
 	game.village.inspection.inspection_finished.connect(show_score)
+	(game.village.system("story") as Story).chapter_started.connect(show_story)
 	refresh_now()
 
 
@@ -93,7 +94,7 @@ func _build_sidebar() -> void:
 	sidebar_body = VBoxContainer.new()
 	sidebar_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(sidebar_body)
-	for panel: Control in [VillagersPanel.new(), OrdersPanel.new(), BuildPanel.new(), StatusPanel.new()]:
+	for panel: Control in [VillagersPanel.new(), OrdersPanel.new(), BuildPanel.new(), StatusPanel.new(), TradePanel.new()]:
 		panel.visible = false
 		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		sidebar_body.add_child(panel)
@@ -193,6 +194,8 @@ func refresh_tool() -> void:
 		text = Texts.t("tool_hint_" + game.tool)
 	elif game.tool.begins_with("build:"):
 		text = Texts.t("tool_hint_build", {"name": GameData.get_dict("buildings")[game.tool.get_slice(":", 1)]["name"]})
+	elif game.tool == "expedition" or game.tool == "farsight":
+		text = Texts.t("tool_hint_" + game.tool)
 	elif game.tool == "move":
 		var v: Villager = game.village.get_villager(game.selected_villager)
 		text = Texts.t("tool_hint_move", {"name": v.display_name if v != null else ""})
@@ -272,7 +275,47 @@ func show_score(result: Dictionary) -> void:
 	verdict.text = ScoreView.verdict_text(result)
 	verdict.add_theme_color_override("font_color", UiTheme.color("good") if result["passed"] else UiTheme.color("warning"))
 	box.add_child(verdict)
+	if game.village.inspection.pending.get("result", {}) == result:
+		# 双方向の審査: 合格者を迎えるか断るか
+		var hint := Label.new()
+		hint.text = Texts.t("decision_hint")
+		box.add_child(hint)
+		var row := HBoxContainer.new()
+		box.add_child(row)
+		for accept in [true, false]:
+			var choice := Button.new()
+			choice.text = Texts.t("welcome") if accept else Texts.t("refuse")
+			choice.pressed.connect(func() -> void:
+				game.village.inspection.decide(accept)
+				score_dialog.queue_free())
+			row.add_child(choice)
+		return
 	var close := Button.new()
 	close.text = Texts.t("close")
 	close.pressed.connect(func() -> void: score_dialog.queue_free())
+	box.add_child(close)
+
+
+## 物語の章(M10-T03)
+func show_story(chapter: Dictionary) -> void:
+	var dialog := PanelContainer.new()
+	dialog.set_anchors_preset(Control.PRESET_CENTER)
+	dialog.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	dialog.grow_vertical = Control.GROW_DIRECTION_BOTH
+	root.add_child(dialog)
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(460, 0)
+	dialog.add_child(box)
+	var title := Label.new()
+	title.text = str(chapter["title"])
+	title.add_theme_font_size_override("font_size", UiTheme.font_size(1.3))
+	box.add_child(title)
+	var text := Label.new()
+	text.text = str(chapter["text"])
+	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text.custom_minimum_size = Vector2(440, 0)
+	box.add_child(text)
+	var close := Button.new()
+	close.text = Texts.t("close")
+	close.pressed.connect(dialog.queue_free)
 	box.add_child(close)

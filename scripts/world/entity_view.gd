@@ -12,6 +12,8 @@ var _buildings: Dictionary = {}
 var _piles: Dictionary = {}
 var _ruins: Dictionary = {}
 var _applicant: Node3D
+var _caravan: Node3D
+var _nests: Dictionary = {}
 var _marks: MultiMeshInstance3D
 var _materials: Dictionary = {}
 var _meshes: Dictionary = {}
@@ -39,6 +41,8 @@ func update_view() -> void:
 	_sync_ruins()
 	_sync_applicant()
 	_sync_marks()
+	_sync_nests()
+	_sync_caravan()
 
 
 func surface(pos: Vector2) -> Vector3:
@@ -75,7 +79,8 @@ func _sync_monsters() -> void:
 		alive[m.id] = true
 		var node: Node3D = _monsters.get(m.id)
 		if node == null:
-			node = _figure(m.type, Vector3(0.7, 1.1, 0.7), _ui_color("entity_colors", "monster"), str(m.def()["name"]))
+			var color_key: String = m.type if GameData.get_dict("ui")["entity_colors"].has(m.type) else "monster"
+			node = _figure(m.type, Vector3(0.7, 1.1, 0.7), _ui_color("entity_colors", color_key), str(m.def()["name"]))
 			add_child(node)
 			_monsters[m.id] = node
 		_move(node, surface(m.pos))
@@ -173,6 +178,35 @@ func _sync_marks() -> void:
 	multimesh.instance_count = cells.size()
 	for i in cells.size():
 		multimesh.set_instance_transform(i, Transform3D(Basis(), cells[i] + Vector3(0, 1.5 if village.world.trees.has(Vector2i(floori(cells[i].x), floori(cells[i].z))) else 0.0, 0)))
+
+
+func _sync_nests() -> void:
+	var nests: Nests = village.system("nests") as Nests
+	for site: Dictionary in nests.sites:
+		var id: int = int(site["id"])
+		var node: Node3D = _nests.get(id)
+		if node == null:
+			node = _figure("", Vector3(2.0, 1.2, 2.0), _ui_color("entity_colors", "nest"), Texts.t("nest_label"))
+			add_child(node)
+			_nests[id] = node
+		node.position = surface(Vector2(site["cell"]) + Vector2(0.5, 0.5))
+		node.visible = village.fog.is_explored(site["cell"]) and not site["destroyed"]
+
+
+## 来ている定期便・行商人の荷車(村の入口あたり)
+func _sync_caravan() -> void:
+	var trade: Trade = village.system("trade") as Trade
+	if trade.visitor.is_empty():
+		if _caravan != null:
+			_caravan.visible = false
+		return
+	if _caravan == null:
+		_caravan = _figure("", Vector3(1.6, 1.2, 1.0), _ui_color("entity_colors", "caravan"), "")
+		add_child(_caravan)
+	_caravan.visible = true
+	_caravan.position = surface(Vector2(village.world.start) + Vector2(10.5, -6.5))
+	var name_text: String = Texts.t("peddler_name") if trade.visitor["partner"] == "peddler" else trade.partner_name(trade.visitor["partner"])
+	(_caravan.get_child(1) as Label3D).text = name_text
 
 
 func _remove_missing(nodes: Dictionary, alive: Dictionary) -> void:

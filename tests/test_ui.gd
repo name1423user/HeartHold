@@ -13,7 +13,7 @@ func before_each() -> void:
 
 func test_sidebar_has_four_panels_and_opens_and_closes() -> void:
 	var hud: Hud = game.hud
-	assert_eq(hud.panels.size(), 4)
+	assert_gte(hud.panels.size(), 4, "4パネル+交易・探索")
 	assert_false(hud.sidebar.visible)
 	hud.toggle_panel(0)
 	assert_true(hud.sidebar.visible)

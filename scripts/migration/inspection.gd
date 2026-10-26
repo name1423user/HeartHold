@@ -17,6 +17,10 @@ var accepted: Array = []
 var results: Array = []
 ## 今の希望者が見た建物の種類(順番どおり)
 var tour_log: Array = []
+## 合格者を迎えるか断るかをプレイヤーが選ぶ(双方向の審査 M10-T02)。画面のあるゲームでは true
+var require_decision: bool = false
+## 決めるのを待っている合格者: {"result", "until"}
+var pending: Dictionary = {}
 ## 襲撃中か(M3-T03 の RaidDirector が入れる)
 var is_raid_active: Callable = func() -> bool: return false
 
@@ -30,6 +34,11 @@ func _init(target: Village) -> void:
 func schedule_next() -> void:
 	var interval: Array = cfg["visit_interval_days"]
 	var days: float = village.rng.randf_range(float(interval[0]), float(interval[1]))
+	# 評判が高いほど早く来る
+	var rep: VillageSystem = village.system("reputation")
+	if rep != null:
+		var factor: Dictionary = cfg["reputation_interval"]
+		days *= lerpf(float(factor["low"]), float(factor["high"]), (rep as Reputation).value / 100.0)
 	next_visit_at = village.clock.minutes + days * GameClock.MINUTES_PER_DAY
 
 
@@ -44,6 +53,10 @@ func candidates() -> Array:
 
 
 func update(dt: float) -> void:
+	if not pending.is_empty():
+		if village.clock.minutes >= float(pending["until"]):
+			decide(true)
+		return
 	if current == null:
 		if village.clock.minutes >= next_visit_at:
 			arrive()
@@ -65,12 +78,27 @@ func update(dt: float) -> void:
 		finish()
 
 
+## 評判が高いほど、質のよい(quality の高い)希望者が来やすい
+func _pick(pool: Array) -> Dictionary:
+	var rep: float = (village.system("reputation") as Reputation).value if village.system("reputation") != null else 50.0
+	var weights: Array = pool.map(func(e: Dictionary) -> float: return 1.0 + (float(e.get("quality", 1)) - 1.0) * rep / 50.0)
+	var total: float = 0.0
+	for w: float in weights:
+		total += w
+	var roll: float = village.rng.randf() * total
+	for i in pool.size():
+		roll -= float(weights[i])
+		if roll <= 0.0:
+			return pool[i]
+	return pool[-1]
+
+
 func arrive() -> void:
 	var pool: Array = candidates()
 	if pool.is_empty():
 		schedule_next()
 		return
-	current = Applicant.from_data(pool[village.rng.randi_range(0, pool.size() - 1)])
+	current = Applicant.from_data(_pick(pool))
 	tour_log.clear()
 	current.body.place_at(_entry_cell())
 	phase = "walking"
@@ -109,6 +137,30 @@ func _entry_cell() -> Vector2i:
 func finish() -> void:
 	var result: Dictionary = ScoreCard.evaluate(village, current)
 	results.append(result)
+	if result["passed"] and require_decision:
+		pending = {"result": result, "until": village.clock.minutes + float(cfg["decision_minutes"])}
+		inspection_finished.emit(result)
+		return
+	_conclude(result)
+
+
+## 合格者を迎える(true)か断る(false)。断ると評判が下がり、その人は二度と来ない
+func decide(accept: bool) -> void:
+	if pending.is_empty():
+		return
+	var result: Dictionary = pending["result"]
+	pending = {}
+	if not accept:
+		rejected.append(current.id)
+		village.raise_alert("refused", Texts.t("alert_refused", {"name": current.display_name}), current.body.cell())
+		current = null
+		phase = ""
+		schedule_next()
+		return
+	_conclude(result, false)
+
+
+func _conclude(result: Dictionary, emit: bool = true) -> void:
 	if result["passed"]:
 		accepted.append(current.id)
 		var v: Villager = village.add_villager(current.display_name, current.body.cell())
@@ -121,11 +173,12 @@ func finish() -> void:
 	current = null
 	phase = ""
 	schedule_next()
-	inspection_finished.emit(result)
+	if emit:
+		inspection_finished.emit(result)
 
 
 func to_dict() -> Dictionary:
-	var data: Dictionary = {"next_visit_at": next_visit_at, "rejected": rejected.duplicate(), "accepted": accepted.duplicate(), "results": results.duplicate(true)}
+	var data: Dictionary = {"next_visit_at": next_visit_at, "rejected": rejected.duplicate(), "accepted": accepted.duplicate(), "results": results.duplicate(true), "pending": pending.duplicate(true)}
 	if current != null:
 		data["current"] = {"id": current.id, "pos": [current.body.pos.x, current.body.pos.y], "phase": phase}
 	return data
@@ -136,6 +189,7 @@ func from_dict(data: Dictionary) -> void:
 	rejected = (data["rejected"] as Array).duplicate()
 	accepted = (data["accepted"] as Array).duplicate()
 	results = (data.get("results", []) as Array).duplicate(true)
+	pending = (data.get("pending", {}) as Dictionary).duplicate(true)
 	current = null
 	if data.has("current"):
 		current = Applicant.from_data(Applicant.find(str(data["current"]["id"])))

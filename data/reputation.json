@@ -1,0 +1,11 @@
+{
+	"changes": {
+		"accepted": 3.0,
+		"rejected": -1.0,
+		"refused": -5.0,
+		"raid_end": 3.0,
+		"death": -3.0,
+		"level": 2.0,
+		"era": 5.0
+	}
+}

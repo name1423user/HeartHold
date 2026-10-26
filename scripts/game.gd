@@ -20,6 +20,8 @@ var audio: AudioDirector
 var tool: String = "select"
 var selected_villager: int = -1
 var selected_building: int = -1
+## 視察隊に入れる村人
+var expedition_members: Array = []
 var _drag_start: Variant = null
 var _viewer: VoxelViewer
 
@@ -79,6 +81,7 @@ func start(new_village: Village) -> void:
 	audio = AudioDirector.new()
 	add_child(audio)
 	audio.setup(village, alerts)
+	village.inspection.require_decision = true
 	hud = Hud.new()
 	add_child(hud)
 	hud.setup(self)
@@ -219,6 +222,25 @@ func _apply_tool(start: Vector2i, end: Vector2i) -> void:
 		hud.toast(Texts.t("build_planned", {"name": GameData.get_dict("buildings")[type]["name"]}) if result["ok"] else str(result["message"]))
 		if result["ok"] and not Input.is_key_pressed(KEY_SHIFT):
 			set_tool("select")
+	elif tool == "expedition":
+		var members: Array[Villager] = []
+		for id: int in expedition_members:
+			var member: Villager = village.get_villager(id)
+			if member != null:
+				members.append(member)
+		var sent: Dictionary = (village.system("expeditions") as Expeditions).send(members, end)
+		hud.toast(str(sent.get("message", "")) if not sent["ok"] else Texts.t("alert_expedition_sent", {"count": members.size()}))
+		if sent["ok"]:
+			expedition_members.clear()
+		set_tool("select")
+	elif tool == "farsight":
+		var mage: Villager = null
+		for v in village.living_villagers():
+			if Magic.is_mage(v):
+				mage = v
+		var cast: Dictionary = (village.system("magic") as Magic).cast(mage, "farsight", end) if mage != null else {"ok": false, "message": Texts.t("magic_not_mage")}
+		hud.toast(str(cast.get("message", "")))
+		set_tool("select")
 	elif tool == "move":
 		var v: Villager = village.get_villager(selected_villager)
 		if v == null:

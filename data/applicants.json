@@ -1,29 +1,237 @@
 {
-	"visit_interval_days": [5.0, 7.0],
+	"visit_interval_days": [
+		5.0,
+		7.0
+	],
 	"spawn_distance": 30,
 	"stop_minutes": 5.0,
-	"route": ["house", "storage", "infirmary"],
+	"route": [
+		"house",
+		"storage",
+		"infirmary"
+	],
 	"professions": {
-		"former_soldier": {"intro": "元兵士", "weights": {"food": 0.15, "housing": 0.15, "safety": 0.4, "facilities": 0.15, "satisfaction": 0.15}},
-		"travelling_cook": {"intro": "旅の料理人", "weights": {"food": 0.5, "housing": 0.2, "safety": 0.1, "facilities": 0.1, "satisfaction": 0.1}},
-		"carpenter": {"intro": "大工", "weights": {"food": 0.15, "housing": 0.35, "safety": 0.1, "facilities": 0.3, "satisfaction": 0.1}},
-		"herbalist": {"intro": "薬草師", "weights": {"food": 0.15, "housing": 0.15, "safety": 0.15, "facilities": 0.4, "satisfaction": 0.15}},
-		"minstrel": {"intro": "吟遊詩人", "weights": {"food": 0.15, "housing": 0.15, "safety": 0.1, "facilities": 0.2, "satisfaction": 0.4}},
-		"hunter": {"intro": "猟師", "weights": {"food": 0.35, "housing": 0.15, "safety": 0.3, "facilities": 0.1, "satisfaction": 0.1}},
-		"woodcutter": {"intro": "木こり", "weights": {"food": 0.3, "housing": 0.3, "safety": 0.15, "facilities": 0.1, "satisfaction": 0.15}}
+		"former_soldier": {
+			"intro": "元兵士",
+			"weights": {
+				"food": 0.15,
+				"housing": 0.15,
+				"safety": 0.4,
+				"facilities": 0.15,
+				"satisfaction": 0.15
+			}
+		},
+		"travelling_cook": {
+			"intro": "旅の料理人",
+			"weights": {
+				"food": 0.5,
+				"housing": 0.2,
+				"safety": 0.1,
+				"facilities": 0.1,
+				"satisfaction": 0.1
+			}
+		},
+		"carpenter": {
+			"intro": "大工",
+			"weights": {
+				"food": 0.15,
+				"housing": 0.35,
+				"safety": 0.1,
+				"facilities": 0.3,
+				"satisfaction": 0.1
+			}
+		},
+		"herbalist": {
+			"intro": "薬草師",
+			"weights": {
+				"food": 0.15,
+				"housing": 0.15,
+				"safety": 0.15,
+				"facilities": 0.4,
+				"satisfaction": 0.15
+			}
+		},
+		"minstrel": {
+			"intro": "吟遊詩人",
+			"weights": {
+				"food": 0.15,
+				"housing": 0.15,
+				"safety": 0.1,
+				"facilities": 0.2,
+				"satisfaction": 0.4
+			}
+		},
+		"hunter": {
+			"intro": "猟師",
+			"weights": {
+				"food": 0.35,
+				"housing": 0.15,
+				"safety": 0.3,
+				"facilities": 0.1,
+				"satisfaction": 0.1
+			}
+		},
+		"woodcutter": {
+			"intro": "木こり",
+			"weights": {
+				"food": 0.3,
+				"housing": 0.3,
+				"safety": 0.15,
+				"facilities": 0.1,
+				"satisfaction": 0.15
+			}
+		}
 	},
 	"applicants": [
-		{"id": "a01", "name": "ヴィルヘルム", "profession": "former_soldier", "personality": "無口だが頼りになる", "specialty": "spear_training"},
-		{"id": "a02", "name": "マルタ", "profession": "travelling_cook", "personality": "よく笑う働き者", "specialty": "good_cook"},
-		{"id": "a03", "name": "ベルント", "profession": "carpenter", "personality": "細かいことが気になる", "specialty": "master_builder"},
-		{"id": "a04", "name": "ヘレナ", "profession": "herbalist", "personality": "物静かで丁寧", "specialty": "good_cook"},
-		{"id": "a05", "name": "ディートリヒ", "profession": "minstrel", "personality": "陽気で話し好き", "specialty": "strong_back"},
-		{"id": "a06", "name": "ローザ", "profession": "hunter", "personality": "負けず嫌い", "specialty": "keen_hunter"},
-		{"id": "a07", "name": "コンラート", "profession": "woodcutter", "personality": "朝が早い", "specialty": "woodcutter"},
-		{"id": "a08", "name": "ゲルトルート", "profession": "carpenter", "personality": "面倒見がよい", "specialty": "master_builder"},
-		{"id": "a09", "name": "エーリヒ", "profession": "former_soldier", "personality": "少し短気", "specialty": "spear_training"},
-		{"id": "a10", "name": "アグネス", "profession": "travelling_cook", "personality": "食いしん坊", "specialty": "good_cook"},
-		{"id": "a11", "name": "ラインハルト", "profession": "woodcutter", "personality": "力自慢", "specialty": "strong_back"},
-		{"id": "a12", "name": "ミーナ", "profession": "minstrel", "personality": "夢見がち", "specialty": "woodcutter"}
-	]
+		{
+			"id": "a01",
+			"name": "ヴィルヘルム",
+			"profession": "former_soldier",
+			"personality": "無口だが頼りになる",
+			"specialty": "spear_training",
+			"quality": 2
+		},
+		{
+			"id": "a02",
+			"name": "マルタ",
+			"profession": "travelling_cook",
+			"personality": "よく笑う働き者",
+			"specialty": "good_cook",
+			"quality": 2
+		},
+		{
+			"id": "a03",
+			"name": "ベルント",
+			"profession": "carpenter",
+			"personality": "細かいことが気になる",
+			"specialty": "master_builder",
+			"quality": 3
+		},
+		{
+			"id": "a04",
+			"name": "ヘレナ",
+			"profession": "herbalist",
+			"personality": "物静かで丁寧",
+			"specialty": "good_cook",
+			"quality": 1
+		},
+		{
+			"id": "a05",
+			"name": "ディートリヒ",
+			"profession": "minstrel",
+			"personality": "陽気で話し好き",
+			"specialty": "strong_back",
+			"quality": 1
+		},
+		{
+			"id": "a06",
+			"name": "ローザ",
+			"profession": "hunter",
+			"personality": "負けず嫌い",
+			"specialty": "keen_hunter",
+			"quality": 2
+		},
+		{
+			"id": "a07",
+			"name": "コンラート",
+			"profession": "woodcutter",
+			"personality": "朝が早い",
+			"specialty": "woodcutter",
+			"quality": 1
+		},
+		{
+			"id": "a08",
+			"name": "ゲルトルート",
+			"profession": "carpenter",
+			"personality": "面倒見がよい",
+			"specialty": "master_builder",
+			"quality": 3
+		},
+		{
+			"id": "a09",
+			"name": "エーリヒ",
+			"profession": "former_soldier",
+			"personality": "少し短気",
+			"specialty": "spear_training",
+			"quality": 2
+		},
+		{
+			"id": "a10",
+			"name": "アグネス",
+			"profession": "travelling_cook",
+			"personality": "食いしん坊",
+			"specialty": "good_cook",
+			"quality": 1
+		},
+		{
+			"id": "a11",
+			"name": "ラインハルト",
+			"profession": "woodcutter",
+			"personality": "力自慢",
+			"specialty": "strong_back",
+			"quality": 2
+		},
+		{
+			"id": "a12",
+			"name": "ミーナ",
+			"profession": "minstrel",
+			"personality": "夢見がち",
+			"specialty": "woodcutter",
+			"quality": 1
+		},
+		{
+			"id": "a13",
+			"name": "レオポルト",
+			"profession": "carpenter",
+			"personality": "誰にでも丁寧",
+			"specialty": "master_builder",
+			"quality": 3
+		},
+		{
+			"id": "a14",
+			"name": "カタリーナ",
+			"profession": "herbalist",
+			"personality": "薬草の話が止まらない",
+			"specialty": "good_cook",
+			"quality": 2
+		},
+		{
+			"id": "a15",
+			"name": "ジークフリート",
+			"profession": "former_soldier",
+			"personality": "背が高く無口",
+			"specialty": "spear_training",
+			"quality": 3
+		},
+		{
+			"id": "a16",
+			"name": "エマ",
+			"profession": "hunter",
+			"personality": "森が好き",
+			"specialty": "keen_hunter",
+			"quality": 2
+		},
+		{
+			"id": "a17",
+			"name": "ヴァルター",
+			"profession": "woodcutter",
+			"personality": "歌いながら働く",
+			"specialty": "woodcutter",
+			"quality": 1
+		},
+		{
+			"id": "a18",
+			"name": "イザベラ",
+			"profession": "minstrel",
+			"personality": "笑顔を絶やさない",
+			"specialty": "strong_back",
+			"quality": 2
+		}
+	],
+	"reputation_interval": {
+		"low": 1.2,
+		"high": 0.8
+	},
+	"refuse_reputation": -5.0,
+	"decision_minutes": 60.0
 }

@@ -1,0 +1,12 @@
+{
+	"chapters": [
+		{"id": "arrival", "title": "第1章 霧の谷へ", "trigger": {"type": "day", "value": 1}, "text": "長い旅の末、村長エルンストと3人の仲間は霧に包まれた谷にたどり着いた。ここに新しい村を開こう。まずは雨風をしのぐ家と、物をしまう倉庫だ。"},
+		{"id": "first_house", "title": "第2章 最初の灯り", "trigger": {"type": "building", "value": "house"}, "text": "最初の家に灯りがともった。遠くの村にも、新しい村の噂が届き始めているらしい。", "unlock_partners": 0},
+		{"id": "first_settler", "title": "第3章 旅人を迎える", "trigger": {"type": "alert", "value": "accepted"}, "text": "初めて移住希望者を迎えた。審査に通る村であり続けることが、この谷で生きる道だ。"},
+		{"id": "first_raid", "title": "第4章 森の影", "trigger": {"type": "alert", "value": "raid_end"}, "text": "ゴブリンの群れを退けた。だが霧の奥には、魔物の巣があるらしい。いつか視察隊を送り、根を断たねば。"},
+		{"id": "iron_age", "title": "第5章 鉄の響き", "trigger": {"type": "era", "value": "iron"}, "text": "鍛冶の槌の音が谷に響く。鉄の道具は暮らしを変えた。山向こうの鉱山町アイゼンベルクから使いが来た。", "unlock_partners": 1},
+		{"id": "medieval", "title": "第6章 鐘の鳴る村", "trigger": {"type": "era", "value": "medieval"}, "text": "石の礼拝堂が建ち、祭りの歌が響く。村は町と呼ばれ始めた。修道院と港町からも便りが届く。", "unlock_partners": 2},
+		{"id": "magic", "title": "第7章 星の森の客人", "trigger": {"type": "building", "value": "mage_tower"}, "text": "魔術師の塔に星の森の使いが訪れた。魔素の結晶を求めているという。", "unlock_partners": 1},
+		{"id": "early_modern", "title": "終章 時を告げる塔", "trigger": {"type": "era", "value": "early_modern"}, "text": "霧の谷の村は、近隣に名の知れた町となった。開拓の物語はここで一区切り。だが暮らしは続いていく。"}
+	]
+}
