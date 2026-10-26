@@ -1,0 +1,5 @@
+{
+	"categories": {"food": "食料", "material": "資材", "equipment": "装備"},
+	"min_priority": 0,
+	"max_priority": 3
+}
