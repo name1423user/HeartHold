@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://c5wr7go6htjwa"
+path="res://.godot/imported/campfire.vox-ad53a00c1e35a6afb14b880ed0e59228.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/campfire.vox"
+dest_files=["res://.godot/imported/campfire.vox-ad53a00c1e35a6afb14b880ed0e59228.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

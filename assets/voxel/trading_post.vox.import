@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://cus4uxt77gmdk"
+path="res://.godot/imported/trading_post.vox-8166707e7e709f0c32d875538c77c25a.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/trading_post.vox"
+dest_files=["res://.godot/imported/trading_post.vox-8166707e7e709f0c32d875538c77c25a.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

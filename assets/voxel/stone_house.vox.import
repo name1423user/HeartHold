@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://cftewkhqgu17f"
+path="res://.godot/imported/stone_house.vox-1379595c0554bb2cadcd5675d26c8583.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/stone_house.vox"
+dest_files=["res://.godot/imported/stone_house.vox-1379595c0554bb2cadcd5675d26c8583.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

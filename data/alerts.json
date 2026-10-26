@@ -2,11 +2,113 @@
 	"dedupe_minutes": 30.0,
 	"max_history": 100,
 	"kinds": {
-		"raid": {"icon": "⚔", "sound": "raid"},
-		"applicant": {"icon": "✉", "sound": "applicant"},
-		"faint": {"icon": "✚", "sound": "faint"},
-		"hunger": {"icon": "🍖", "sound": "hunger"},
-		"death": {"icon": "✝", "sound": "death"},
-		"default": {"icon": "!", "sound": "notice"}
+		"raid": {
+			"icon": "⚔",
+			"sound": "raid"
+		},
+		"applicant": {
+			"icon": "✉",
+			"sound": "applicant"
+		},
+		"faint": {
+			"icon": "✚",
+			"sound": "faint"
+		},
+		"hunger": {
+			"icon": "🍖",
+			"sound": "hunger"
+		},
+		"death": {
+			"icon": "✝",
+			"sound": "death"
+		},
+		"default": {
+			"icon": "!",
+			"sound": "notice"
+		},
+		"disease": {
+			"icon": "✚",
+			"sound": "faint"
+		},
+		"damaged": {
+			"icon": "⚒",
+			"sound": "raid"
+		},
+		"destroyed": {
+			"icon": "⚒",
+			"sound": "raid"
+		},
+		"nest": {
+			"icon": "⚔",
+			"sound": "raid"
+		},
+		"stolen": {
+			"icon": "⚔",
+			"sound": "raid"
+		},
+		"caravan": {
+			"icon": "⚖",
+			"sound": "applicant"
+		},
+		"peddler": {
+			"icon": "⚖",
+			"sound": "applicant"
+		},
+		"proposal": {
+			"icon": "⚖",
+			"sound": "applicant"
+		},
+		"birth": {
+			"icon": "♥",
+			"sound": "build_done"
+		},
+		"era": {
+			"icon": "★",
+			"sound": "build_done"
+		},
+		"achievement": {
+			"icon": "★",
+			"sound": "build_done"
+		},
+		"level": {
+			"icon": "★",
+			"sound": "build_done"
+		},
+		"story": {
+			"icon": "✎",
+			"sound": "applicant"
+		},
+		"festival": {
+			"icon": "♪",
+			"sound": "build_done"
+		},
+		"feast": {
+			"icon": "♪",
+			"sound": "build_done"
+		},
+		"season": {
+			"icon": "☀",
+			"sound": "notice"
+		},
+		"crop_lost": {
+			"icon": "!",
+			"sound": "hunger"
+		},
+		"animal_died": {
+			"icon": "!",
+			"sound": "hunger"
+		},
+		"clue": {
+			"icon": "✉",
+			"sound": "applicant"
+		},
+		"expedition": {
+			"icon": "⚑",
+			"sound": "notice"
+		},
+		"expedition_back": {
+			"icon": "⚑",
+			"sound": "notice"
+		}
 	}
 }

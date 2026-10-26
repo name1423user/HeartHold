@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://v4103nq64j7t"
+path="res://.godot/imported/villager_smith.vox-53bb98ba6775cc7302382508e188b463.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_smith.vox"
+dest_files=["res://.godot/imported/villager_smith.vox-53bb98ba6775cc7302382508e188b463.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

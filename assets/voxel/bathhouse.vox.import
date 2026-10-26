@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://cf6lxijyceooq"
+path="res://.godot/imported/bathhouse.vox-cab71bc709f9beb015db066a36d19bfc.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/bathhouse.vox"
+dest_files=["res://.godot/imported/bathhouse.vox-cab71bc709f9beb015db066a36d19bfc.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

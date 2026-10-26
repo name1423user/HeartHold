@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://ce7g75gcx36al"
+path="res://.godot/imported/windmill.vox-97bdc423ae57d00ec2ddd00b23fc4f12.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/windmill.vox"
+dest_files=["res://.godot/imported/windmill.vox-97bdc423ae57d00ec2ddd00b23fc4f12.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

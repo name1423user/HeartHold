@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bskrej4yctefl"
+path="res://.godot/imported/villager_farmer.vox-3a7fe31ff9b8dee5b197e292e691cacd.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_farmer.vox"
+dest_files=["res://.godot/imported/villager_farmer.vox-3a7fe31ff9b8dee5b197e292e691cacd.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

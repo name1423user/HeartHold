@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bena5bnu4lmap"
+path="res://.godot/imported/troll.vox-1e8152ed2d798cb13b8b3fb0527f4061.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/troll.vox"
+dest_files=["res://.godot/imported/troll.vox-1e8152ed2d798cb13b8b3fb0527f4061.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

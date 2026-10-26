@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://c5m2ylcvhu1v4"
+path="res://.godot/imported/spike_trap.vox-6f1d0d6b875338209c8b265bcd164e62.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/spike_trap.vox"
+dest_files=["res://.godot/imported/spike_trap.vox-6f1d0d6b875338209c8b265bcd164e62.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

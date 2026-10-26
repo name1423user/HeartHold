@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://ct551eonn8gs3"
+path="res://.godot/imported/field.vox-52b41eb9ad2fd04a93df9b7c1feb2031.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/field.vox"
+dest_files=["res://.godot/imported/field.vox-52b41eb9ad2fd04a93df9b7c1feb2031.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

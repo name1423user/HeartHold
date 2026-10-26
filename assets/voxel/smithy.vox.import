@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://deji63kw55dm0"
+path="res://.godot/imported/smithy.vox-89fc8e258c72580a9e9cc487b1b12389.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/smithy.vox"
+dest_files=["res://.godot/imported/smithy.vox-89fc8e258c72580a9e9cc487b1b12389.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

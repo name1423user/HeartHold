@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://ckftj8a1eyuis"
+path="res://.godot/imported/mage_tower.vox-8e5d671eabd07882dda74e81c8c3a07d.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/mage_tower.vox"
+dest_files=["res://.godot/imported/mage_tower.vox-8e5d671eabd07882dda74e81c8c3a07d.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

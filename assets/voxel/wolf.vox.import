@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://c84ir7xc2iohv"
+path="res://.godot/imported/wolf.vox-2cf54646462b36316e9cc4c2f5589790.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/wolf.vox"
+dest_files=["res://.godot/imported/wolf.vox-2cf54646462b36316e9cc4c2f5589790.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

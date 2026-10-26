@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://b7jr2lioscje6"
+path="res://.godot/imported/bandit.vox-8aa4d3059bc37fe12a9e25515e372405.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/bandit.vox"
+dest_files=["res://.godot/imported/bandit.vox-8aa4d3059bc37fe12a9e25515e372405.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

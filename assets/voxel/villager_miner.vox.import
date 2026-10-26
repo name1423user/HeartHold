@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bcw7g8akq7kb3"
+path="res://.godot/imported/villager_miner.vox-8eb0c1f1b5a010eb6200ddbf7989360d.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_miner.vox"
+dest_files=["res://.godot/imported/villager_miner.vox-8eb0c1f1b5a010eb6200ddbf7989360d.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

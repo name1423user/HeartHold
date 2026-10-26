@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://dttyqmp4yvy1k"
+path="res://.godot/imported/villager_herder.vox-b4e94cd96b987a183c0cc51fae1bbe00.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_herder.vox"
+dest_files=["res://.godot/imported/villager_herder.vox-b4e94cd96b987a183c0cc51fae1bbe00.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

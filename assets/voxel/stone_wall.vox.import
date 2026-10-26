@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://dypwmcah0pi6c"
+path="res://.godot/imported/stone_wall.vox-677c2045e790eac44fb2b6d7712db62b.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/stone_wall.vox"
+dest_files=["res://.godot/imported/stone_wall.vox-677c2045e790eac44fb2b6d7712db62b.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

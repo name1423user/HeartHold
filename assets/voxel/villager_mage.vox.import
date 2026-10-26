@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bls7ttpi3w56s"
+path="res://.godot/imported/villager_mage.vox-cd3113f549c0fb44643b09f091e6a4de.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/villager_mage.vox"
+dest_files=["res://.godot/imported/villager_mage.vox-cd3113f549c0fb44643b09f091e6a4de.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

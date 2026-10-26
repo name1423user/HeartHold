@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bcnhejdh4c1qg"
+path="res://.godot/imported/chapel.vox-6aa2fc7e1703e2c1f681eed1d828343d.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/chapel.vox"
+dest_files=["res://.godot/imported/chapel.vox-6aa2fc7e1703e2c1f681eed1d828343d.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

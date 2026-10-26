@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bjsr7p06tgbij"
+path="res://.godot/imported/pit_trap.vox-e8c3459e5ab49f632331b8d7742d8ee8.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/pit_trap.vox"
+dest_files=["res://.godot/imported/pit_trap.vox-e8c3459e5ab49f632331b8d7742d8ee8.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://bpwgld711ev5n"
+path="res://.godot/imported/charcoal_kiln.vox-4502778f050dd87ada12890d06ea0daf.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/charcoal_kiln.vox"
+dest_files=["res://.godot/imported/charcoal_kiln.vox-4502778f050dd87ada12890d06ea0daf.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

@@ -1,0 +1,17 @@
+[remap]
+
+importer="VoxelVoxSceneImporter"
+type="PackedScene"
+uid="uid://ohcls0dvgf74"
+path="res://.godot/imported/fort.vox-8567a925801cdc31d5f1411582d37e33.tscn"
+
+[deps]
+
+source_file="res://assets/voxel/fort.vox"
+dest_files=["res://.godot/imported/fort.vox-8567a925801cdc31d5f1411582d37e33.tscn"]
+
+[params]
+
+store_colors_in_texture=false
+scale=0.1
+enable_baked_lighting=true

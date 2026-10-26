@@ -236,6 +236,151 @@ def ruin():
     return m
 
 
+def quad(name_color, legs="#5a5a5a"):
+    """四つ足の獣(狼)"""
+    m = Model(10, 4, 7)
+    body = name_color
+    m.box(1, 0, 3, 8, 3, 5, body)
+    for x in (1, 7):
+        for y in (0, 3):
+            m.box(x, y, 0, x + 1, y, 2, legs)
+    m.box(8, 0, 5, 9, 3, 6, body)
+    m.box(9, 1, 6, 9, 2, 6, "#2a2a2a")
+    m.box(0, 1, 5, 0, 2, 6, body)
+    return m
+
+
+def troll():
+    m = Model(10, 6, 22)
+    skin = "#4f6a3a"
+    m.box(2, 1, 0, 3, 4, 6, skin)
+    m.box(6, 1, 0, 7, 4, 6, skin)
+    m.box(1, 0, 7, 8, 5, 15, "#6b5a3a")
+    m.box(0, 1, 9, 0, 4, 16, skin)
+    m.box(9, 1, 9, 9, 4, 16, skin)
+    m.box(2, 0, 16, 7, 5, 21, skin)
+    m.box(3, 0, 18, 3, 0, 18, "#d9d020")
+    m.box(6, 0, 18, 6, 0, 18, "#d9d020")
+    return m
+
+
+def generic_building(w, d, wall_h, wall, roof, door="#5a3a1a", chimney=None, roof_h=None):
+    """w×d ボクセル(0.1ブロック単位)の家型"""
+    m = Model(w, d, wall_h + (roof_h or d // 2) + 2)
+    m.box(0, 0, 0, w - 1, d - 1, 1, "#8a8780")
+    m.box(1, 1, 2, w - 2, d - 2, wall_h, wall)
+    m.clear(3, 3, 2, w - 4, d - 4, wall_h)
+    m.box(w // 2 - 2, 0, 2, w // 2 + 1, 1, min(wall_h, 9), door)
+    rh = roof_h or d // 2
+    for z in range(rh):
+        m.box(0, z, wall_h + 1 + z, w - 1, z, wall_h + 1 + z, roof)
+        m.box(0, d - 1 - z, wall_h + 1 + z, w - 1, d - 1 - z, wall_h + 1 + z, roof)
+    m.box(0, rh, wall_h + rh, w - 1, d - 1 - rh, wall_h + rh, roof)
+    if chimney:
+        m.box(w - 6, d // 2, wall_h, w - 4, d // 2 + 2, wall_h + rh + 2, chimney)
+    return m
+
+
+def tower(w, h, wall, roof, top_ring=None):
+    m = Model(w, w, h + w // 2 + 1)
+    m.box(1, 1, 0, w - 2, w - 2, h, wall)
+    m.clear(3, 3, 1, w - 4, w - 4, h - 1)
+    if top_ring:
+        m.box(0, 0, h - 2, w - 1, w - 1, h - 1, top_ring)
+    for z in range(w // 2):
+        m.box(z, z, h + 1 + z, w - 1 - z, w - 1 - z, h + 1 + z, roof)
+    return m
+
+
+def windmill():
+    m = tower(16, 40, "#d8c8a8", "#7a4e2a")
+    for i in range(14):
+        m.box(7 - i // 2, 0, 30 + i, 8 - i // 2, 0, 30 + i, "#efe2c4")
+        m.box(8 + i // 2, 0, 30 + i, 9 + i // 2, 0, 30 + i, "#efe2c4")
+    return m
+
+
+def flat(w, d, color, dots=None):
+    m = Model(w, d, 3)
+    m.box(0, 0, 0, w - 1, d - 1, 0, color)
+    if dots:
+        for x in range(1, w - 1, 4):
+            for y in range(1, d - 1, 4):
+                m.box(x, y, 1, x, y, 2, dots)
+    return m
+
+
+def campfire():
+    m = Model(10, 10, 6)
+    m.box(1, 1, 0, 8, 8, 0, "#8a8780")
+    m.box(3, 3, 1, 6, 6, 1, "#6e4b2a")
+    m.box(4, 4, 2, 5, 5, 4, "#e0782a")
+    m.box(4, 4, 5, 5, 5, 5, "#f2c040")
+    return m
+
+
+def well():
+    m = Model(10, 10, 14)
+    m.box(1, 1, 0, 8, 8, 5, "#8a8780")
+    m.clear(3, 3, 1, 6, 6, 5)
+    m.box(1, 4, 6, 1, 5, 11, "#6e4b2a")
+    m.box(8, 4, 6, 8, 5, 11, "#6e4b2a")
+    m.box(0, 3, 12, 9, 6, 13, "#9c4a2f")
+    return m
+
+
+def wall(color):
+    m = Model(10, 10, 20)
+    m.box(0, 0, 0, 9, 9, 17, color)
+    for x in (0, 4, 8):
+        m.box(x, 0, 18, x + 1, 9, 19, color)
+    return m
+
+
+def gate():
+    m = Model(10, 10, 25)
+    m.box(0, 0, 0, 1, 9, 24, "#6e4b2a")
+    m.box(8, 0, 0, 9, 9, 24, "#6e4b2a")
+    m.box(0, 3, 20, 9, 6, 24, "#6e4b2a")
+    m.box(2, 4, 0, 7, 5, 18, "#a8763f")
+    return m
+
+
+def trap(spikes):
+    m = Model(10, 10, 4)
+    m.box(0, 0, 0, 9, 9, 0, "#5a3a1a" if spikes else "#3a2a1a")
+    if spikes:
+        for x in range(1, 9, 3):
+            for y in range(1, 9, 3):
+                m.box(x, y, 1, x, y, 3, "#a8763f")
+    return m
+
+
+def chapel():
+    m = generic_building(40, 50, 26, "#e0d8c8", "#5a5a6a")
+    m.size = (40, 50, 60)
+    m.box(16, 0, 26, 23, 7, 50, "#e0d8c8")
+    m.box(15, 0, 51, 24, 8, 52, "#5a5a6a")
+    m.box(19, 0, 53, 20, 1, 59, "#d9a32b")
+    m.box(17, 0, 56, 22, 1, 57, "#d9a32b")
+    return m
+
+
+def monument():
+    m = Model(20, 20, 40)
+    m.box(0, 0, 0, 19, 19, 3, "#8a8780")
+    m.box(6, 6, 4, 13, 13, 25, "#c9c2b0")
+    m.box(8, 8, 26, 11, 11, 36, "#d9a32b")
+    return m
+
+
+def clock_tower():
+    m = tower(20, 100, "#b0a890", "#5a4a3a")
+    m.box(6, 0, 80, 13, 0, 87, "#efe2c4")
+    m.box(9, 0, 83, 10, 0, 86, "#2a2a2a")
+    return m
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     shirts = {"gatherer": "#c9a14a", "builder": "#b5652b", "hunter": "#4f7a3a", "guard": "#45618c"}
@@ -253,6 +398,43 @@ def main():
     fence().save("fence")
     watchtower().save("watchtower")
     ruin().save("ruin")
+    quad("#6e6e6e").save("wolf")
+    person("#5a3a2a", hat="#2a2a2a", cape="#3a2a1a").save("bandit")
+    troll().save("troll")
+    person("#6b4f9a", hat="#3a2a6a", cape="#4a3a8a").save("villager_mage")
+    person("#7a6a3a").save("villager_farmer")
+    person("#9a8a6a").save("villager_herder")
+    person("#4a4a4a", hat="#8a8780").save("villager_miner")
+    person("#8a3a2a").save("villager_smith")
+    person("#b08a4a", hat="#6e4b2a").save("villager_merchant")
+    campfire().save("campfire")
+    well().save("well")
+    generic_building(30, 30, 12, "#7a5a3a", "#5a3a1a").save("hunting_lodge")
+    generic_building(30, 30, 14, "#6b6b6b", "#3a3a3a", chimney="#4a4a4a").save("smithy")
+    generic_building(20, 20, 10, "#5a4a3a", "#3a2a1a", chimney="#2e2e2e").save("charcoal_kiln")
+    generic_building(30, 30, 10, "#5a5048", "#3a3028").save("mine")
+    generic_building(20, 20, 12, "#7a5a3a", "#4a3a2a", chimney="#5a5a5a").save("smokehouse")
+    generic_building(30, 30, 16, "#a8a39a", "#5a5a6a", chimney="#8a8780").save("stone_house")
+    generic_building(40, 40, 18, "#9c6b3c", "#7a3a2a").save("tavern")
+    generic_building(40, 30, 14, "#b8c8d0", "#5a6a7a").save("bathhouse")
+    generic_building(30, 30, 16, "#8a6a4a", "#5a3a2a").save("watermill")
+    generic_building(40, 30, 16, "#7d6a5a", "#4a3a2a").save("barracks")
+    generic_building(30, 30, 14, "#b08a4a", "#7a4e2a").save("trading_post")
+    generic_building(40, 40, 10, "#c09050", "#9c4a2f").save("market")
+    generic_building(40, 30, 18, "#a87a5a", "#5a4a3a").save("school")
+    generic_building(50, 50, 30, "#6a6a6a", "#4a4a4a").save("fort")
+    generic_building(30, 30, 18, "#6a4a9a", "#3a2a5a").save("magic_lab")
+    generic_building(40, 30, 16, "#9c4a2f", "#5a3a1a").save("barn")
+    tower(30, 80, "#5a4a8a", "#2a1a5a", top_ring="#d9a32b").save("mage_tower")
+    windmill().save("windmill")
+    chapel().save("chapel")
+    monument().save("village_monument")
+    clock_tower().save("clock_tower")
+    wall("#8a8780").save("stone_wall")
+    gate().save("gate")
+    trap(True).save("spike_trap")
+    trap(False).save("pit_trap")
+    flat(40, 40, "#7a5a2a", dots="#9aa040").save("field")
 
 
 if __name__ == "__main__":
