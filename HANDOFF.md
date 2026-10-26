@@ -1,6 +1,6 @@
 # HANDOFF — Hearthold
 
-最終更新: 2026-10-26 17:19 JST(毎ターン更新して push する)
+最終更新: 2026-10-26 17:21 JST(毎ターン更新して push する)
 
 ## 現在のタスク
 - M1-T01 プロジェクトの初期設定(完了)
@@ -10,19 +10,17 @@
   - SPEC.md(AS-011、8章、決定ログ)、CLAUDE.md、PLAN.md の 4.6/1.6 表記を更新
 - SPEC 11章のディレクトリを作成(空のものは .gitkeep)
 - `project.godot`(features 4.7、GUTプラグイン有効)、`addons/gut/`(9.7.1)、`tests/test_smoke.gd`、`.gitignore`、`LICENSE`(MIT)、`README.md`(バージョン表)
-- 作業ブランチ `m1-t01` で作業(SPEC 11章「main + 作業ブランチ」)
+- 作業ブランチ `m1-t01` で作業し、ユーザーの指示で main へ早送りマージ
+- LICENSE の著作権者名を ruria1024 に変更(ユーザー指示)
 
 ## 次にやること
-- `m1-t01` を main へマージするか、ユーザーに確認(PRはまだ作っていない)
-- その後 M1-T02(シード付き地形生成)。M1-T02 から Voxel Tools 1.7 のカスタムビルドが必要
+- M1-T02(シード付き地形生成)。M1-T02 から Voxel Tools 1.7 のカスタムビルドが必要
 
 ## 検証結果
 - テスト(公式 Godot 4.7.2-stable linux、SHA-512一致を確認して使用): 1/1 passed、exit 0
 - Voxel Tools 入りのカスタムビルドではまだ実行していない(このコンテナでは取得していない。M1-T01 はボクセル機能を使わない)
 
 ## 未解決・ユーザーへの質問
-- `m1-t01` を main にマージしてよいか(PRを作るか、直接マージか)
-- LICENSE の著作権者名を `name1423user` にした。別の名前がよければ指示を
 - FIRST_PROMPT.md は当時の指示として 4.6/1.6 表記のまま残した
 - BUILDINGS.md の「推奨」ラベルの建物の承認(前回から継続)
 
