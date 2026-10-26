@@ -51,5 +51,6 @@
 		"max_distance": 50
 	},
 	"tree_color": "#2f5d2a",
-	"max_dig_depth": 4
+	"max_dig_depth": 4,
+	"max_step": 1
 }
