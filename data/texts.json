@@ -30,5 +30,7 @@
 	"chief_policy_once_a_day": "方針の変更はゲーム内1日に1回までです",
 	"order_chief": "村長には命令できません",
 	"alert_raid_tower": "見張り台が魔物を見つけました",
-	"tower_guard_only": "見張り台には衛兵だけを置けます"
+	"tower_guard_only": "見張り台には衛兵だけを置けます",
+	"alert_ruin_found": "遺跡の跡を見つけました",
+	"alert_ruin_looted": "遺跡の跡から資源を持ち帰れます"
 }

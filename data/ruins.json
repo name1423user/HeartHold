@@ -1,0 +1,12 @@
+{
+	"count": [3, 5],
+	"min_distance": 40,
+	"investigate_minutes": 15.0,
+	"rewards": [
+		{"stone": 12, "plank": 8},
+		{"meal": 8, "fur": 3},
+		{"stone_axe": 1, "plank": 6},
+		{"stone_pickaxe": 1, "log": 8},
+		{"sling": 1, "meal": 4}
+	]
+}

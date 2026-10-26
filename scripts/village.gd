@@ -38,6 +38,7 @@ var raids: RaidDirector
 var raid_alarm: bool = false
 var chief: Chief
 var fog: Fog
+var ruins: Ruins
 
 
 func _init(target: WorldData) -> void:
@@ -57,6 +58,7 @@ func _init(target: WorldData) -> void:
 	inspection.is_raid_active = func() -> bool: return raids.active
 	chief = Chief.new(self)
 	fog = Fog.new(self)
+	ruins = Ruins.new(self)
 
 
 static func create(seed: int) -> Village:
@@ -128,6 +130,7 @@ func _before_villagers(dt: float) -> void:
 
 func _after_villagers(dt: float) -> void:
 	fog.update(dt)
+	ruins.update()
 
 
 func _update_villager(v: Villager, dt: float) -> void:
@@ -671,6 +674,8 @@ func _complete_task_extra(v: Villager, task: JobTask) -> void:
 			wear_tool(v, task_skill(task))
 		"fixture":
 			BuildingFixture.complete(self, task)
+		"investigate":
+			ruins.loot(int(task.extra["ruin"]), v.cell())
 		"build":
 			var b: Building = buildings.get(task.building_id) as Building
 			if b != null:

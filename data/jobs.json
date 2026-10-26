@@ -1,7 +1,35 @@
 {
-	"gatherer": {"name": "採集係", "priority": ["chop", "dig"]},
-	"builder": {"name": "建築係", "priority": ["build", "fixture"]},
-	"hunter": {"name": "狩人", "priority": ["hunt", "butcher"]},
-	"guard": {"name": "衛兵", "priority": []},
-	"shared": ["build", "fixture", "craft", "chop", "dig"]
+	"gatherer": {
+		"name": "採集係",
+		"priority": [
+			"chop",
+			"dig"
+		]
+	},
+	"builder": {
+		"name": "建築係",
+		"priority": [
+			"build",
+			"fixture"
+		]
+	},
+	"hunter": {
+		"name": "狩人",
+		"priority": [
+			"hunt",
+			"butcher"
+		]
+	},
+	"guard": {
+		"name": "衛兵",
+		"priority": []
+	},
+	"shared": [
+		"build",
+		"fixture",
+		"craft",
+		"investigate",
+		"chop",
+		"dig"
+	]
 }
