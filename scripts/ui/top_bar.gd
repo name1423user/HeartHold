@@ -35,6 +35,7 @@ static func text_for(target: Game) -> String:
 		parts.append("%s%d" % [village.item_def(item)["name"], village.stock_count(item)])
 	parts.append(Texts.t("food_days", {"days": FoodStock.days_left(village)}))
 	parts.append(village.clock.label())
+	parts.append(village.calendar().label())
 	if village.clock.paused:
 		parts.append(Texts.t("paused_label"))
 	return "   ".join(parts)

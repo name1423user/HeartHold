@@ -44,6 +44,9 @@ var ruins: Ruins
 var level: VillageLevel
 ## ロードしたセーブの画面側の状態(ヒントの段階など)
 var loaded_extra: Dictionary = {}
+## 後から足した仕組み(VillageSystem)。名前 -> 仕組み。順番は systems_order
+var systems: Dictionary = {}
+var systems_order: Array[VillageSystem] = []
 
 
 func _init(target: WorldData) -> void:
@@ -65,6 +68,25 @@ func _init(target: WorldData) -> void:
 	fog = Fog.new(self)
 	ruins = Ruins.new(self)
 	level = VillageLevel.new(self)
+	speed_modifiers.append(_system_speed)
+	for system_class: GDScript in SystemRegistry.classes():
+		add_system(system_class.new(self))
+
+
+func add_system(system: VillageSystem) -> void:
+	systems[system.key()] = system
+	systems_order.append(system)
+
+
+func system(key: String) -> VillageSystem:
+	return systems.get(key) as VillageSystem
+
+
+func _system_speed(v: Villager, kind: String) -> float:
+	var speed: float = 1.0
+	for s in systems_order:
+		speed *= s.work_speed(v, kind)
+	return speed
 
 
 static func create(seed: int) -> Village:
@@ -96,6 +118,8 @@ func dispose() -> void:
 	fog = null
 	ruins = null
 	level = null
+	systems.clear()
+	systems_order.clear()
 
 
 # --- 村人 ---------------------------------------------------------------
@@ -162,6 +186,8 @@ func _before_villagers(dt: float) -> void:
 
 
 func _after_villagers(dt: float) -> void:
+	for s in systems_order:
+		s.update(dt)
 	fog.update(dt)
 	ruins.update()
 	level.update()
@@ -189,6 +215,10 @@ func _update_villager(v: Villager, dt: float) -> void:
 		_update_incapacitated(v, dt)
 		return
 	v.needs.tick(dt, v.sleeping, _sleep_multiplier(v), mood_rate(v))
+	for s in systems_order:
+		s.update_villager(v, dt)
+	if v.state != Villager.State.NORMAL:
+		return
 	if v.needs.get_value("health") <= 0.0:
 		knock_out(v)
 		return
@@ -217,6 +247,17 @@ func damage_villager(v: Villager, amount: float) -> void:
 		knock_out(v)
 
 
+## 屋内にいるか(寝ている・避難している・治療中)
+func is_indoors(v: Villager) -> bool:
+	if v.state == Villager.State.IN_TREATMENT:
+		return true
+	return (v.sleeping and int(v.plan[0].get("building", -1)) != -1 if not v.plan.is_empty() else false) or is_sheltered(v)
+
+
+func calendar() -> Calendar:
+	return system("calendar") as Calendar
+
+
 ## 家や救護室に避難して、魔物に狙われない状態か(M3-T04)
 func is_sheltered(v: Villager) -> bool:
 	return v.plan_kind == "shelter" and not v.plan.is_empty() and str(v.plan[0]["op"]) == "wait"
@@ -236,17 +277,37 @@ func _choose_plan(v: Villager) -> void:
 		return
 	if _choose_rescue_plan(v):
 		return
+	if _choose_system_plan(v, "urgent"):
+		return
 	if _choose_need_plan(v):
+		return
+	if _choose_system_plan(v, "need"):
 		return
 	if _choose_equipment_plan(v):
 		return
 	if _choose_post_plan(v):
 		return
+	if _choose_system_plan(v, "work"):
+		return
 	if _choose_task_plan(v):
+		return
+	if _choose_system_plan(v, "idle"):
 		return
 	if _choose_haul_plan(v):
 		return
 	_set_plan(v, "idle", [{"op": "wander"}, {"op": "wait", "minutes": 10.0}])
+
+
+func _choose_system_plan(v: Villager, stage: String) -> bool:
+	for s in systems_order:
+		if s.plan_stage == stage and s.choose_plan(v):
+			return true
+	return false
+
+
+## 仕組みが plan を決めるときに使う
+func set_plan(v: Villager, kind: String, steps: Array[Dictionary]) -> void:
+	_set_plan(v, kind, steps)
 
 
 ## 倒れた人がいれば最優先で救護室へ運ぶ
@@ -416,7 +477,11 @@ func task_types_for(v: Villager) -> Array:
 	return types
 
 
-func plan_for_task(_v: Villager, task: JobTask) -> Array[Dictionary]:
+func plan_for_task(v: Villager, task: JobTask) -> Array[Dictionary]:
+	for s in systems_order:
+		var steps: Array[Dictionary] = s.plan_for_task(v, task)
+		if not steps.is_empty():
+			return steps
 	match task.type:
 		"chop":
 			return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
@@ -560,6 +625,10 @@ func _execute(v: Villager, step: Dictionary, budget: float) -> float:
 
 ## そのほかの手順(狩り・戦い・運ぶ人を担ぐ など)
 func _execute_extra(v: Villager, step: Dictionary, budget: float) -> float:
+	for s in systems_order:
+		var used: float = s.execute_step(v, step, budget)
+		if not is_nan(used):
+			return used
 	match str(step["op"]):
 		"pickup":
 			HealthState.step_pickup(self, v)
@@ -719,6 +788,9 @@ func _complete_task(v: Villager, task: JobTask) -> void:
 
 ## 建設・加工・狩りなどの完了処理
 func _complete_task_extra(v: Villager, task: JobTask) -> void:
+	for s in systems_order:
+		if s.complete_task(v, task):
+			return
 	match task.type:
 		"craft":
 			Crafting.complete(self, v, task)
@@ -862,6 +934,10 @@ func _step_supply(v: Villager) -> void:
 
 ## 仕事ごとの素材置き場と不足
 func supply_site(task: JobTask) -> Dictionary:
+	for s in systems_order:
+		var site: Dictionary = s.supply_site(task)
+		if not site.is_empty():
+			return site
 	match task.type:
 		"craft":
 			return Crafting.supply_site(self, task)
@@ -970,6 +1046,8 @@ func plan_building_checked(type: String, cell: Vector2i, village_level: int) -> 
 func _on_building_completed(b: Building) -> void:
 	b.short = false
 	BuildingFixture.install_initial(b)
+	for s in systems_order:
+		s.on_building_completed(b)
 	if b.def().has("residents"):
 		assign_homes()
 
@@ -1170,6 +1248,8 @@ func mood_rate(v: Villager) -> float:
 	var home: Building = buildings.get(v.home_id) as Building
 	if home != null and home.is_complete():
 		rate += BuildingFixture.sum_effect(home, "mood_rate_bonus")
+	for s in systems_order:
+		rate *= s.mood_rate(v)
 	return rate * chief.mood_rate()
 
 

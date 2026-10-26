@@ -69,6 +69,7 @@ func start(new_village: Village) -> void:
 	env.environment.ambient_light_color = Color("#f2e4c2")
 	env.environment.ambient_light_energy = 0.5
 	add_child(env)
+	_setup_weather()
 	alerts = AlertLog.new(village)
 	level = village.level
 	hints = Hints.new(village)
@@ -91,6 +92,47 @@ func _process(delta: float) -> void:
 	hints.update()
 	entities.update_view()
 	_viewer.position = camera.position
+	_rain.position = camera.position + Vector3(0, 25, 0)
+
+
+var _rain: GPUParticles3D
+
+
+## 冬の雪と、雨・雪の粒(カメラのまわりに降らせる)
+func _setup_weather() -> void:
+	var cal: Calendar = village.calendar()
+	_rain = GPUParticles3D.new()
+	_rain.amount = 800
+	_rain.lifetime = 1.5
+	_rain.visibility_aabb = AABB(Vector3(-40, -40, -40), Vector3(80, 80, 80))
+	var process := ParticleProcessMaterial.new()
+	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	process.emission_box_extents = Vector3(35, 1, 35)
+	process.direction = Vector3(0, -1, 0)
+	process.initial_velocity_min = 18.0
+	process.initial_velocity_max = 22.0
+	process.gravity = Vector3(0, -9.8, 0)
+	_rain.process_material = process
+	var drop := BoxMesh.new()
+	drop.size = Vector3(0.03, 0.4, 0.03)
+	var drop_material := StandardMaterial3D.new()
+	drop_material.albedo_color = Color(0.75, 0.82, 0.95, 0.6)
+	drop_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	drop.material = drop_material
+	_rain.draw_pass_1 = drop
+	add_child(_rain)
+	cal.weather_changed.connect(func(_w: String) -> void: _apply_weather())
+	cal.season_changed.connect(func(_s: String) -> void: _apply_weather())
+	_apply_weather()
+
+
+func _apply_weather() -> void:
+	var cal: Calendar = village.calendar()
+	world_view.set_snow(1.0 if cal.season_id() == "winter" else 0.0)
+	_rain.emitting = cal.weather in ["rain", "storm", "snow"]
+	var process := _rain.process_material as ParticleProcessMaterial
+	process.initial_velocity_min = 3.0 if cal.weather == "snow" else 18.0
+	process.initial_velocity_max = 4.0 if cal.weather == "snow" else 22.0
 
 
 func load_save(save_name: String) -> void:

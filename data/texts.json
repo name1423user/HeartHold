@@ -168,5 +168,7 @@
 	"title_seed": "シード",
 	"game_title": "Hearthold",
 	"title_delete": "削除",
-	"confirm_delete": "セーブ「{name}」を削除します。よろしいですか?"
+	"confirm_delete": "セーブ「{name}」を削除します。よろしいですか?",
+	"calendar_label": "{year}年目 {season} {weather} {temp}℃",
+	"alert_season": "{season}になりました"
 }

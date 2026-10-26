@@ -1,0 +1,18 @@
+{
+	"days_per_season": 7,
+	"weather_change_hours": 6.0,
+	"night_temperature_drop": 5.0,
+	"seasons": [
+		{"id": "spring", "name": "春", "temperature": 13.0, "weather": {"clear": 0.6, "rain": 0.4}, "growth": 1.0},
+		{"id": "summer", "name": "夏", "temperature": 24.0, "weather": {"clear": 0.75, "rain": 0.2, "storm": 0.05}, "growth": 1.2},
+		{"id": "autumn", "name": "秋", "temperature": 10.0, "weather": {"clear": 0.55, "rain": 0.45}, "growth": 0.6},
+		{"id": "winter", "name": "冬", "temperature": -3.0, "weather": {"clear": 0.5, "snow": 0.5}, "growth": 0.0}
+	],
+	"weathers": {
+		"clear": {"name": "晴れ", "temperature": 0.0, "mood_per_hour": 0.0, "work_speed": 1.0},
+		"rain": {"name": "雨", "temperature": -3.0, "mood_per_hour": -0.5, "work_speed": 0.9},
+		"storm": {"name": "嵐", "temperature": -5.0, "mood_per_hour": -1.0, "work_speed": 0.75},
+		"snow": {"name": "雪", "temperature": -6.0, "mood_per_hour": -0.3, "work_speed": 0.85}
+	},
+	"outdoor_kinds": ["chop", "dig", "build", "hunt", "farm", "plant", "repair"]
+}

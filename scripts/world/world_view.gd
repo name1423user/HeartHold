@@ -83,6 +83,11 @@ func _add_box(tool: SurfaceTool, center: Vector3, size: Vector3, color: Color) -
 		tool.add_vertex(vertices[index] + center)
 
 
+func set_snow(amount: float) -> void:
+	for material in [_terrain_material, _tree_material]:
+		material.set_shader_parameter("snow", amount)
+
+
 func _fog_material(vertex_color: bool, base: Color) -> ShaderMaterial:
 	var material := ShaderMaterial.new()
 	material.shader = FOG_SHADER
