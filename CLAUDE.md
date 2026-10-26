@@ -8,7 +8,7 @@ SPEC.md、PLAN.md、このファイルが食い違ったら、作業を止めて
 - 性能ベンチ: `scenes/bench/bench_30.tscn` を実行し、ログの平均/最低fpsを見る
 
 ## 環境
-- Godot 4.6 + Voxel Tools 1.6 のカスタムビルド(通常のGodotでは開けない)
+- Godot 4.7.2 + Voxel Tools 1.7 のカスタムビルド(通常のGodotでは開けない)
 - 最低環境: 第7世代Intel・内蔵GPU・Windows 11 で平均30fps。重い処理を足したら報告する
 
 ## コードスタイル

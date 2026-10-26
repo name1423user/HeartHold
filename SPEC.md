@@ -43,7 +43,7 @@
 | AS-010 | MVPで遊べる時代は最初の時代(石と木の時代)だけ。時代が進む仕組みはデータ構造だけ用意する | 推奨 | 3章、6章、PLAN M4 |
 | AS-013 | 最初の襲撃はゲーム内5日目まで来ない | 確定(数値は調整前提) | バランスのみ |
 | AS-012 | 世界観はヨーロッパ系ファンタジー(魔法あり)。文明の上限は近世(蒸気機関の手前)。マスケットなど前装式の火器までは可、それより後の技術(蒸気機関、電気、レーザーなどのSF要素)は入れない | 確定(火器の扱いは推奨) | 3章、9章、CLAUDE.md、全データ追加時の判断 |
-| AS-011 | Voxel Tools 1.6 は Godot 4.6 向け。実装開始時に新しい組み合わせが出ていれば再確認する | 仮定 | 8章、PLAN M1 |
+| AS-011 | Voxel Tools 1.7 は Godot 4.7.2 向け(2026-10-26確認)。新しい組み合わせが出たら再確認する | 確定 | 8章、PLAN M1 |
 
 ※ AS-001〜009 は、2026-10-26 に一括確認した15項目のうちユーザーが修正しなかったもの(15番は重み付けを追加して確定)。
 
@@ -274,23 +274,22 @@
 
 - 動作環境 [確定]: Windows 11 / macOS のデスクトップ。マウス+キーボード。
 - 技術スタック [確定](2026-10-26確認、実装開始時に再確認する):
-  - Godot 4.6 + Voxel Tools 1.6 のカスタムビルド(Voxel Tools公式のリリースビルドを使う)
+  - Godot 4.7.2 + Voxel Tools 1.7 のカスタムビルド(Voxel Tools公式のリリースビルドを使う)
   - 言語: GDScript(静的型付けを使う)。重い処理は将来 godot-rust に移す余地を残す
-  - テスト: GUT(Godot Unit Test)[推奨、バージョンは実装開始時に確認]
+  - テスト: GUT(Godot Unit Test)9.7.1(Godot 4.7 向け)
 - 選定理由: Voxel Tools がMinecraft風のブロック地形、ボクセル用の経路探索(VoxelAStarGrid3D)、圧縮付きの保存(VoxelBlockSerializer)を持ち、要件に直接合う。エンジンはMITで無料、エディタがある。
 - 採用しなかった案:
   - Bevy(Rust): 早期開発段階で約3か月ごとに互換性のない更新があり、ボクセル部分も自作が増えるため。
   - Unity: OSS公開との相性とライセンス面。
 - 外部サービス・API: なし。
 - 根拠:
-  - Voxel Tools v1.6(Godot 4.6向けビルド): https://github.com/Zylann/godot_voxel/releases/tag/v1.6 (2026-10-26確認)
+  - Voxel Tools v1.7(Godot 4.7.2向けビルド、2026-08-20公開): https://github.com/Zylann/godot_voxel/releases/tag/v1.7 (2026-10-26確認)
+  - GUT v9.7.1(Godot 4.7.x 向け): https://github.com/bitwes/Gut/releases/tag/v9.7.1 (2026-10-26確認)
   - Voxel Tools ドキュメント: https://voxel-tools.readthedocs.io/en/latest/getting_the_module/ (2026-10-26確認)
   - Bevy README(更新頻度): https://github.com/Poico/bevy (公式リポジトリのフォーク、2026-10-26確認)
   - 競合: https://en.wikipedia.org/wiki/Going_Medieval 、https://store.steampowered.com/app/366090 、https://store.steampowered.com/app/5057770/ (2026-10-26確認)
 - 要確認:
-  - Godot 4.7 向けの Voxel Tools が出ているか(出ていれば移行を検討)
-  - Voxel Tools のライセンス表記
-  - GUT の Godot 4.6 対応版
+  - Voxel Tools のライセンス表記(MIT。M6-T04 でクレジットに記載)
   - 内蔵GPU(Intel HD 600番台想定)での Godot の描画方式(Forward+ / Mobile / Compatibility)の選択。POC-001で決める
 
 ## 9. デザイン
@@ -364,6 +363,7 @@
 | 2026-10-26 | PC(Win/Mac)、3Dボクセル | ユーザー判断 | ブラウザ、スマホ、2D | | 8, 9 |
 | 2026-10-26 | リアルタイム+一時停止のみ、事象は警告マーク | 村人の自律で破綻させない | ターン制、倍速 | | 5 |
 | 2026-10-26 | 村長は直接操作できないキャラ、生存中バフ、死なず瀕死→救護室 | 守る理由と緊張感 | 俯瞰のみ、アバター操作、ゲームオーバー | | 5 |
+| 2026-10-26 | Godot 4.7.2 + Voxel Tools 1.7 + GUT 9.7.1 を採用 | 1.7 が出ており VoxelBlockSerializer の圧縮バグ修正を含む(ユーザー判断) | Godot 4.6 + Voxel Tools 1.6 + GUT 9.6.1 | Godot 4.6 + Voxel Tools 1.6 | 2, 8 |
 | 2026-10-26 | 審査は見回り+採点表、不合格は二度と来ない、重視項目は来てから分かる、希望者ごとに重み | 差別化の中核 | 事前告知、再来訪 | | 5 |
 | 2026-10-26 | 地下なし、掘るのは地表から数段 | カメラと操作を単純に | 地下あり | 1ブロック単位で地下も掘れる | 2, 3, 4, 8 |
 | 2026-10-26 | Godot+Voxel Tools、GDScript | 要件への合い方、完成までの近さ | Bevy、Unity | | 8 |

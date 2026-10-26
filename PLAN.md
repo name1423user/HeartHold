@@ -23,7 +23,7 @@
 確認手順: `scenes/bench/bench_30.tscn` を最低環境で実行し、ログの fps を確認。テストが通る。
 
 ### M1-T01: プロジェクトの初期設定
-- 目的(技術的): Godot 4.6 + Voxel Tools 1.6 のビルドでプロジェクトを開け、GUTでテストが走る土台を作る
+- 目的(技術的): Godot 4.7.2 + Voxel Tools 1.7 のビルドでプロジェクトを開け、GUTでテストが走る土台を作る
 - 対応: 基盤タスク
 - 依存: なし
 - 関係するファイル: `project.godot`, `addons/gut/`, `tests/test_smoke.gd`, `.gitignore`, `LICENSE`(MIT), `README.md`, `HANDOFF.md`
