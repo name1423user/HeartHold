@@ -1,10 +1,72 @@
 {
-	"log": {"name": "原木", "category": "material"},
-	"plank": {"name": "木材", "category": "material"},
-	"stone": {"name": "石", "category": "material"},
-	"dirt": {"name": "土", "category": "material"},
-	"fur": {"name": "毛皮", "category": "material"},
-	"meat": {"name": "肉", "category": "food", "food": 25.0},
-	"meal": {"name": "料理", "category": "food", "food": 50.0},
-	"fence_post": {"name": "柵の杭", "category": "material"}
+	"log": {
+		"name": "原木",
+		"category": "material"
+	},
+	"plank": {
+		"name": "木材",
+		"category": "material"
+	},
+	"stone": {
+		"name": "石",
+		"category": "material"
+	},
+	"dirt": {
+		"name": "土",
+		"category": "material"
+	},
+	"fur": {
+		"name": "毛皮",
+		"category": "material"
+	},
+	"meat": {
+		"name": "肉",
+		"category": "food",
+		"food": 25.0
+	},
+	"meal": {
+		"name": "料理",
+		"category": "food",
+		"food": 50.0
+	},
+	"fence_post": {
+		"name": "柵の杭",
+		"category": "material"
+	},
+	"stone_axe": {
+		"name": "石の斧",
+		"category": "equipment"
+	},
+	"stone_pickaxe": {
+		"name": "石のつるはし",
+		"category": "equipment"
+	},
+	"stone_knife": {
+		"name": "石のナイフ",
+		"category": "equipment"
+	},
+	"iron_axe": {
+		"name": "鉄の斧",
+		"category": "equipment"
+	},
+	"iron_pickaxe": {
+		"name": "鉄のつるはし",
+		"category": "equipment"
+	},
+	"steel_axe": {
+		"name": "鋼の斧",
+		"category": "equipment"
+	},
+	"steel_pickaxe": {
+		"name": "鋼のつるはし",
+		"category": "equipment"
+	},
+	"wooden_spear": {
+		"name": "木の槍",
+		"category": "equipment"
+	},
+	"sling": {
+		"name": "投石紐",
+		"category": "equipment"
+	}
 }

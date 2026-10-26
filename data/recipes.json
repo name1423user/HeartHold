@@ -34,5 +34,68 @@
 		},
 		"work": 10.0,
 		"skill": "cook"
+	},
+	"stone_axe": {
+		"name": "石の斧",
+		"station": "workbench",
+		"inputs": {
+			"log": 1,
+			"stone": 2
+		},
+		"outputs": {
+			"stone_axe": 1
+		},
+		"work": 20.0,
+		"skill": "craft"
+	},
+	"stone_pickaxe": {
+		"name": "石のつるはし",
+		"station": "workbench",
+		"inputs": {
+			"log": 1,
+			"stone": 3
+		},
+		"outputs": {
+			"stone_pickaxe": 1
+		},
+		"work": 20.0,
+		"skill": "craft"
+	},
+	"stone_knife": {
+		"name": "石のナイフ",
+		"station": "workbench",
+		"inputs": {
+			"stone": 1
+		},
+		"outputs": {
+			"stone_knife": 1
+		},
+		"work": 10.0,
+		"skill": "craft"
+	},
+	"wooden_spear": {
+		"name": "木の槍",
+		"station": "workbench",
+		"inputs": {
+			"plank": 3
+		},
+		"outputs": {
+			"wooden_spear": 1
+		},
+		"work": 20.0,
+		"skill": "craft"
+	},
+	"sling": {
+		"name": "投石紐",
+		"station": "workbench",
+		"inputs": {
+			"fur": 1,
+			"plank": 1
+		},
+		"outputs": {
+			"sling": 1
+		},
+		"work": 15.0,
+		"skill": "craft"
 	}
 }

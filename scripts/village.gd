@@ -43,6 +43,7 @@ func _init(target: WorldData) -> void:
 	needs_cfg = GameData.get_dict("needs")
 	rng.seed = world.seed
 	wildlife = Wildlife.new(self)
+	speed_modifiers.append(Equipment.speed)
 
 
 static func create(seed: int) -> Village:
@@ -151,6 +152,8 @@ func _choose_plan(v: Villager) -> void:
 		return
 	if _choose_need_plan(v):
 		return
+	if _choose_equipment_plan(v):
+		return
 	if _choose_task_plan(v):
 		return
 	if _choose_haul_plan(v):
@@ -178,6 +181,22 @@ func _choose_need_plan(v: Villager) -> bool:
 		_set_plan(v, "sleep", steps)
 		return true
 	return false
+
+
+## 役職に合う装備が倉庫にあれば、自分で取りに行く(AC-038)
+func _choose_equipment_plan(v: Villager) -> bool:
+	var item: String = Equipment.wanted_item(self, v)
+	if item.is_empty():
+		return false
+	var source: Dictionary = find_item_source(item, v.cell())
+	if source.is_empty() or source["kind"] != "building":
+		return false
+	_set_plan(v, "equip", [
+		{"op": "goto", "target": source["cell"], "adjacent": true, "building": source["id"]},
+		{"op": "take", "source": source, "item": item, "count": 1},
+		{"op": "equip"},
+	])
+	return true
 
 
 ## 役職の優先順位(data/jobs.json)で仕事を拾う
@@ -325,6 +344,14 @@ func _execute(v: Villager, step: Dictionary, budget: float) -> float:
 ## そのほかの手順(狩り・戦い・運ぶ人を担ぐ など)
 func _execute_extra(v: Villager, step: Dictionary, budget: float) -> float:
 	match str(step["op"]):
+		"equip":
+			v.plan.pop_front()
+			if v.carry_count > 0 and Equipment.is_equipment(v.carry_item):
+				Equipment.equip(v, v.carry_item)
+				v.carry_count -= 1
+				if v.carry_count <= 0:
+					v.carry_item = ""
+			return 0.0
 		"hunt":
 			var task: JobTask = tasks.get_task(v.task_id)
 			if task == null:
@@ -415,17 +442,18 @@ func _step_work(v: Villager, budget: float) -> float:
 	if task == null:
 		v.plan.pop_front()
 		return 0.0
-	var speed: float = work_speed(v, task.type)
+	var skill: String = task_skill(task)
+	var speed: float = work_speed(v, skill)
 	var left: float = task.work_needed - task.progress
 	var time_needed: float = left / speed
 	if time_needed <= budget:
 		task.progress = task.work_needed
 		v.plan.pop_front()
-		gain_experience(v, task.type, time_needed)
+		gain_experience(v, skill, time_needed)
 		_complete_task(v, task)
 		return time_needed
 	task.progress += speed * budget
-	gain_experience(v, task.type, budget)
+	gain_experience(v, skill, budget)
 	return budget
 
 
@@ -464,6 +492,7 @@ func _complete_task_extra(v: Villager, task: JobTask) -> void:
 	match task.type:
 		"craft":
 			Crafting.complete(self, v, task)
+			wear_tool(v, task_skill(task))
 		"build":
 			var b: Building = buildings.get(task.building_id) as Building
 			if b != null:
@@ -473,9 +502,16 @@ func _complete_task_extra(v: Villager, task: JobTask) -> void:
 				raise_alert("built", Texts.t("alert_built", {"name": b.display_name()}), b.cell)
 
 
-## 道具の耐久を減らす(M2-T09 で中身を入れる)
-func wear_tool(_v: Villager, _kind: String) -> void:
-	pass
+## 道具の耐久を減らす。合う道具でなければ減らない
+func wear_tool(v: Villager, kind: String) -> void:
+	Equipment.wear(self, v, "tool", kind)
+
+
+## 仕事の種類から、速度や熟練度に使う作業の種類を出す(加工はレシピの種類)
+func task_skill(task: JobTask) -> String:
+	if task.type == "craft":
+		return str(Crafting.recipe(task.recipe).get("skill", "craft"))
+	return task.type
 
 
 func _block_name(id: int) -> String:

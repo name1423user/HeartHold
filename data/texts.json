@@ -13,5 +13,6 @@
 	"order_unreachable": "そこへは行けません",
 	"order_cannot_move": "今は動けません",
 	"task_no_station": "作業台がありません",
-	"alert_built": "{name}が完成しました"
+	"alert_built": "{name}が完成しました",
+	"alert_tool_broken": "{name}の{item}が壊れました"
 }

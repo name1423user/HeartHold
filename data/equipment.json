@@ -1,0 +1,21 @@
+{
+	"bare": {"speed": 1.0, "attack": 2.0, "range": 1.5},
+	"current_era": "stone",
+	"items": {
+		"stone_axe": {"slot": "tool", "works": ["chop"], "speed": 1.5, "durability": 60, "era": "stone"},
+		"stone_pickaxe": {"slot": "tool", "works": ["dig"], "speed": 1.5, "durability": 60, "era": "stone"},
+		"stone_knife": {"slot": "tool", "works": ["hunt", "cook"], "speed": 1.3, "durability": 80, "era": "stone"},
+		"iron_axe": {"slot": "tool", "works": ["chop"], "speed": 2.0, "durability": 150, "era": "iron"},
+		"iron_pickaxe": {"slot": "tool", "works": ["dig"], "speed": 2.0, "durability": 150, "era": "iron"},
+		"steel_axe": {"slot": "tool", "works": ["chop"], "speed": 2.5, "durability": 300, "era": "medieval"},
+		"steel_pickaxe": {"slot": "tool", "works": ["dig"], "speed": 2.5, "durability": 300, "era": "medieval"},
+		"wooden_spear": {"slot": "weapon", "kind": "melee", "attack": 8.0, "range": 1.5, "durability": 40, "era": "stone"},
+		"sling": {"slot": "weapon", "kind": "ranged", "attack": 4.0, "range": 8.0, "tower_range_multiplier": 1.5, "durability": 60, "era": "stone"}
+	},
+	"wanted": {
+		"gatherer": ["stone_axe", "stone_pickaxe"],
+		"builder": [],
+		"hunter": ["stone_knife"],
+		"guard": ["wooden_spear", "sling"]
+	}
+}
