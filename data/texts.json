@@ -11,5 +11,6 @@
 	"alert_missing_materials": "建設の素材が足りません",
 	"cannot_build_here": "そこには建てられません",
 	"order_unreachable": "そこへは行けません",
-	"order_cannot_move": "今は動けません"
+	"order_cannot_move": "今は動けません",
+	"task_no_station": "作業台がありません"
 }

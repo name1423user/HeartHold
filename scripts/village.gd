@@ -444,9 +444,11 @@ func _complete_task(v: Villager, task: JobTask) -> void:
 		v.plan.push_front({"op": "store_carry"})
 
 
-## 派生の仕事の完了処理(建設・加工・狩りなど)
-func _complete_task_extra(_v: Villager, _task: JobTask) -> void:
-	pass
+## 建設・加工・狩りなどの完了処理
+func _complete_task_extra(v: Villager, task: JobTask) -> void:
+	match task.type:
+		"craft":
+			Crafting.complete(self, v, task)
 
 
 ## 道具の耐久を減らす(M2-T09 で中身を入れる)
@@ -538,6 +540,9 @@ func _step_supply(v: Villager) -> void:
 	if task == null:
 		return
 	var site: Dictionary = supply_site(task)
+	if site.has("error"):
+		_abort_plan(v, str(site["error"]))
+		return
 	var missing: Dictionary = site["missing"]
 	if missing.is_empty():
 		v.plan.push_front({"op": "work"})
@@ -558,8 +563,11 @@ func _step_supply(v: Villager) -> void:
 	_abort_plan(v, "missing_materials")
 
 
-## 仕事ごとの素材置き場と不足(派生側で建設・加工を返す)
+## 仕事ごとの素材置き場と不足
 func supply_site(task: JobTask) -> Dictionary:
+	match task.type:
+		"craft":
+			return Crafting.supply_site(self, task)
 	return {"cell": task.cell, "missing": {}}
 
 
