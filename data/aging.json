@@ -1,0 +1,11 @@
+{
+	"child_growth_multiplier": 6.0,
+	"adult_age": 14.0,
+	"parent_age": [18.0, 45.0],
+	"birth_chance_per_day": 0.05,
+	"min_social": 50.0,
+	"inherit_fraction": 0.5,
+	"inherit_trait_chance": 0.5,
+	"old_age_death_per_year": [[60.0, 0.05], [70.0, 0.2], [80.0, 0.6]],
+	"child_names": ["ヨハンナ", "フリーダ", "ルドルフ", "ハインツ", "リーゼル", "マクシミリアン", "ヘルガ", "ウルリヒ", "ベアトリクス", "ゲオルク", "ローレ", "テオドール"]
+}

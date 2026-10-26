@@ -17,7 +17,7 @@ static func display_name(job: String) -> String:
 
 ## 役職を変える。今の仕事は手放して、次から新しい役職の順で拾う
 static func assign(village: Village, v: Villager, job: String) -> bool:
-	if not ids().has(job) or v.is_chief:
+	if not ids().has(job) or v.is_chief or LifeCycle.is_child(v):
 		return false
 	if v.job != job and v.plan_kind == "task":
 		village.release_plan(v)

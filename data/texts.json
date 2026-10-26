@@ -221,5 +221,9 @@
 	"feast_no_place": "焚き火か酒場が要ります",
 	"feast_no_food": "食べ物が足りません",
 	"hold_feast": "宴を開く",
-	"tooltip_feast": "食べ物を使って、みんなの気分を大きく上げます"
+	"tooltip_feast": "食べ物を使って、みんなの気分を大きく上げます",
+	"alert_grown": "{name}が大人になりました",
+	"alert_old_age": "{name}が老衰で亡くなりました",
+	"alert_birth": "{parent}の家に{name}が生まれました",
+	"child_label": "子ども"
 }

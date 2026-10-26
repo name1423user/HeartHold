@@ -369,9 +369,14 @@ func set_plan(v: Villager, kind: String, steps: Array[Dictionary]) -> void:
 	_set_plan(v, kind, steps)
 
 
+## 働けるか(村長と子どもは働かない)
+func can_work(v: Villager) -> bool:
+	return not v.is_chief and not LifeCycle.is_child(v)
+
+
 ## 倒れた人がいれば最優先で救護室へ運ぶ
 func _choose_rescue_plan(v: Villager) -> bool:
-	if v.is_chief:
+	if not can_work(v):
 		return false
 	var task: JobTask = tasks.find_for(["rescue"], v.cell(), clock.minutes)
 	if task == null or HealthState.infirmary_for(self, v.pos) == null:
@@ -384,7 +389,7 @@ func _choose_rescue_plan(v: Villager) -> bool:
 
 ## 襲撃中: 衛兵は迎え撃ち、他は避難する
 func _choose_raid_plan(v: Villager) -> bool:
-	if v.job == "guard" and not v.is_chief:
+	if v.job == "guard" and can_work(v):
 		var steps: Array[Dictionary] = []
 		var tower: Building = Watchtower.tower_of(self, v)
 		if tower != null and not Watchtower.is_on_tower(self, v):
@@ -483,7 +488,7 @@ func _choose_need_plan(v: Villager) -> bool:
 
 ## 役職に合う装備が倉庫にあれば、自分で取りに行く(AC-038)
 func _choose_equipment_plan(v: Villager) -> bool:
-	if v.is_chief:
+	if not can_work(v):
 		return false
 	var item: String = Equipment.wanted_item(self, v)
 	if item.is_empty():
@@ -514,7 +519,7 @@ func _choose_post_plan(v: Villager) -> bool:
 
 ## 役職の優先順位(data/jobs.json)で仕事を拾う
 func _choose_task_plan(v: Villager) -> bool:
-	if v.is_chief:
+	if not can_work(v):
 		return false
 	var task: JobTask = tasks.find_for(task_types_for(v), v.cell(), clock.minutes)
 	if task == null:
@@ -554,7 +559,7 @@ func plan_for_task(v: Villager, task: JobTask) -> Array[Dictionary]:
 
 
 func _choose_haul_plan(v: Villager) -> bool:
-	if v.is_chief:
+	if not can_work(v):
 		return false
 	for cell: Vector2i in ground_items:
 		if ground_reserved.has(cell):
