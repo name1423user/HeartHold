@@ -9,5 +9,7 @@
 	"alert_storage_full": "倉庫がいっぱいです",
 	"alert_no_storage": "置き場所がありません",
 	"alert_missing_materials": "建設の素材が足りません",
-	"cannot_build_here": "そこには建てられません"
+	"cannot_build_here": "そこには建てられません",
+	"order_unreachable": "そこへは行けません",
+	"order_cannot_move": "今は動けません"
 }
