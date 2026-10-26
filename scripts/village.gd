@@ -32,6 +32,7 @@ var needs_cfg: Dictionary = {}
 ## 作業速度などにかける倍率を足すための口(装備・熟練度・特技・村長の方針)
 var speed_modifiers: Array[Callable] = []
 var wildlife: Wildlife
+var inspection: Inspection
 
 
 func _init(target: WorldData) -> void:
@@ -45,6 +46,8 @@ func _init(target: WorldData) -> void:
 	wildlife = Wildlife.new(self)
 	speed_modifiers.append(Equipment.speed)
 	speed_modifiers.append(Proficiency.speed)
+	speed_modifiers.append(Specialty.speed)
+	inspection = Inspection.new(self)
 
 
 static func create(seed: int) -> Village:
@@ -109,6 +112,7 @@ func tick(minutes: float) -> void:
 ## 村人より先に動かす仕組み(獲物・襲撃・審査など)
 func _before_villagers(dt: float) -> void:
 	wildlife.update(dt)
+	inspection.update(dt)
 
 
 func _after_villagers(_dt: float) -> void:
@@ -284,6 +288,19 @@ func _finish_plan(v: Villager) -> void:
 
 
 # --- 手順の実行 ---------------------------------------------------------
+
+## 村人でない体(移住希望者など)の手順を進める
+func run_plan(body: Villager, dt: float) -> void:
+	var budget: float = dt
+	var guard: int = 0
+	while not body.plan.is_empty() and budget > 0.0 and guard < 16:
+		guard += 1
+		var used: float = _execute(body, body.plan[0], budget)
+		if used < 0.0:
+			if not body.plan.is_empty():
+				body.plan.pop_front()
+			continue
+		budget -= used
 
 func _run_step(v: Villager, dt: float) -> void:
 	var budget: float = dt

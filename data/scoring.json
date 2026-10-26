@@ -1,0 +1,9 @@
+{
+	"pass_score": 60.0,
+	"max_weak_items": 2,
+	"items": {"food": "食料", "housing": "住居", "safety": "安全", "facilities": "施設", "satisfaction": "満足度"},
+	"food": {"full_score_days": 10.0},
+	"housing": {"base": 60.0, "per_extra_bed": 10.0},
+	"safety": {"base": 10.0, "per_guard": 20.0, "per_armed_guard": 10.0, "per_fence": 2.0, "per_watchtower": 20.0},
+	"facilities": {"storage": 25.0, "workbench": 25.0, "infirmary": 30.0, "watchtower": 20.0}
+}

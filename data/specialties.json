@@ -1,0 +1,8 @@
+{
+	"master_builder": {"name": "建築上手", "skill": "build", "speed": 1.3},
+	"woodcutter": {"name": "木こり上手", "skill": "chop", "speed": 1.3},
+	"good_cook": {"name": "料理上手", "skill": "cook", "speed": 1.3},
+	"keen_hunter": {"name": "狩りの名手", "skill": "hunt", "speed": 1.3},
+	"strong_back": {"name": "力持ち", "skill": "dig", "speed": 1.3},
+	"spear_training": {"name": "槍の心得", "skill": "combat", "speed": 1.2}
+}

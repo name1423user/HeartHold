@@ -18,5 +18,8 @@
 	"stockpile_all": "何でも",
 	"fixture_wrong_building": "この建物には置けません",
 	"fixture_not_built": "建物が完成していません",
-	"fixture_limit": "これ以上は置けません"
+	"fixture_limit": "これ以上は置けません",
+	"applicant_intro": "移住希望者が来ました: {name}({intro})「{personality}」 特技: {specialty}",
+	"alert_accepted": "{name}が審査に合格し、村の一員になりました",
+	"alert_rejected": "{name}は審査に落ちて去りました"
 }
