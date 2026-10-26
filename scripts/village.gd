@@ -34,6 +34,8 @@ var speed_modifiers: Array[Callable] = []
 var wildlife: Wildlife
 var inspection: Inspection
 var raids: RaidDirector
+## 魔物が村の境界に入っている(迎撃・避難の合図)
+var raid_alarm: bool = false
 
 
 func _init(target: WorldData) -> void:
@@ -116,6 +118,7 @@ func tick(minutes: float) -> void:
 func _before_villagers(dt: float) -> void:
 	wildlife.update(dt)
 	raids.update(dt)
+	_update_alarm()
 	inspection.update(dt)
 
 
@@ -168,6 +171,8 @@ func raise_alert(kind: String, message: String, cell: Vector2i) -> void:
 # --- 行動の選び方 -------------------------------------------------------
 
 func _choose_plan(v: Villager) -> void:
+	if raid_alarm and _choose_raid_plan(v):
+		return
 	if v.carry_count > 0:
 		_set_plan(v, "store", [{"op": "store_carry"}])
 		return
@@ -180,6 +185,77 @@ func _choose_plan(v: Villager) -> void:
 	if _choose_haul_plan(v):
 		return
 	_set_plan(v, "idle", [{"op": "wander"}, {"op": "wait", "minutes": 10.0}])
+
+
+## 襲撃中: 衛兵は迎え撃ち、他は避難する
+func _choose_raid_plan(v: Villager) -> bool:
+	if v.job == "guard" and not v.is_chief:
+		_set_plan(v, "fight", [{"op": "fight"}])
+		return true
+	var shelter: Building = Combat.shelter_for(self, v)
+	var steps: Array[Dictionary] = []
+	if shelter != null:
+		steps.append({"op": "goto", "target": shelter.cell, "adjacent": true, "building": shelter.id})
+	steps.append({"op": "wait", "minutes": 1.0e9})
+	_set_plan(v, "shelter", steps)
+	return true
+
+
+## 魔物が境界に入ったら合図を出し、全員の行動を切り替える。襲撃が終われば元に戻す
+func _update_alarm() -> void:
+	var inside: bool = false
+	if raids.active:
+		for m in raids.monsters:
+			if raids.is_inside_village(m.pos):
+				inside = true
+				break
+	if inside and not raid_alarm:
+		raid_alarm = true
+		if not raids.warned:
+			raids.warned = true
+			raise_alert("raid", Texts.t("alert_raid"), raids.monsters[0].cell())
+		for v in villagers:
+			if v.is_active() and v.plan_kind != "carry_patient":
+				release_plan(v)
+	elif not raids.active and raid_alarm:
+		raid_alarm = false
+		for v in villagers:
+			if v.plan_kind == "shelter" or v.plan_kind == "fight":
+				release_plan(v)
+
+
+## 見張り台の上にいるか(M3-T08)
+func is_on_watchtower(_v: Villager) -> bool:
+	return false
+
+
+func watchtower_target(_v: Villager) -> Monster:
+	return null
+
+
+## 目的の列へ向かって少し進む(追いかけ用)
+func chase(v: Villager, target: Vector2i, budget: float) -> void:
+	if v.cell() == target:
+		return
+	if v.path.is_empty() or v.path[-1] != target:
+		v.path = pathing.find_path(v.cell(), target)
+		if v.path.is_empty():
+			var near: Vector2i = pathing.nearest_standable(v.cell(), target)
+			if near != NO_CELL:
+				v.path = pathing.find_path(v.cell(), near)
+		if not v.path.is_empty():
+			v.path.pop_front()
+	var step: float = walk_speed(v) * budget
+	while step > 0.0 and not v.path.is_empty():
+		var next_pos: Vector2 = Vector2(v.path[0]) + Vector2(0.5, 0.5)
+		var distance: float = v.pos.distance_to(next_pos)
+		if distance <= step:
+			v.pos = next_pos
+			v.path.pop_front()
+			step -= distance
+		else:
+			v.pos = v.pos.move_toward(next_pos, step)
+			step = 0.0
 
 
 func _choose_need_plan(v: Villager) -> bool:
@@ -378,6 +454,8 @@ func _execute(v: Villager, step: Dictionary, budget: float) -> float:
 ## そのほかの手順(狩り・戦い・運ぶ人を担ぐ など)
 func _execute_extra(v: Villager, step: Dictionary, budget: float) -> float:
 	match str(step["op"]):
+		"fight":
+			return Combat.step_fight(self, v, budget)
 		"equip":
 			v.plan.pop_front()
 			if v.carry_count > 0 and Equipment.is_equipment(v.carry_item):

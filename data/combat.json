@@ -1,0 +1,6 @@
+{
+	"guard_vision": 16.0,
+	"attack_interval_minutes": 1.0,
+	"ranged_min_distance": 3.0,
+	"shelter_types": ["house", "infirmary"]
+}
