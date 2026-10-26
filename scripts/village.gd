@@ -33,6 +33,7 @@ var needs_cfg: Dictionary = {}
 var speed_modifiers: Array[Callable] = []
 var wildlife: Wildlife
 var inspection: Inspection
+var raids: RaidDirector
 
 
 func _init(target: WorldData) -> void:
@@ -48,6 +49,8 @@ func _init(target: WorldData) -> void:
 	speed_modifiers.append(Proficiency.speed)
 	speed_modifiers.append(Specialty.speed)
 	inspection = Inspection.new(self)
+	raids = RaidDirector.new(self)
+	inspection.is_raid_active = func() -> bool: return raids.active
 
 
 static func create(seed: int) -> Village:
@@ -112,6 +115,7 @@ func tick(minutes: float) -> void:
 ## 村人より先に動かす仕組み(獲物・襲撃・審査など)
 func _before_villagers(dt: float) -> void:
 	wildlife.update(dt)
+	raids.update(dt)
 	inspection.update(dt)
 
 
@@ -143,6 +147,18 @@ func knock_out(v: Villager) -> void:
 	_abort_plan(v, "")
 	v.state = Villager.State.UNCONSCIOUS
 	raise_alert("faint", Texts.t("alert_faint", {"name": v.display_name}), v.cell())
+
+
+## 魔物などから受けた傷。体力0で気絶する
+func damage_villager(v: Villager, amount: float) -> void:
+	v.needs.add("health", -amount)
+	if v.needs.get_value("health") <= 0.0 and v.state == Villager.State.NORMAL:
+		knock_out(v)
+
+
+## 家や救護室に避難して、魔物に狙われない状態か(M3-T04)
+func is_sheltered(v: Villager) -> bool:
+	return v.plan_kind == "shelter" and not v.plan.is_empty() and str(v.plan[0]["op"]) == "wait"
 
 
 func raise_alert(kind: String, message: String, cell: Vector2i) -> void:

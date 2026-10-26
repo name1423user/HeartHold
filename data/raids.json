@@ -1,0 +1,11 @@
+{
+	"grace_days": 5.0,
+	"min_cooldown_days": 3.0,
+	"chance_per_hour": 0.08,
+	"size": {"base": 2, "wealth_per_monster": 150.0, "per_building": 10.0, "max": 10},
+	"spawn_distance": 60,
+	"village_margin": 6,
+	"min_village_radius": 20,
+	"max_duration_hours": 12.0,
+	"monster": "goblin"
+}

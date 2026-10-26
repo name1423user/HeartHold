@@ -21,5 +21,7 @@
 	"fixture_limit": "これ以上は置けません",
 	"applicant_intro": "移住希望者が来ました: {name}({intro})「{personality}」 特技: {specialty}",
 	"alert_accepted": "{name}が審査に合格し、村の一員になりました",
-	"alert_rejected": "{name}は審査に落ちて去りました"
+	"alert_rejected": "{name}は審査に落ちて去りました",
+	"alert_raid_end": "襲撃を退けました",
+	"alert_raid": "魔物が近づいています"
 }

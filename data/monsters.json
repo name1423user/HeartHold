@@ -1,0 +1,12 @@
+{
+	"goblin": {
+		"name": "ゴブリン",
+		"hp": 30.0,
+		"attack": 5.0,
+		"range": 1.5,
+		"attack_interval_minutes": 1.0,
+		"speed_blocks_per_minute": 2.0,
+		"vision": 10.0,
+		"night_attack_multiplier": 1.3
+	}
+}
