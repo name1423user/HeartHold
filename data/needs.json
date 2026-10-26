@@ -1,0 +1,17 @@
+{
+	"max": 100.0,
+	"start": {"food": 80.0, "sleep": 80.0, "mood": 60.0, "health": 100.0},
+	"decay_per_hour": {"food": 4.0, "sleep": 5.0},
+	"sleep_recovery_per_hour": 12.5,
+	"ground_sleep_multiplier": 0.8,
+	"mood_baseline": 60.0,
+	"mood_recovery_per_hour": 2.0,
+	"mood_drop_per_hour_when_low": 3.0,
+	"low_need_for_mood": 25.0,
+	"starving_health_loss_per_hour": 5.0,
+	"health_recovery_per_hour": 2.0,
+	"eat_below": 40.0,
+	"sleep_below": 25.0,
+	"night_sleep_below": 70.0,
+	"warning_below": 20.0
+}

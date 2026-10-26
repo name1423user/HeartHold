@@ -14,6 +14,8 @@ var top: PackedInt32Array = PackedInt32Array()
 var original_top: PackedInt32Array = PackedInt32Array()
 ## 木が立っている列。Vector2i(x, z) -> true
 var trees: Dictionary = {}
+## 建物などでふさがれた列。Vector2i(x, z) -> 建物ID
+var blocked: Dictionary = {}
 var start: Vector2i = Vector2i.ZERO
 
 var air_id: int = 0
@@ -76,6 +78,6 @@ func biome_at(cell: Vector2i) -> int:
 
 ## 村人が立てる列か(一番上が水でない)。木の列も立てない
 func is_walkable(cell: Vector2i) -> bool:
-	if not in_bounds_2d(cell) or trees.has(cell):
+	if not in_bounds_2d(cell) or trees.has(cell) or blocked.has(cell):
 		return false
 	return get_block(Vector3i(cell.x, top_y(cell), cell.y)) != water_id

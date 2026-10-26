@@ -1,0 +1,10 @@
+{
+	"log": {"name": "原木", "category": "material"},
+	"plank": {"name": "木材", "category": "material"},
+	"stone": {"name": "石", "category": "material"},
+	"dirt": {"name": "土", "category": "material"},
+	"fur": {"name": "毛皮", "category": "material"},
+	"meat": {"name": "肉", "category": "food", "food": 25.0},
+	"meal": {"name": "料理", "category": "food", "food": 50.0},
+	"fence_post": {"name": "柵の杭", "category": "material"}
+}

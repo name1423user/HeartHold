@@ -1,5 +1,12 @@
 {
 	"dig_too_deep": "これ以上は掘れません",
 	"cannot_break": "そこは壊せません",
-	"cannot_place": "そこには置けません"
+	"cannot_place": "そこには置けません",
+	"clock_label": "{day}日目 {hour}:{minute}",
+	"alert_faint": "{name}が倒れました",
+	"task_unreachable": "行けません",
+	"task_missing_materials": "素材が足りません",
+	"alert_storage_full": "倉庫がいっぱいです",
+	"alert_no_storage": "置き場所がありません",
+	"alert_missing_materials": "建設の素材が足りません"
 }

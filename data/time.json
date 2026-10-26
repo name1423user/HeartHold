@@ -1,0 +1,6 @@
+{
+	"real_seconds_per_day": 1200.0,
+	"start_hour": 8.0,
+	"night_start_hour": 20.0,
+	"night_end_hour": 6.0
+}

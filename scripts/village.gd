@@ -1,0 +1,753 @@
+class_name Village
+extends RefCounted
+## 村全体のシミュレーション。村人は plan(手順の列)を1つずつこなす。
+## 画面を持たないので、テストからそのまま進められる。
+
+signal alert_raised(kind: String, message: String, cell: Vector2i)
+signal block_changed(pos: Vector3i, id: int)
+signal trees_changed
+signal building_changed(building: Building)
+signal villager_added(villager: Villager)
+
+const MAX_STEP_MINUTES: float = 1.0
+const NO_CELL := Vector2i(-1, -1)
+
+var world: WorldData
+var editor: TerrainEditor
+var pathing: Pathing
+var clock := GameClock.new()
+var tasks := TaskQueue.new()
+var villagers: Array[Villager] = []
+var buildings: Dictionary = {}
+## 地面に置かれた物。Vector2i -> {item: count}
+var ground_items: Dictionary = {}
+## 運搬中で予約済みの地面の山。Vector2i -> 村人ID
+var ground_reserved: Dictionary = {}
+var rng := RandomNumberGenerator.new()
+var next_villager_id: int = 1
+var next_building_id: int = 1
+var villager_cfg: Dictionary = {}
+var needs_cfg: Dictionary = {}
+
+## 作業速度などにかける倍率を足すための口(装備・熟練度・特技・村長の方針)
+var speed_modifiers: Array[Callable] = []
+
+
+func _init(target: WorldData) -> void:
+	world = target
+	editor = TerrainEditor.new(world)
+	pathing = Pathing.new(world)
+	editor.block_changed.connect(_on_block_changed)
+	villager_cfg = GameData.get_dict("villagers")
+	needs_cfg = GameData.get_dict("needs")
+	rng.seed = world.seed
+
+
+static func create(seed: int) -> Village:
+	return Village.new(TerrainGenerator.generate(seed))
+
+
+# --- 村人 ---------------------------------------------------------------
+
+func add_villager(display_name: String, at: Vector2i = NO_CELL) -> Villager:
+	var v := Villager.new()
+	v.id = next_villager_id
+	next_villager_id += 1
+	v.display_name = display_name
+	v.place_at(_free_cell_near(world.start if at == NO_CELL else at))
+	villagers.append(v)
+	villager_added.emit(v)
+	return v
+
+
+func get_villager(id: int) -> Villager:
+	for v in villagers:
+		if v.id == id:
+			return v
+	return null
+
+
+func living_villagers() -> Array[Villager]:
+	var result: Array[Villager] = []
+	for v in villagers:
+		if v.state != Villager.State.DEAD:
+			result.append(v)
+	return result
+
+
+func _free_cell_near(target: Vector2i) -> Vector2i:
+	for radius in 8:
+		for dz in range(-radius, radius + 1):
+			for dx in range(-radius, radius + 1):
+				var cell: Vector2i = target + Vector2i(dx, dz)
+				if world.is_walkable(cell):
+					return cell
+	return target
+
+
+# --- 時間を進める ---------------------------------------------------------
+
+func tick(minutes: float) -> void:
+	if clock.paused:
+		return
+	var remaining: float = minutes
+	while remaining > 0.0:
+		var dt: float = minf(remaining, MAX_STEP_MINUTES)
+		remaining -= dt
+		clock.advance(dt)
+		_before_villagers(dt)
+		for v in villagers.duplicate():
+			_update_villager(v, dt)
+		_after_villagers(dt)
+
+
+## 派生の仕組み(襲撃・審査など)が毎ステップ呼ばれる口
+func _before_villagers(_dt: float) -> void:
+	pass
+
+
+func _after_villagers(_dt: float) -> void:
+	pass
+
+
+func _update_villager(v: Villager, dt: float) -> void:
+	if v.state == Villager.State.DEAD:
+		return
+	if v.state != Villager.State.NORMAL:
+		_update_incapacitated(v, dt)
+		return
+	v.needs.tick(dt, v.sleeping, _sleep_multiplier(v), mood_rate(v))
+	if v.needs.get_value("health") <= 0.0:
+		knock_out(v)
+		return
+	if v.plan.is_empty():
+		_choose_plan(v)
+	_run_step(v, dt)
+
+
+## 気絶・治療中の更新(M3-T05 で中身を入れる)
+func _update_incapacitated(_v: Villager, _dt: float) -> void:
+	pass
+
+
+func knock_out(v: Villager) -> void:
+	_abort_plan(v, "")
+	v.state = Villager.State.UNCONSCIOUS
+	raise_alert("faint", Texts.t("alert_faint", {"name": v.display_name}), v.cell())
+
+
+func raise_alert(kind: String, message: String, cell: Vector2i) -> void:
+	alert_raised.emit(kind, message, cell)
+
+
+# --- 行動の選び方 -------------------------------------------------------
+
+func _choose_plan(v: Villager) -> void:
+	if v.carry_count > 0:
+		_set_plan(v, "store", [{"op": "store_carry"}])
+		return
+	if _choose_need_plan(v):
+		return
+	if _choose_task_plan(v):
+		return
+	if _choose_haul_plan(v):
+		return
+	_set_plan(v, "idle", [{"op": "wander"}, {"op": "wait", "minutes": 10.0}])
+
+
+func _choose_need_plan(v: Villager) -> bool:
+	if v.needs.get_value("food") < float(needs_cfg["eat_below"]):
+		var source: Dictionary = find_food_source(v.cell())
+		if not source.is_empty():
+			_set_plan(v, "eat", [
+				{"op": "goto", "target": source["cell"], "adjacent": source["kind"] == "building"},
+				{"op": "take", "source": source, "item": source["item"], "count": 1},
+				{"op": "eat"},
+			])
+			return true
+	var sleep_below: float = float(needs_cfg["night_sleep_below"]) if clock.is_night() else float(needs_cfg["sleep_below"])
+	if v.needs.get_value("sleep") < sleep_below:
+		var home: Building = buildings.get(v.home_id) as Building
+		var steps: Array[Dictionary] = []
+		if home != null and home.is_complete():
+			steps.append({"op": "goto", "target": home.cell, "adjacent": true, "building": home.id})
+		steps.append({"op": "sleep", "building": home.id if home != null and home.is_complete() else -1})
+		_set_plan(v, "sleep", steps)
+		return true
+	return false
+
+
+## 役職の優先順位(data/jobs.json)で仕事を拾う
+func _choose_task_plan(v: Villager) -> bool:
+	var task: JobTask = tasks.find_for(task_types_for(v), v.cell(), clock.minutes)
+	if task == null:
+		return false
+	task.assigned = v.id
+	task.blocked_reason = ""
+	v.task_id = task.id
+	_set_plan(v, "task", plan_for_task(v, task))
+	return true
+
+
+func task_types_for(v: Villager) -> Array:
+	var jobs: Dictionary = GameData.get_dict("jobs")
+	var job: Dictionary = jobs.get(v.job, {})
+	var types: Array = (job.get("priority", []) as Array).duplicate()
+	for type: String in jobs.get("shared", []):
+		if not types.has(type):
+			types.append(type)
+	return types
+
+
+func plan_for_task(_v: Villager, task: JobTask) -> Array[Dictionary]:
+	match task.type:
+		"chop":
+			return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
+		"dig":
+			return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
+		"build", "fixture", "craft":
+			return [{"op": "supply"}]
+	return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
+
+
+func _choose_haul_plan(v: Villager) -> bool:
+	for cell: Vector2i in ground_items:
+		if ground_reserved.has(cell):
+			continue
+		var pile: Dictionary = ground_items[cell]
+		for item: String in pile:
+			if best_stockpile_for(item, 1) == null:
+				continue
+			ground_reserved[cell] = v.id
+			_set_plan(v, "haul", [
+				{"op": "goto", "target": cell, "adjacent": false},
+				{"op": "take", "source": {"kind": "ground", "cell": cell}, "item": item, "count": int(pile[item])},
+				{"op": "store_carry"},
+			])
+			return true
+	return false
+
+
+func _set_plan(v: Villager, kind: String, steps: Array[Dictionary]) -> void:
+	v.plan = steps
+	v.plan_kind = kind
+	v.path.clear()
+
+
+## 今の行動をやめる。reason があれば仕事を保留にする
+func _abort_plan(v: Villager, reason: String) -> void:
+	if v.task_id != -1:
+		var task: JobTask = tasks.get_task(v.task_id)
+		if task != null:
+			task.assigned = -1
+			if not reason.is_empty():
+				task.blocked_reason = reason
+				task.retry_at = clock.minutes + float(villager_cfg["blocked_retry_minutes"])
+	for cell: Vector2i in ground_reserved.keys():
+		if ground_reserved[cell] == v.id:
+			ground_reserved.erase(cell)
+	v.clear_plan()
+
+
+func _finish_plan(v: Villager) -> void:
+	_abort_plan(v, "")
+
+
+# --- 手順の実行 ---------------------------------------------------------
+
+func _run_step(v: Villager, dt: float) -> void:
+	var budget: float = dt
+	var guard: int = 0
+	while not v.plan.is_empty() and budget > 0.0 and guard < 16:
+		guard += 1
+		var step: Dictionary = v.plan[0]
+		var used: float = _execute(v, step, budget)
+		if used < 0.0:
+			return
+		budget -= used
+	if v.plan.is_empty() and v.plan_kind != "":
+		_finish_plan(v)
+
+
+## 手順を実行し、使った時間(分)を返す。手順が終われば plan から外す。
+## 失敗で plan をやめたときは -1
+func _execute(v: Villager, step: Dictionary, budget: float) -> float:
+	match str(step["op"]):
+		"goto":
+			return _step_goto(v, step, budget)
+		"work":
+			return _step_work(v, budget)
+		"take":
+			_step_take(v, step)
+			return 0.0
+		"store_carry":
+			_step_store_carry(v)
+			return 0.0
+		"put":
+			_step_put(v, step)
+			return 0.0
+		"deliver":
+			_step_deliver(v)
+			return 0.0
+		"supply":
+			_step_supply(v)
+			return 0.0
+		"eat":
+			_step_eat(v)
+			return 0.0
+		"sleep":
+			return _step_sleep(v, step, budget)
+		"wait":
+			var left: float = float(step["minutes"]) - budget
+			if left <= 0.0:
+				v.plan.pop_front()
+				return float(step["minutes"])
+			step["minutes"] = left
+			return budget
+		"wander":
+			var radius: int = int(villager_cfg["wander_radius"])
+			var target: Vector2i = v.cell() + Vector2i(rng.randi_range(-radius, radius), rng.randi_range(-radius, radius))
+			v.plan[0] = {"op": "goto", "target": target, "adjacent": false, "optional": true}
+			return 0.0
+	return _execute_extra(v, step, budget)
+
+
+## 派生の手順(戦う・運ぶ人を担ぐ など)はここに足す
+func _execute_extra(v: Villager, _step: Dictionary, _budget: float) -> float:
+	v.plan.pop_front()
+	return 0.0
+
+
+func _step_goto(v: Villager, step: Dictionary, budget: float) -> float:
+	if not step.has("dest"):
+		var target: Vector2i = step["target"]
+		var dest: Vector2i = target
+		if step.get("adjacent", false):
+			dest = _adjacent_stand_cell(v.cell(), target, step.get("building", -1))
+		if dest == NO_CELL or (dest != v.cell() and not pathing.is_reachable(v.cell(), dest)):
+			if step.get("optional", false):
+				v.plan.pop_front()
+				return 0.0
+			_fail(v, "unreachable")
+			return -1.0
+		step["dest"] = dest
+		v.path = pathing.find_path(v.cell(), dest)
+		if not v.path.is_empty():
+			v.path.pop_front()
+	var speed: float = walk_speed(v)
+	var used: float = 0.0
+	while used < budget:
+		if v.path.is_empty():
+			v.place_at(step["dest"])
+			v.plan.pop_front()
+			return used
+		var next_cell: Vector2i = v.path[0]
+		if not world.is_walkable(next_cell):
+			step.erase("dest")
+			return used
+		var target_pos: Vector2 = Vector2(next_cell) + Vector2(0.5, 0.5)
+		var distance: float = v.pos.distance_to(target_pos)
+		var time_needed: float = distance / speed
+		if time_needed <= budget - used:
+			v.pos = target_pos
+			used += time_needed
+			v.path.pop_front()
+		else:
+			v.pos = v.pos.move_toward(target_pos, speed * (budget - used))
+			used = budget
+	return used
+
+
+## 建物の周りや木の隣など、対象に触れられる立ち位置
+func _adjacent_stand_cell(from: Vector2i, target: Vector2i, building_id: int) -> Vector2i:
+	var targets: Array[Vector2i] = [target]
+	var building: Building = buildings.get(building_id) as Building
+	if building != null:
+		targets = building.cells()
+	if building == null and world.is_walkable(target) and (from == target or pathing.is_reachable(from, target)):
+		return target
+	var best: Vector2i = NO_CELL
+	var best_length: int = 1 << 30
+	for t in targets:
+		for offset in Pathing.NEIGHBORS:
+			var cell: Vector2i = t + offset
+			if not world.is_walkable(cell):
+				continue
+			if cell == from:
+				return cell
+			var path: Array[Vector2i] = pathing.find_path(from, cell)
+			if not path.is_empty() and path.size() < best_length:
+				best = cell
+				best_length = path.size()
+	return best
+
+
+func _fail(v: Villager, reason: String) -> void:
+	if v.plan_kind == "task":
+		var task: JobTask = tasks.get_task(v.task_id)
+		if task != null:
+			raise_alert("blocked", Texts.t("task_" + reason), task.cell)
+	_abort_plan(v, reason)
+
+
+func _step_work(v: Villager, budget: float) -> float:
+	var task: JobTask = tasks.get_task(v.task_id)
+	if task == null:
+		v.plan.pop_front()
+		return 0.0
+	var speed: float = work_speed(v, task.type)
+	var left: float = task.work_needed - task.progress
+	var time_needed: float = left / speed
+	if time_needed <= budget:
+		task.progress = task.work_needed
+		v.plan.pop_front()
+		gain_experience(v, task.type, time_needed)
+		_complete_task(v, task)
+		return time_needed
+	task.progress += speed * budget
+	gain_experience(v, task.type, budget)
+	return budget
+
+
+## 熟練度の経験値を足す(M2-T10)
+func gain_experience(v: Villager, kind: String, minutes: float) -> void:
+	v.experience[kind] = float(v.experience.get(kind, 0.0)) + minutes
+
+
+func _complete_task(v: Villager, task: JobTask) -> void:
+	match task.type:
+		"chop":
+			world.trees.erase(task.cell)
+			pathing.update_cell(task.cell)
+			trees_changed.emit()
+			_give(v, "log", int(GameData.get_dict("resources").get("logs_per_tree", 1)))
+			wear_tool(v, "chop")
+		"dig":
+			var id: int = world.get_block(task.pos)
+			var result: Dictionary = editor.break_block(task.pos)
+			if result["ok"]:
+				var drops: Dictionary = GameData.get_dict("resources").get("block_drops", {})
+				var item: String = str(drops.get(_block_name(id), ""))
+				if not item.is_empty():
+					_give(v, item, 1)
+			wear_tool(v, "dig")
+		_:
+			_complete_task_extra(v, task)
+	tasks.remove(task.id)
+	v.task_id = -1
+	if v.carry_count > 0:
+		v.plan.push_front({"op": "store_carry"})
+
+
+## 派生の仕事の完了処理(建設・加工・狩りなど)
+func _complete_task_extra(_v: Villager, _task: JobTask) -> void:
+	pass
+
+
+## 道具の耐久を減らす(M2-T09 で中身を入れる)
+func wear_tool(_v: Villager, _kind: String) -> void:
+	pass
+
+
+func _block_name(id: int) -> String:
+	var ids: Dictionary = GameData.get_dict("terrain")["blocks"]
+	for block_name: String in ids:
+		if int(ids[block_name]) == id:
+			return block_name
+	return ""
+
+
+func _give(v: Villager, item: String, count: int) -> void:
+	if v.carry_count > 0 and v.carry_item != item:
+		drop_on_ground(v.cell(), v.carry_item, v.carry_count)
+		v.carry_count = 0
+	v.carry_item = item
+	v.carry_count += count
+
+
+func _step_take(v: Villager, step: Dictionary) -> void:
+	v.plan.pop_front()
+	var taken: int = take_from(step["source"], str(step["item"]), int(step["count"]))
+	if taken > 0:
+		_give(v, str(step["item"]), taken)
+
+
+func _step_store_carry(v: Villager) -> void:
+	v.plan.pop_front()
+	if v.carry_count <= 0:
+		return
+	var stockpile: Building = best_stockpile_for(v.carry_item, 1)
+	if stockpile == null:
+		var accepting: bool = _has_stockpile_accepting(v.carry_item)
+		var key: String = "alert_storage_full" if accepting else "alert_no_storage"
+		if not stockpiles().is_empty():
+			raise_alert("storage", Texts.t(key), v.cell())
+		drop_on_ground(v.cell(), v.carry_item, v.carry_count)
+		v.carry_count = 0
+		v.carry_item = ""
+		return
+	v.plan.push_front({"op": "put", "building": stockpile.id})
+	v.plan.push_front({"op": "goto", "target": stockpile.cell, "adjacent": true, "building": stockpile.id})
+
+
+func _step_put(v: Villager, step: Dictionary) -> void:
+	v.plan.pop_front()
+	var stockpile: Building = buildings.get(int(step["building"])) as Building
+	if stockpile == null or v.carry_count <= 0:
+		return
+	var stored: int = store(stockpile, v.carry_item, v.carry_count)
+	v.carry_count -= stored
+	if v.carry_count > 0:
+		v.plan.push_front({"op": "store_carry"})
+	else:
+		v.carry_item = ""
+
+
+func _step_eat(v: Villager) -> void:
+	v.plan.pop_front()
+	if v.carry_count <= 0:
+		return
+	var item: Dictionary = item_def(v.carry_item)
+	if item.get("category", "") != "food":
+		return
+	v.needs.add("food", float(item.get("food", 0.0)))
+	v.carry_count -= 1
+	if v.carry_count <= 0:
+		v.carry_item = ""
+
+
+func _step_sleep(v: Villager, _step: Dictionary, budget: float) -> float:
+	v.sleeping = true
+	var full: float = float(needs_cfg["max"]) * 0.95
+	if v.needs.get_value("sleep") >= full:
+		v.sleeping = false
+		v.plan.pop_front()
+		return 0.0
+	return budget
+
+
+## 建設・設備・加工の素材を集めてから作業する
+func _step_supply(v: Villager) -> void:
+	v.plan.pop_front()
+	var task: JobTask = tasks.get_task(v.task_id)
+	if task == null:
+		return
+	var site: Dictionary = supply_site(task)
+	var missing: Dictionary = site["missing"]
+	if missing.is_empty():
+		v.plan.push_front({"op": "work"})
+		v.plan.push_front({"op": "goto", "target": site["cell"], "adjacent": true, "building": site.get("building", -1)})
+		return
+	for item: String in missing:
+		var source: Dictionary = find_item_source(item, v.cell())
+		if source.is_empty():
+			continue
+		var count: int = mini(int(missing[item]), int(source["count"]))
+		v.plan.push_front({"op": "supply"})
+		v.plan.push_front({"op": "deliver"})
+		v.plan.push_front({"op": "goto", "target": site["cell"], "adjacent": true, "building": site.get("building", -1)})
+		v.plan.push_front({"op": "take", "source": source, "item": item, "count": count})
+		v.plan.push_front({"op": "goto", "target": source["cell"], "adjacent": source["kind"] == "building", "building": source.get("id", -1)})
+		return
+	raise_alert("material", Texts.t("alert_missing_materials"), task.cell)
+	_abort_plan(v, "missing_materials")
+
+
+## 仕事ごとの素材置き場と不足(派生側で建設・加工を返す)
+func supply_site(task: JobTask) -> Dictionary:
+	return {"cell": task.cell, "missing": {}}
+
+
+## 運んできた素材を現場に納める
+func _step_deliver(v: Villager) -> void:
+	v.plan.pop_front()
+	var task: JobTask = tasks.get_task(v.task_id)
+	if task == null or v.carry_count <= 0:
+		return
+	deliver_to_site(task, v.carry_item, v.carry_count)
+	v.carry_count = 0
+	v.carry_item = ""
+
+
+func deliver_to_site(task: JobTask, item: String, count: int) -> void:
+	var delivered: Dictionary = task.extra.get("delivered", {})
+	delivered[item] = int(delivered.get(item, 0)) + count
+	task.extra["delivered"] = delivered
+
+
+# --- 物と倉庫 -----------------------------------------------------------
+
+func item_def(item: String) -> Dictionary:
+	return GameData.get_dict("items").get(item, {})
+
+
+func stockpiles() -> Array[Building]:
+	var result: Array[Building] = []
+	for b: Building in buildings.values():
+		if b.is_complete() and b.capacity() > 0:
+			result.append(b)
+	return result
+
+
+func accepts(stockpile: Building, item: String) -> bool:
+	return stockpile.filter.is_empty() or stockpile.filter.has(str(item_def(item).get("category", "")))
+
+
+func _has_stockpile_accepting(item: String) -> bool:
+	for s in stockpiles():
+		if accepts(s, item):
+			return true
+	return false
+
+
+## 置ける倉庫のうち優先度が高いもの(同じなら番号が小さいもの)
+func best_stockpile_for(item: String, count: int) -> Building:
+	var best: Building = null
+	for s in stockpiles():
+		if not accepts(s, item) or s.free_space() < mini(count, 1):
+			continue
+		if best == null or s.priority > best.priority or (s.priority == best.priority and s.id < best.id):
+			best = s
+	return best
+
+
+func store(stockpile: Building, item: String, count: int) -> int:
+	var stored: int = mini(count, stockpile.free_space())
+	if stored > 0 and accepts(stockpile, item):
+		stockpile.inventory[item] = int(stockpile.inventory.get(item, 0)) + stored
+		return stored
+	return 0
+
+
+func drop_on_ground(cell: Vector2i, item: String, count: int) -> void:
+	if count <= 0:
+		return
+	var pile: Dictionary = ground_items.get(cell, {})
+	pile[item] = int(pile.get(item, 0)) + count
+	ground_items[cell] = pile
+
+
+func stock_count(item: String) -> int:
+	var total: int = 0
+	for s in stockpiles():
+		total += int(s.inventory.get(item, 0))
+	return total
+
+
+func total_stock() -> int:
+	var total: int = 0
+	for s in stockpiles():
+		total += s.stored_total()
+	return total
+
+
+## 物の取り出し元(倉庫か地面)のうち一番近いもの
+func find_item_source(item: String, from: Vector2i) -> Dictionary:
+	var best: Dictionary = {}
+	var best_distance: float = INF
+	for s in stockpiles():
+		var count: int = int(s.inventory.get(item, 0))
+		if count > 0:
+			var distance: float = Vector2(from).distance_to(s.center())
+			if distance < best_distance:
+				best = {"kind": "building", "id": s.id, "cell": s.cell, "count": count, "item": item}
+				best_distance = distance
+	for cell: Vector2i in ground_items:
+		var count: int = int((ground_items[cell] as Dictionary).get(item, 0))
+		if count > 0 and not ground_reserved.has(cell):
+			var distance: float = Vector2(from).distance_to(Vector2(cell))
+			if distance < best_distance:
+				best = {"kind": "ground", "cell": cell, "count": count, "item": item}
+				best_distance = distance
+	return best
+
+
+func find_food_source(from: Vector2i) -> Dictionary:
+	var best: Dictionary = {}
+	var items: Dictionary = GameData.get_dict("items")
+	# 腹持ちのよい食べ物から探す
+	var foods: Array = items.keys().filter(func(k: String) -> bool: return items[k].get("category", "") == "food")
+	foods.sort_custom(func(a: String, b: String) -> bool: return float(items[a]["food"]) > float(items[b]["food"]))
+	for item: String in foods:
+		best = find_item_source(item, from)
+		if not best.is_empty():
+			return best
+	return best
+
+
+func take_from(source: Dictionary, item: String, count: int) -> int:
+	if source["kind"] == "building":
+		var b: Building = buildings.get(int(source["id"])) as Building
+		if b == null:
+			return 0
+		var taken: int = mini(count, int(b.inventory.get(item, 0)))
+		_remove_inventory(b.inventory, item, taken)
+		return taken
+	var cell: Vector2i = source["cell"]
+	ground_reserved.erase(cell)
+	if not ground_items.has(cell):
+		return 0
+	var pile: Dictionary = ground_items[cell]
+	var taken_ground: int = mini(count, int(pile.get(item, 0)))
+	_remove_inventory(pile, item, taken_ground)
+	if pile.is_empty():
+		ground_items.erase(cell)
+	return taken_ground
+
+
+func _remove_inventory(inventory: Dictionary, item: String, count: int) -> void:
+	var left: int = int(inventory.get(item, 0)) - count
+	if left > 0:
+		inventory[item] = left
+	else:
+		inventory.erase(item)
+
+
+## 倉庫からまとめて取り除く(加工の素材など)。足りなければ何もしないで false
+func consume_stock(items: Dictionary) -> bool:
+	for item: String in items:
+		if stock_count(item) < int(items[item]):
+			return false
+	for item: String in items:
+		var left: int = int(items[item])
+		for s in stockpiles():
+			var taken: int = mini(left, int(s.inventory.get(item, 0)))
+			_remove_inventory(s.inventory, item, taken)
+			left -= taken
+	return true
+
+
+# --- 速度と倍率 ---------------------------------------------------------
+
+func walk_speed(_v: Villager) -> float:
+	return float(villager_cfg["walk_blocks_per_minute"])
+
+
+## 作業速度。装備・熟練度・特技・村長の方針の倍率をかける
+func work_speed(v: Villager, kind: String) -> float:
+	var speed: float = 1.0
+	for modifier in speed_modifiers:
+		speed *= float(modifier.call(v, kind))
+	return speed
+
+
+func _sleep_multiplier(v: Villager) -> float:
+	var home: Building = buildings.get(v.home_id) as Building
+	if v.plan_kind == "sleep" and not v.plan.is_empty() and int(v.plan[0].get("building", -1)) != -1 and home != null:
+		return bed_multiplier(home)
+	return float(needs_cfg["ground_sleep_multiplier"])
+
+
+## 家のベッドの睡眠回復倍率(M2-T12)
+func bed_multiplier(_home: Building) -> float:
+	return 1.0
+
+
+## 気分の回復倍率(飾り・村長の方針)
+func mood_rate(_v: Villager) -> float:
+	return 1.0
+
+
+func _on_block_changed(pos: Vector3i, id: int) -> void:
+	pathing.update_cell(Vector2i(pos.x, pos.z))
+	block_changed.emit(pos, id)
