@@ -31,6 +31,7 @@ var needs_cfg: Dictionary = {}
 
 ## 作業速度などにかける倍率を足すための口(装備・熟練度・特技・村長の方針)
 var speed_modifiers: Array[Callable] = []
+var wildlife: Wildlife
 
 
 func _init(target: WorldData) -> void:
@@ -41,6 +42,7 @@ func _init(target: WorldData) -> void:
 	villager_cfg = GameData.get_dict("villagers")
 	needs_cfg = GameData.get_dict("needs")
 	rng.seed = world.seed
+	wildlife = Wildlife.new(self)
 
 
 static func create(seed: int) -> Village:
@@ -102,9 +104,9 @@ func tick(minutes: float) -> void:
 		_after_villagers(dt)
 
 
-## 派生の仕組み(襲撃・審査など)が毎ステップ呼ばれる口
-func _before_villagers(_dt: float) -> void:
-	pass
+## 村人より先に動かす仕組み(獲物・襲撃・審査など)
+func _before_villagers(dt: float) -> void:
+	wildlife.update(dt)
 
 
 func _after_villagers(_dt: float) -> void:
@@ -208,6 +210,8 @@ func plan_for_task(_v: Villager, task: JobTask) -> Array[Dictionary]:
 			return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
 		"build", "fixture", "craft":
 			return [{"op": "supply"}]
+		"hunt":
+			return [{"op": "hunt"}]
 	return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
 
 
@@ -318,8 +322,18 @@ func _execute(v: Villager, step: Dictionary, budget: float) -> float:
 	return _execute_extra(v, step, budget)
 
 
-## 派生の手順(戦う・運ぶ人を担ぐ など)はここに足す
-func _execute_extra(v: Villager, _step: Dictionary, _budget: float) -> float:
+## そのほかの手順(狩り・戦い・運ぶ人を担ぐ など)
+func _execute_extra(v: Villager, step: Dictionary, budget: float) -> float:
+	match str(step["op"]):
+		"hunt":
+			var task: JobTask = tasks.get_task(v.task_id)
+			if task == null:
+				v.plan.pop_front()
+				return 0.0
+			var used: float = wildlife.step_hunt(v, task, budget)
+			if used < 0.0:
+				_fail(v, "unreachable")
+			return used
 	v.plan.pop_front()
 	return 0.0
 

@@ -1,4 +1,38 @@
 {
-	"plank": {"name": "木材", "station": "workbench", "inputs": {"log": 1}, "outputs": {"plank": 4}, "work": 15.0, "skill": "craft"},
-	"fence_post": {"name": "柵の杭", "station": "workbench", "inputs": {"plank": 2}, "outputs": {"fence_post": 1}, "work": 10.0, "skill": "craft"}
+	"plank": {
+		"name": "木材",
+		"station": "workbench",
+		"inputs": {
+			"log": 1
+		},
+		"outputs": {
+			"plank": 4
+		},
+		"work": 15.0,
+		"skill": "craft"
+	},
+	"fence_post": {
+		"name": "柵の杭",
+		"station": "workbench",
+		"inputs": {
+			"plank": 2
+		},
+		"outputs": {
+			"fence_post": 1
+		},
+		"work": 10.0,
+		"skill": "craft"
+	},
+	"meal": {
+		"name": "料理",
+		"station": "workbench",
+		"inputs": {
+			"meat": 1
+		},
+		"outputs": {
+			"meal": 1
+		},
+		"work": 10.0,
+		"skill": "cook"
+	}
 }

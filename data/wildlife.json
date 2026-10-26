@@ -1,0 +1,13 @@
+{
+	"rabbit": {
+		"name": "ウサギ",
+		"count": 24,
+		"min_distance_from_start": 20,
+		"speed_blocks_per_minute": 1.0,
+		"move_interval_minutes": 6.0,
+		"hunt_work_minutes": 5.0,
+		"hunt_reach": 1.5,
+		"drops": {"meat": 2, "fur": 1},
+		"respawn_minutes": 240.0
+	}
+}
