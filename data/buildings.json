@@ -111,5 +111,36 @@
 		"unlock_level": 0,
 		"era": "iron",
 		"capacity_animals": 8
+	},
+	"campfire": {
+		"name": "焚き火",
+		"size": [
+			1,
+			1
+		],
+		"materials": {
+			"log": 3,
+			"stone": 2
+		},
+		"work": 15.0,
+		"unlock_level": 0,
+		"era": "stone"
+	},
+	"chapel": {
+		"name": "礼拝堂",
+		"size": [
+			4,
+			5
+		],
+		"materials": {
+			"stone": 30,
+			"plank": 20
+		},
+		"work": 300.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"effects": {
+			"calm_rate": 0.3
+		}
 	}
 }

@@ -14,6 +14,13 @@ func refresh(game: Game) -> void:
 		for goal in goals:
 			_label("%s %s" % [Texts.t("milestone_done") if goal["done"] else Texts.t("milestone_todo"), goal["label"]])
 	_label(Texts.t("food_days", {"days": FoodStock.days_left(village)}))
+	var feast := Button.new()
+	feast.text = Texts.t("hold_feast")
+	feast.tooltip_text = Texts.t("tooltip_feast")
+	feast.pressed.connect(func() -> void:
+		var result: Dictionary = (village.system("festivals") as Festivals).hold_feast()
+		game.hud.toast(str(result.get("message", "")) if not result["ok"] else Texts.t("alert_feast")))
+	add_child(feast)
 	var results: Array = village.inspection.results
 	if not results.is_empty():
 		var latest: Dictionary = results[-1]

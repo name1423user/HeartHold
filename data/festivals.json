@@ -1,0 +1,4 @@
+{
+	"feast": {"food_per_person": 2, "places": ["tavern", "campfire"], "start_hour": 18.0, "minutes": 120.0, "mood": 30.0, "fun": 40.0, "social": 30.0, "cooldown_days": 3.0},
+	"festival": {"place": "chapel", "minutes": 180.0, "mood": 35.0, "fun": 50.0, "calm": 40.0, "food_per_person": 1, "reputation": 5.0}
+}
