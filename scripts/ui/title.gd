@@ -50,7 +50,17 @@ func _rebuild() -> void:
 	var continue_button: Button = _button(Texts.t("title_continue"), func() -> void: _open_save(saves[0]))
 	continue_button.disabled = saves.is_empty()
 	for save_name in saves:
-		_button("%s: %s" % [Texts.t("title_load"), save_name], func() -> void: _open_save(save_name))
+		var save_row := HBoxContainer.new()
+		box.add_child(save_row)
+		var load_button := Button.new()
+		load_button.text = "%s: %s" % [Texts.t("title_load"), save_name]
+		load_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		load_button.pressed.connect(func() -> void: _open_save(save_name))
+		save_row.add_child(load_button)
+		var delete_button := Button.new()
+		delete_button.text = Texts.t("title_delete")
+		delete_button.pressed.connect(func() -> void: _confirm_delete(save_name))
+		save_row.add_child(delete_button)
 	_button(Texts.t("text_size", {"percent": roundi(Settings.text_scale() * 100)}), func() -> void:
 		var count: int = (GameData.get_dict("ui")["text_scales"] as Array).size()
 		Settings.text_scale_index = (Settings.text_scale_index + 1) % count
@@ -60,7 +70,24 @@ func _rebuild() -> void:
 	_button(Texts.t("title_quit"), func() -> void: get_tree().quit())
 
 
+## セーブの削除は確認してから(SPEC 6章)
+func _confirm_delete(save_name: String) -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.dialog_text = Texts.t("confirm_delete", {"name": save_name})
+	dialog.confirmed.connect(func() -> void:
+		SaveGame.delete_save(save_name)
+		_rebuild())
+	add_child(dialog)
+	dialog.popup_centered()
+
+
 func _open_save(save_name: String) -> void:
+	if SaveGame.load_village(save_name) == null:
+		var dialog := AcceptDialog.new()
+		dialog.dialog_text = SaveGame.last_error
+		add_child(dialog)
+		dialog.popup_centered()
+		return
 	Game.pending_save = save_name
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
 

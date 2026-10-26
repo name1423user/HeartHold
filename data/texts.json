@@ -166,5 +166,7 @@
 	"title_settings": "設定",
 	"title_quit": "終了",
 	"title_seed": "シード",
-	"game_title": "Hearthold"
+	"game_title": "Hearthold",
+	"title_delete": "削除",
+	"confirm_delete": "セーブ「{name}」を削除します。よろしいですか?"
 }

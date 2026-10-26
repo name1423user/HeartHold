@@ -14,6 +14,7 @@ var hud: Hud
 var alerts: AlertLog
 var level: VillageLevel
 var hints: Hints
+var autosave: Autosave
 ## 今の操作: "select" / "chop" / "dig" / "build:<種類>" / "move"
 var tool: String = "select"
 var selected_villager: int = -1
@@ -68,8 +69,11 @@ func start(new_village: Village) -> void:
 	env.environment.ambient_light_energy = 0.5
 	add_child(env)
 	alerts = AlertLog.new(village)
-	level = VillageLevel.new(village)
+	level = village.level
 	hints = Hints.new(village)
+	hints.step = int(village.loaded_extra.get("hints_step", 0))
+	autosave = Autosave.new(village)
+	autosave.extra_source = func() -> Dictionary: return {"hints_step": hints.step}
 	hud = Hud.new()
 	add_child(hud)
 	hud.setup(self)
@@ -79,7 +83,7 @@ func _process(delta: float) -> void:
 	if village == null:
 		return
 	village.tick(village.clock.real_to_minutes(delta))
-	level.update()
+	autosave.update(delta)
 	hints.update()
 	entities.update_view()
 	_viewer.position = camera.position
@@ -88,7 +92,7 @@ func _process(delta: float) -> void:
 func load_save(save_name: String) -> void:
 	var loaded: Village = SaveGame.load_village(save_name)
 	if loaded == null:
-		hud.toast(Texts.t("save_corrupt"))
+		hud.toast(SaveGame.last_error)
 		return
 	start(loaded)
 

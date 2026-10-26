@@ -39,6 +39,9 @@ var raid_alarm: bool = false
 var chief: Chief
 var fog: Fog
 var ruins: Ruins
+var level: VillageLevel
+## ロードしたセーブの画面側の状態(ヒントの段階など)
+var loaded_extra: Dictionary = {}
 
 
 func _init(target: WorldData) -> void:
@@ -59,6 +62,7 @@ func _init(target: WorldData) -> void:
 	chief = Chief.new(self)
 	fog = Fog.new(self)
 	ruins = Ruins.new(self)
+	level = VillageLevel.new(self)
 
 
 static func create(seed: int) -> Village:
@@ -89,6 +93,7 @@ func dispose() -> void:
 	chief = null
 	fog = null
 	ruins = null
+	level = null
 
 
 # --- 村人 ---------------------------------------------------------------
@@ -157,6 +162,7 @@ func _before_villagers(dt: float) -> void:
 func _after_villagers(dt: float) -> void:
 	fog.update(dt)
 	ruins.update()
+	level.update()
 	_check_hunger()
 
 

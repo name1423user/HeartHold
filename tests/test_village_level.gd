@@ -6,7 +6,7 @@ var level: VillageLevel
 
 func before_each() -> void:
 	village = Village.create(12345)
-	level = VillageLevel.new(village)
+	level = village.level
 
 
 func test_house_and_storage_reach_level_one_and_unlock_watchtower() -> void:
