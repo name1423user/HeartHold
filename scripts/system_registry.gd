@@ -4,4 +4,4 @@ extends RefCounted
 
 
 static func classes() -> Array[GDScript]:
-	return [Calendar, Traits, ExtendedNeeds, Illness]
+	return [Calendar, Traits, Illness, ExtendedNeeds, Schedule]

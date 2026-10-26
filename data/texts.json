@@ -192,5 +192,9 @@
 	"state_sick": "病気",
 	"state_injured": "負傷",
 	"traits_label": "個性",
-	"age_label": "年齢"
+	"age_label": "年齢",
+	"schedule_label": "日課表(時間をクリックで 働く→休む→寝る)",
+	"schedule_short_work": "働",
+	"schedule_short_rest": "休",
+	"schedule_short_sleep": "寝"
 }

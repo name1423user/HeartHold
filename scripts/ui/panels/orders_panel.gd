@@ -32,6 +32,20 @@ func refresh(game: Game) -> void:
 		game.hud.refresh_now())
 	add_child(policy)
 
+	_label(Texts.t("schedule_label"))
+	var schedule: Schedule = village.system("schedule") as Schedule
+	var grid := GridContainer.new()
+	grid.columns = 8
+	add_child(grid)
+	for hour in 24:
+		var slot := Button.new()
+		slot.text = "%d%s" % [hour, Texts.t("schedule_short_" + str(schedule.table[hour]))]
+		slot.tooltip_text = "%d時: %s" % [hour, GameData.get_dict("schedule")["kinds"][schedule.table[hour]]]
+		slot.pressed.connect(func() -> void:
+			schedule.cycle_slot(hour)
+			refresh(game))
+		grid.add_child(slot)
+
 	_label(Texts.t("job_label"))
 	var jobs: Array[String] = Job.ids()
 	for v in village.living_villagers():

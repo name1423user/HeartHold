@@ -1,0 +1,6 @@
+{
+	"default": ["sleep", "sleep", "sleep", "sleep", "sleep", "sleep", "work", "work", "work", "work", "work", "work", "rest", "work", "work", "work", "work", "work", "work", "rest", "rest", "rest", "sleep", "sleep"],
+	"kinds": {"work": "働く", "rest": "休む", "sleep": "寝る"},
+	"sleep_until": 90.0,
+	"rest_minutes": 30.0
+}
