@@ -1,0 +1,11 @@
+{
+	"check_minutes": 60.0,
+	"winter_spoil_multiplier": 0.5,
+	"ground_spoil_multiplier": 2.0,
+	"barrel_spoil_multiplier": 0.5,
+	"diet_memory": 5,
+	"variety_count": 3,
+	"variety_mood": 5.0,
+	"monotony_count": 3,
+	"monotony_mood": -4.0
+}

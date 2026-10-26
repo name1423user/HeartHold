@@ -22,12 +22,14 @@
 	"meat": {
 		"name": "肉",
 		"category": "food",
-		"food": 25.0
+		"food": 25.0,
+		"spoil_days": 3.0
 	},
 	"meal": {
 		"name": "料理",
 		"category": "food",
-		"food": 50.0
+		"food": 50.0,
+		"spoil_days": 2.0
 	},
 	"fence_post": {
 		"name": "柵の杭",
@@ -79,6 +81,56 @@
 	},
 	"wool": {
 		"name": "羊毛",
+		"category": "material"
+	},
+	"smoked_meat": {
+		"name": "燻製肉",
+		"category": "food",
+		"food": 30.0,
+		"spoil_days": 30.0
+	},
+	"salted_meat": {
+		"name": "塩漬け肉",
+		"category": "food",
+		"food": 30.0,
+		"spoil_days": 40.0
+	},
+	"salt": {
+		"name": "塩",
+		"category": "material"
+	},
+	"bread": {
+		"name": "パン",
+		"category": "food",
+		"food": 45.0,
+		"spoil_days": 5.0
+	},
+	"egg": {
+		"name": "卵",
+		"category": "food",
+		"food": 15.0,
+		"spoil_days": 4.0
+	},
+	"cabbage": {
+		"name": "キャベツ",
+		"category": "food",
+		"food": 20.0,
+		"spoil_days": 6.0
+	},
+	"wheat": {
+		"name": "小麦",
+		"category": "material"
+	},
+	"flour": {
+		"name": "小麦粉",
+		"category": "material"
+	},
+	"hay": {
+		"name": "干し草",
+		"category": "material"
+	},
+	"sapling": {
+		"name": "苗木",
 		"category": "material"
 	}
 }

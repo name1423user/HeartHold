@@ -122,5 +122,98 @@
 		"work": 25.0,
 		"skill": "craft",
 		"era": "iron"
+	},
+	"smoked_meat": {
+		"name": "燻製肉",
+		"station": "smokehouse",
+		"inputs": {
+			"meat": 2,
+			"log": 1
+		},
+		"outputs": {
+			"smoked_meat": 2
+		},
+		"work": 30.0,
+		"skill": "cook",
+		"era": "iron"
+	},
+	"salted_meat": {
+		"name": "塩漬け肉",
+		"station": "smokehouse",
+		"inputs": {
+			"meat": 2,
+			"salt": 1
+		},
+		"outputs": {
+			"salted_meat": 2
+		},
+		"work": 20.0,
+		"skill": "cook",
+		"era": "iron"
+	},
+	"flour": {
+		"name": "小麦粉",
+		"station": "windmill",
+		"inputs": {
+			"wheat": 2
+		},
+		"outputs": {
+			"flour": 2
+		},
+		"work": 10.0,
+		"skill": "craft",
+		"era": "medieval"
+	},
+	"flour_by_hand": {
+		"name": "小麦粉(手挽き)",
+		"station": "workbench",
+		"inputs": {
+			"wheat": 2
+		},
+		"outputs": {
+			"flour": 1
+		},
+		"work": 30.0,
+		"skill": "craft",
+		"era": "iron"
+	},
+	"bread": {
+		"name": "パン",
+		"station": "campfire",
+		"inputs": {
+			"flour": 1
+		},
+		"outputs": {
+			"bread": 2
+		},
+		"work": 15.0,
+		"skill": "cook",
+		"era": "iron"
+	},
+	"meal_campfire": {
+		"name": "料理(焚き火)",
+		"station": "campfire",
+		"inputs": {
+			"meat": 1
+		},
+		"outputs": {
+			"meal": 1
+		},
+		"work": 8.0,
+		"skill": "cook"
+	},
+	"cabbage_stew": {
+		"name": "キャベツ煮",
+		"station": "campfire",
+		"inputs": {
+			"cabbage": 2,
+			"meat": 1
+		},
+		"outputs": {
+			"meal": 2
+		},
+		"work": 12.0,
+		"skill": "cook",
+		"era": "iron"
 	}
 }

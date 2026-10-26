@@ -10,6 +10,8 @@ signal building_changed(building: Building)
 signal villager_added(villager: Villager)
 ## 効果音を鳴らす合図(伐採・採掘・建設完了)
 signal sound_event(sound: String)
+## 食べた(食事の種類 M7-T06)
+signal ate(villager: Villager, item: String)
 
 const MAX_STEP_MINUTES: float = 1.0
 const NO_CELL := Vector2i(-1, -1)
@@ -940,6 +942,7 @@ func _step_eat(v: Villager) -> void:
 	if item.get("category", "") != "food":
 		return
 	v.needs.add("food", float(item.get("food", 0.0)))
+	ate.emit(v, v.carry_item)
 	v.carry_count -= 1
 	if v.carry_count <= 0:
 		v.carry_item = ""
