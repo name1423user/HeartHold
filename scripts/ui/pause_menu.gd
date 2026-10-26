@@ -5,6 +5,8 @@ extends PanelContainer
 var game: Game
 var box: VBoxContainer
 var _was_paused: bool = false
+## キーを待っている操作(空なら待っていない)
+var _waiting_action: String = ""
 
 
 func setup(target: Game) -> void:
@@ -75,8 +77,39 @@ func _rebuild() -> void:
 			AudioDirector.apply_volumes()
 			label.text = Texts.t("volume_label", {"bus": Texts.t("bus_" + bus), "percent": roundi(value * 100)}))
 		row.add_child(slider)
+	_button(Texts.t("menu_keys"), func() -> void: _show_keys())
 	_button(Texts.t("menu_title_screen"), func() -> void:
 		game.get_tree().change_scene_to_file("res://scenes/ui/title.tscn"))
+
+
+## キー割り当ての一覧。押すと次に押したキーに替わる
+func _show_keys() -> void:
+	for child in box.get_children():
+		child.queue_free()
+	var title := Label.new()
+	title.text = Texts.t("menu_keys") if _waiting_action.is_empty() else Texts.t("key_waiting")
+	box.add_child(title)
+	for action in KeyBindings.ACTIONS:
+		if not InputMap.has_action(action):
+			continue
+		_button("%s: %s" % [Texts.t("action_" + action), KeyBindings.key_name(action)], func() -> void:
+			_waiting_action = action
+			_show_keys())
+	_button(Texts.t("key_reset"), func() -> void:
+		KeyBindings.reset()
+		_show_keys())
+	_button(Texts.t("close"), _rebuild)
+
+
+func _input(event: InputEvent) -> void:
+	if _waiting_action.is_empty() or not visible or not event is InputEventKey or not event.pressed:
+		return
+	var key_event := event as InputEventKey
+	if key_event.physical_keycode != KEY_ESCAPE:
+		KeyBindings.rebind(_waiting_action, key_event.physical_keycode)
+	_waiting_action = ""
+	get_viewport().set_input_as_handled()
+	_show_keys()
 
 
 func _button(text: String, action: Callable) -> void:

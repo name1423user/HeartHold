@@ -295,5 +295,20 @@
 	"achievements_label": "実績 {done}/{total}",
 	"tutorial_next": "次へ",
 	"tutorial_stop": "チュートリアルをやめる",
-	"title_tutorial": "チュートリアルで始める"
+	"title_tutorial": "チュートリアルで始める",
+	"menu_keys": "キー割り当て",
+	"key_waiting": "新しいキーを押してください(Escで取り消し)",
+	"key_reset": "初期の割り当てに戻す",
+	"action_toggle_pause": "一時停止",
+	"action_panel_1": "村人パネル",
+	"action_panel_2": "指示・役職パネル",
+	"action_panel_3": "建設パネル",
+	"action_panel_4": "村の状態パネル",
+	"action_panel_5": "交易・探索パネル",
+	"action_cam_forward": "カメラ 前",
+	"action_cam_back": "カメラ 後ろ",
+	"action_cam_left": "カメラ 左",
+	"action_cam_right": "カメラ 右",
+	"action_cam_rotate_left": "カメラ 左回り",
+	"action_cam_rotate_right": "カメラ 右回り"
 }

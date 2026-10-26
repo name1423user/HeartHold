@@ -13,6 +13,7 @@ static func load_settings() -> void:
 	if loaded:
 		return
 	loaded = true
+	KeyBindings.load_bindings()
 	var config := ConfigFile.new()
 	if config.load(PATH) != OK:
 		return
@@ -23,6 +24,7 @@ static func load_settings() -> void:
 
 static func save_settings() -> void:
 	var config := ConfigFile.new()
+	config.load(PATH)
 	config.set_value("ui", "text_scale_index", text_scale_index)
 	for bus: String in volumes:
 		config.set_value("audio", bus, volumes[bus])

@@ -1,6 +1,7 @@
 class_name CameraRig
 extends Node3D
 ## 斜め上からのカメラ(AC-029)。右ドラッグ/Q・E で回転、ホイールでズーム、WASD/中ドラッグで平行移動。
+## キーは入力マップの cam_* で、設定から変えられる(M11-T03)。
 ## ズームと俯角は data/camera.json の範囲に制限し、カメラが地面より下に入らないようにする。
 
 var world: WorldData
@@ -55,20 +56,20 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	var move := Vector2.ZERO
-	if Input.is_physical_key_pressed(KEY_W):
+	if Input.is_action_pressed("cam_forward"):
 		move.y -= 1.0
-	if Input.is_physical_key_pressed(KEY_S):
+	if Input.is_action_pressed("cam_back"):
 		move.y += 1.0
-	if Input.is_physical_key_pressed(KEY_A):
+	if Input.is_action_pressed("cam_left"):
 		move.x -= 1.0
-	if Input.is_physical_key_pressed(KEY_D):
+	if Input.is_action_pressed("cam_right"):
 		move.x += 1.0
 	if move != Vector2.ZERO:
 		_pan(move.normalized() * float(cfg["pan_speed"]) * delta * (distance / float(cfg["start_distance"])))
 	var turn: float = 0.0
-	if Input.is_physical_key_pressed(KEY_Q):
+	if Input.is_action_pressed("cam_rotate_left"):
 		turn += 1.0
-	if Input.is_physical_key_pressed(KEY_E):
+	if Input.is_action_pressed("cam_rotate_right"):
 		turn -= 1.0
 	if turn != 0.0:
 		yaw += turn * float(cfg["key_rotate_speed"]) * delta
