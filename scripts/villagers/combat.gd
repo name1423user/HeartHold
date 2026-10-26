@@ -40,7 +40,9 @@ static func step_fight(village: Village, v: Villager, budget: float) -> float:
 			# 見えていなければ村の中心へ寄って探す
 			village.chase(v, village.world.start, budget)
 		return budget
-	var distance: float = v.pos.distance_to(target.pos)
+	# 台の上からは台の中心から測る
+	var origin: Vector2 = Watchtower.tower_of(village, v).center() if on_tower else v.pos
+	var distance: float = origin.distance_to(target.pos)
 	var reach: float = Equipment.attack_range(v, on_tower)
 	if distance <= reach:
 		if Equipment.is_ranged(v) and not on_tower and distance < float(cfg()["ranged_min_distance"]):

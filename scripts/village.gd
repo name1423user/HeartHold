@@ -188,6 +188,8 @@ func _choose_plan(v: Villager) -> void:
 		return
 	if _choose_equipment_plan(v):
 		return
+	if _choose_post_plan(v):
+		return
 	if _choose_task_plan(v):
 		return
 	if _choose_haul_plan(v):
@@ -211,7 +213,12 @@ func _choose_rescue_plan(v: Villager) -> bool:
 ## 襲撃中: 衛兵は迎え撃ち、他は避難する
 func _choose_raid_plan(v: Villager) -> bool:
 	if v.job == "guard" and not v.is_chief:
-		_set_plan(v, "fight", [{"op": "fight"}])
+		var steps: Array[Dictionary] = []
+		var tower: Building = Watchtower.tower_of(self, v)
+		if tower != null and not Watchtower.is_on_tower(self, v):
+			steps.append({"op": "goto", "target": tower.cell, "adjacent": true, "building": tower.id})
+		steps.append({"op": "fight"})
+		_set_plan(v, "fight", steps)
 		return true
 	var shelter: Building = Combat.shelter_for(self, v)
 	var steps: Array[Dictionary] = []
@@ -224,6 +231,7 @@ func _choose_raid_plan(v: Villager) -> bool:
 
 ## 魔物が境界に入ったら合図を出し、全員の行動を切り替える。襲撃が終われば元に戻す
 func _update_alarm() -> void:
+	Watchtower.check_warning(self)
 	var inside: bool = false
 	if raids.active:
 		for m in raids.monsters:
@@ -245,13 +253,13 @@ func _update_alarm() -> void:
 				release_plan(v)
 
 
-## 見張り台の上にいるか(M3-T08)
-func is_on_watchtower(_v: Villager) -> bool:
-	return false
+## 見張り台の上にいるか
+func is_on_watchtower(v: Villager) -> bool:
+	return Watchtower.is_on_tower(self, v)
 
 
-func watchtower_target(_v: Villager) -> Monster:
-	return null
+func watchtower_target(v: Villager) -> Monster:
+	return Watchtower.target(self, v)
 
 
 ## 目的の列へ向かって少し進む(追いかけ用)
@@ -316,6 +324,19 @@ func _choose_equipment_plan(v: Villager) -> bool:
 		{"op": "take", "source": source, "item": item, "count": 1},
 		{"op": "equip"},
 	])
+	return true
+
+
+## 見張り台に置かれた衛兵は台の上で見張る
+func _choose_post_plan(v: Villager) -> bool:
+	var tower: Building = Watchtower.tower_of(self, v)
+	if tower == null or not tower.is_complete() or v.job != "guard":
+		return false
+	var steps: Array[Dictionary] = []
+	if not Watchtower.is_on_tower(self, v):
+		steps.append({"op": "goto", "target": tower.cell, "adjacent": true, "building": tower.id})
+	steps.append({"op": "wait", "minutes": 30.0})
+	_set_plan(v, "post", steps)
 	return true
 
 
