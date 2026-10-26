@@ -32,7 +32,7 @@ static func save_village(village: Village, save_name: String, extra: Dictionary 
 	var error: Error = DirAccess.make_dir_recursive_absolute(directory())
 	if error != OK:
 		return error
-	var terrain: PackedByteArray = var_to_bytes(_terrain_chunks(village.world))
+	var terrain: PackedByteArray = var_to_bytes(_infinite_terrain(village.world) if village.world.infinite else _terrain_chunks(village.world))
 	var state: Dictionary = to_state(village, extra)
 	state["terrain_sha256"] = _sha256(terrain)
 	var json: String = JSON.stringify(state, "", true, true)
@@ -69,6 +69,7 @@ static func to_state(village: Village, extra: Dictionary) -> Dictionary:
 	return {
 		"format_version": int(cfg()["format_version"]),
 		"seed": village.world.seed,
+		"infinite": village.world.infinite,
 		"size": [village.world.size.x, village.world.size.y, village.world.size.z],
 		"clock": village.clock.minutes,
 		"rng_state": str(village.rng.state),
@@ -98,6 +99,11 @@ static func _systems_state(village: Village) -> Dictionary:
 	for system in village.systems_order:
 		out[system.key()] = system.to_dict()
 	return out
+
+
+## 無限の地図: 作ったチャンクの一覧と、変えたブロック(地形は生成し直せる)
+static func _infinite_terrain(world: WorldData) -> Dictionary:
+	return {"infinite": true, "chunks": world.chunks.keys(), "edits": world.edit_list()}
 
 
 static func _terrain_chunks(world: WorldData) -> Dictionary:
@@ -136,9 +142,13 @@ static func load_village(save_name: String) -> Village:
 	var chunks: Variant = bytes_to_var(terrain)
 	if not chunks is Dictionary:
 		return null
-	for key: Variant in chunks:
-		if not key is Vector3i or not chunks[key] is PackedByteArray:
+	if bool(state.get("infinite", false)):
+		if not chunks.has("chunks") or not chunks.has("edits"):
 			return null
+	else:
+		for key: Variant in chunks:
+			if not key is Vector3i or not chunks[key] is PackedByteArray:
+				return null
 	last_error = ""
 	return from_state(state, chunks)
 
@@ -179,7 +189,7 @@ static func validate(state: Dictionary) -> bool:
 	for pile: Variant in state["ground_items"]:
 		if not pile is Array or (pile as Array).size() != 3 or not pile[2] is Dictionary:
 			return false
-	return _has_keys(state["fog"], ["explored", "size"]) \
+	return (_has_keys(state["fog"], ["explored", "size"]) or _has_keys(state["fog"], ["chunks"])) \
 		and _has_keys(state["inspection"], ["next_visit_at", "rejected", "accepted"]) \
 		and _has_keys(state["raids"], ["active", "last_raid_at", "next_monster_id", "monsters"]) \
 		and _has_keys(state["wildlife"], ["animals", "next_id", "respawn_timer"]) \
@@ -196,11 +206,19 @@ static func _has_keys(value: Variant, keys: Array) -> bool:
 
 
 static func from_state(state: Dictionary, chunks: Dictionary) -> Village:
-	var world: WorldData = TerrainGenerator.generate(int(state["seed"]))
-	for origin: Vector3i in chunks:
-		var buffer := VoxelBuffer.new()
-		VoxelBlockSerializer.deserialize_from_byte_array(chunks[origin], buffer, true)
-		SavePrototype._apply_chunk(world, origin, buffer.get_channel_as_byte_array(VoxelBuffer.CHANNEL_TYPE))
+	var world: WorldData
+	if bool(state.get("infinite", false)):
+		world = TerrainGenerator.generate_infinite(int(state["seed"]))
+		for key: Variant in chunks["chunks"]:
+			if key is Vector2i:
+				world.ensure_chunk(key)
+		world.apply_edit_list(chunks["edits"])
+	else:
+		world = TerrainGenerator.generate(int(state["seed"]))
+		for origin: Vector3i in chunks:
+			var buffer := VoxelBuffer.new()
+			VoxelBlockSerializer.deserialize_from_byte_array(chunks[origin], buffer, true)
+			SavePrototype._apply_chunk(world, origin, buffer.get_channel_as_byte_array(VoxelBuffer.CHANNEL_TYPE))
 	world.trees.clear()
 	for pair: Array in state["trees"]:
 		world.trees[Vector2i(int(pair[0]), int(pair[1]))] = true

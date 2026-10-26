@@ -310,5 +310,7 @@
 	"action_cam_left": "カメラ 左",
 	"action_cam_right": "カメラ 右",
 	"action_cam_rotate_left": "カメラ 左回り",
-	"action_cam_rotate_right": "カメラ 右回り"
+	"action_cam_rotate_right": "カメラ 右回り",
+	"title_infinite": "無限の地図(歩いた先へ広がる)",
+	"tooltip_infinite": "村人や視察隊が歩いた先の土地が、チャンク単位で生成されて広がります"
 }

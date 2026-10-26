@@ -26,7 +26,10 @@ func setup(new_world: WorldData) -> void:
 	var mesher := VoxelMesherBlocky.new()
 	mesher.library = _build_library()
 	terrain.mesher = mesher
-	terrain.bounds = AABB(Vector3.ZERO, Vector3(world.size))
+	if world.infinite:
+		terrain.bounds = AABB(Vector3(-world.limit, 0, -world.limit), Vector3(world.limit * 2, world.size.y, world.limit * 2))
+	else:
+		terrain.bounds = AABB(Vector3.ZERO, Vector3(world.size))
 	terrain.max_view_distance = 512
 	_terrain_material = _fog_material(true, Color.WHITE)
 	_tree_material = _fog_material(true, Color.WHITE)
@@ -43,20 +46,42 @@ func set_fog(fog: Fog) -> void:
 	update_fog()
 
 
+## 無限の地図では、カメラのまわりの window×window だけを霧のテクスチャにする
+var fog_window: int = 512
+var fog_origin: Vector2i = Vector2i.ZERO
+
+
+## カメラが窓の端に近づいたら、窓を動かして霧を描き直す
+func follow_camera(center: Vector3) -> void:
+	if not world.infinite:
+		return
+	var c := Vector2i(floori(center.x), floori(center.z))
+	var mid: Vector2i = fog_origin + Vector2i(fog_window / 2, fog_window / 2)
+	if absi(c.x - mid.x) > fog_window / 4 or absi(c.y - mid.y) > fog_window / 4:
+		fog_origin = c - Vector2i(fog_window / 2, fog_window / 2)
+		update_fog()
+
+
 func update_fog() -> void:
 	var data := PackedByteArray()
+	var w: int = fog_window if world.infinite else world.size.x
+	var h: int = fog_window if world.infinite else world.size.z
 	if _fog != null:
-		data = _fog.explored
+		data = _fog.explored_window(fog_origin, w) if world.infinite else _fog.explored
 	else:
-		data.resize(world.size.x * world.size.z)
+		data.resize(w * h)
 		data.fill(1)
-	var image := Image.create_from_data(world.size.x, world.size.z, false, Image.FORMAT_R8, data)
+	var image := Image.create_from_data(w, h, false, Image.FORMAT_R8, data)
 	if _fog_texture == null:
 		_fog_texture = ImageTexture.create_from_image(image)
 	else:
 		_fog_texture.update(image)
+	if _fog_texture.get_width() != w:
+		_fog_texture = ImageTexture.create_from_image(image)
 	for material in [_terrain_material, _tree_material]:
 		material.set_shader_parameter("fog_mask", _fog_texture)
+		material.set_shader_parameter("fog_origin", Vector2(fog_origin))
+		material.set_shader_parameter("map_size", Vector2(w, h))
 
 
 ## 木: 幹と葉の2つの箱(頂点色つき)。足元が原点
@@ -104,7 +129,8 @@ func set_block_visual(pos: Vector3i, id: int) -> void:
 		tool.channel = VoxelBuffer.CHANNEL_TYPE
 		tool.set_voxel(pos, id)
 	var generator := terrain.generator as WorldVoxelGenerator
-	generator.source.set_voxel(id, pos.x, pos.y, pos.z, VoxelBuffer.CHANNEL_TYPE)
+	if generator.source != null:
+		generator.source.set_voxel(id, pos.x, pos.y, pos.z, VoxelBuffer.CHANNEL_TYPE)
 
 
 func refresh_trees() -> void:

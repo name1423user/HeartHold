@@ -8,7 +8,7 @@
 		"hunt_work_minutes": 5.0,
 		"hunt_reach": 1.5,
 		"drops": {
-			"meat": 2,
+			"meat": 3,
 			"fur": 1
 		},
 		"growth_per_day": 0.15,

@@ -12,6 +12,12 @@ const NEIGHBORS: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0,
 func _init(target: WorldData) -> void:
 	world = target
 	max_step = int(GameData.get_dict("terrain").get("max_step", 1))
+	if world.infinite:
+		# 無限の地図: できているチャンクの分だけ点を作り、あとはチャンクができるたびに足す
+		for chunk: Vector2i in world.chunks:
+			add_chunk(chunk)
+		world.chunk_generated.connect(add_chunk)
+		return
 	var count: int = world.size.x * world.size.z
 	astar.reserve_space(count)
 	for z in world.size.z:
@@ -26,9 +32,26 @@ func _init(target: WorldData) -> void:
 			_link(cell, cell + Vector2i(0, 1))
 
 
+## チャンクの列を点にして、隣同士(となりのチャンクも)をつなぐ
+func add_chunk(chunk: Vector2i) -> void:
+	var origin: Vector2i = chunk * world.chunk_size
+	for lz in world.chunk_size:
+		for lx in world.chunk_size:
+			var cell: Vector2i = origin + Vector2i(lx, lz)
+			var id: int = _id(cell)
+			if not astar.has_point(id):
+				astar.add_point(id, Vector2(cell))
+			astar.set_point_disabled(id, not world.is_walkable(cell))
+	for lz in world.chunk_size:
+		for lx in world.chunk_size:
+			var cell: Vector2i = origin + Vector2i(lx, lz)
+			for offset in NEIGHBORS:
+				_link(cell, cell + offset)
+
+
 ## ブロックや木が変わった列とその周りをつなぎ直す
 func update_cell(cell: Vector2i) -> void:
-	if not world.in_bounds_2d(cell):
+	if not world.in_bounds_2d(cell) or not astar.has_point(_id(cell)):
 		return
 	astar.set_point_disabled(_id(cell), not world.is_walkable(cell))
 	for offset in NEIGHBORS:
@@ -37,7 +60,7 @@ func update_cell(cell: Vector2i) -> void:
 
 func find_path(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 	var result: Array[Vector2i] = []
-	if not world.in_bounds_2d(from) or not world.in_bounds_2d(to):
+	if not world.in_bounds_2d(from) or not world.in_bounds_2d(to) or not astar.has_point(_id(from)) or not astar.has_point(_id(to)):
 		return result
 	for point in astar.get_point_path(_id(from), _id(to)):
 		result.append(Vector2i(point))
@@ -72,10 +95,12 @@ func _id(cell: Vector2i) -> int:
 
 
 func _link(a: Vector2i, b: Vector2i) -> void:
-	if not world.in_bounds_2d(b):
+	if not world.in_bounds_2d(b) or not world.has_column(b):
 		return
 	var ia: int = _id(a)
 	var ib: int = _id(b)
+	if not astar.has_point(ia) or not astar.has_point(ib):
+		return
 	var ok: bool = world.is_walkable(a) and world.is_walkable(b) and absi(world.top_y(a) - world.top_y(b)) <= max_step
 	if ok and not astar.are_points_connected(ia, ib):
 		astar.connect_points(ia, ib)

@@ -42,6 +42,12 @@ func _rebuild() -> void:
 	seed_edit.text = str(randi() % 100000)
 	seed_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(seed_edit)
+	var infinite_check := CheckBox.new()
+	infinite_check.text = Texts.t("title_infinite")
+	infinite_check.tooltip_text = Texts.t("tooltip_infinite")
+	infinite_check.button_pressed = Game.pending_infinite
+	infinite_check.toggled.connect(func(on: bool) -> void: Game.pending_infinite = on)
+	box.add_child(infinite_check)
 	for tutorial in [false, true]:
 		_button(Texts.t("title_tutorial") if tutorial else Texts.t("title_new"), func() -> void:
 			Game.pending_seed = int(seed_edit.text) if seed_edit.text.is_valid_int() else seed_edit.text.hash()

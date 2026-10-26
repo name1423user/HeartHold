@@ -7,6 +7,8 @@ static var pending_seed: int = 12345
 static var pending_save: String = ""
 ## タイトルで「チュートリアルで始める」を選んだ
 static var pending_tutorial: bool = false
+## タイトルで無限の地図を選んだ(M11-T04)
+static var pending_infinite: bool = false
 
 var village: Village
 var world_view: WorldView
@@ -36,7 +38,7 @@ func _ready() -> void:
 		loaded = SaveGame.load_village(pending_save)
 		if loaded == null:
 			push_warning(Texts.t("save_corrupt"))
-	start(loaded if loaded != null else Village.new_game(pending_seed))
+	start(loaded if loaded != null else Village.new_game(pending_seed, pending_infinite))
 
 
 func start(new_village: Village) -> void:
@@ -103,9 +105,17 @@ func _process(delta: float) -> void:
 	entities.update_view()
 	_viewer.position = camera.position
 	_rain.position = camera.position + Vector3(0, 25, 0)
+	if village.world.infinite:
+		_expand_timer -= delta
+		if _expand_timer <= 0.0:
+			_expand_timer = 1.0
+			var cam := Vector2i(floori(camera.position.x), floori(camera.position.z))
+			village.world.ensure_area(cam, int(GameData.get_dict("terrain")["infinite"]["camera_radius"]))
+			world_view.follow_camera(camera.position)
 
 
 var _rain: GPUParticles3D
+var _expand_timer: float = 0.0
 
 
 ## 冬の雪と、雨・雪の粒(カメラのまわりに降らせる)

@@ -62,5 +62,20 @@
 		"iron_ore": 0.1,
 		"coal": 0.07,
 		"depth": 3
+	},
+	"far": {
+		"from_start": 140.0,
+		"mountain_frequency": 0.006,
+		"mountain_threshold": 0.35,
+		"mountain_height": 28.0,
+		"river_frequency": 0.004,
+		"river_width": 0.03,
+		"forest_boost": 0.0
+	},
+	"infinite": {
+		"chunk": 32,
+		"generate_radius": 64,
+		"camera_radius": 96,
+		"limit": 65536
 	}
 }

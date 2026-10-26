@@ -94,8 +94,9 @@ func _apply() -> void:
 	distance = clampf(distance, float(cfg["min_distance"]), float(cfg["max_distance"]))
 	pitch = clampf(pitch, deg_to_rad(float(cfg["min_pitch_degrees"])), deg_to_rad(float(cfg["max_pitch_degrees"])))
 	if world != null:
-		position.x = clampf(position.x, 0.0, world.size.x)
-		position.z = clampf(position.z, 0.0, world.size.z)
+		if not world.infinite:
+			position.x = clampf(position.x, 0.0, world.size.x)
+			position.z = clampf(position.z, 0.0, world.size.z)
 		position.y = _ground(position) + 1.0
 	var offset := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch)) * distance
 	var eye: Vector3 = position + offset
@@ -108,5 +109,9 @@ func _apply() -> void:
 
 
 func _ground(at: Vector3) -> float:
-	var cell := Vector2i(clampi(int(at.x), 0, world.size.x - 1), clampi(int(at.z), 0, world.size.z - 1))
+	var cell := Vector2i(floori(at.x), floori(at.z))
+	if world.infinite:
+		# まだ作っていない所でも、地形の形から高さが分かる
+		return (world.top_y(cell) if world.has_column(cell) else int(world.shape.column(cell.x, cell.y)["h"])) + 1.0
+	cell = Vector2i(clampi(cell.x, 0, world.size.x - 1), clampi(cell.y, 0, world.size.z - 1))
 	return world.top_y(cell) + 1.0

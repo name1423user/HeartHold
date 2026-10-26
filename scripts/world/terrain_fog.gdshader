@@ -3,6 +3,8 @@ shader_type spatial;
 
 uniform sampler2D fog_mask : filter_nearest, repeat_disable;
 uniform vec2 map_size = vec2(256.0, 256.0);
+// 霧のテクスチャの左上(無限の地図ではカメラのまわりの窓)
+uniform vec2 fog_origin = vec2(0.0, 0.0);
 uniform bool use_vertex_color = true;
 uniform vec4 base_color : source_color = vec4(1.0);
 uniform vec4 fog_color : source_color = vec4(0.30, 0.33, 0.37, 1.0);
@@ -21,7 +23,9 @@ void fragment() {
 	// 頂点色は sRGB で入っているので、明るさを合わせるために線形に直す
 	vec3 color = use_vertex_color ? pow(COLOR.rgb, vec3(2.2)) : base_color.rgb;
 	color = mix(color, vec3(0.92, 0.94, 0.97), snow * step(0.5, up));
-	float explored = step(0.001, texture(fog_mask, world_pos.xz / map_size).r);
+	vec2 uv = (world_pos.xz - fog_origin) / map_size;
+	float inside = step(0.0, uv.x) * step(0.0, uv.y) * step(uv.x, 1.0) * step(uv.y, 1.0);
+	float explored = inside * step(0.001, texture(fog_mask, uv).r);
 	ALBEDO = mix(fog_color.rgb, color, explored);
 	ROUGHNESS = 0.9;
 }

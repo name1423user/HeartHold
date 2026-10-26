@@ -12,7 +12,7 @@
 		"calm": 80.0
 	},
 	"decay_per_hour": {
-		"food": 4.0,
+		"food": 3.0,
 		"sleep": 5.0
 	},
 	"sleep_recovery_per_hour": 12.5,

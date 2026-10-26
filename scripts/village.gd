@@ -56,6 +56,7 @@ func _init(target: WorldData) -> void:
 	editor = TerrainEditor.new(world)
 	pathing = Pathing.new(world)
 	editor.block_changed.connect(_on_block_changed)
+	world.chunk_generated.connect(func(_c: Vector2i) -> void: trees_changed.emit())
 	villager_cfg = GameData.get_dict("villagers")
 	needs_cfg = GameData.get_dict("needs")
 	rng.seed = world.seed
@@ -91,13 +92,13 @@ func _system_speed(v: Villager, kind: String) -> float:
 	return speed
 
 
-static func create(seed: int) -> Village:
-	return Village.new(TerrainGenerator.generate(seed))
+static func create(seed: int, infinite: bool = false) -> Village:
+	return Village.new(TerrainGenerator.generate_infinite(seed) if infinite else TerrainGenerator.generate(seed))
 
 
-## 新しいゲーム: 霧の中に村長と村人3人、開始地点に最初の物資
-static func new_game(seed: int) -> Village:
-	var village: Village = create(seed)
+## 新しいゲーム: 霧の中に村長と村人3人、開始地点に最初の物資。infinite なら無限の地図(M11-T04)
+static func new_game(seed: int, infinite: bool = false) -> Village:
+	var village: Village = create(seed, infinite)
 	village.chief.spawn()
 	var names: Array = village.villager_cfg["names"]
 	for i in int(village.villager_cfg["start_count"]):
