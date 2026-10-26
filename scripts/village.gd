@@ -575,6 +575,57 @@ func deliver_to_site(task: JobTask, item: String, count: int) -> void:
 	task.extra["delivered"] = delivered
 
 
+# --- 建物 ---------------------------------------------------------------
+
+## 建物を置けない理由の文言キー。置けるなら空
+func building_error(type: String, cell: Vector2i) -> String:
+	var def: Dictionary = GameData.get_dict("buildings").get(type, {})
+	if def.is_empty():
+		return "cannot_build_here"
+	var probe := Building.new()
+	probe.type = type
+	probe.cell = cell
+	var height: int = -1
+	for c in probe.cells():
+		if not world.is_walkable(c):
+			return "cannot_build_here"
+		if height == -1:
+			height = world.top_y(c)
+		elif absi(world.top_y(c) - height) > int(GameData.get_dict("terrain")["max_step"]):
+			return "cannot_build_here"
+	return ""
+
+
+## 建物を置く。complete なら完成した状態で置く(開始時やテスト用)
+func add_building(type: String, cell: Vector2i, complete: bool = false) -> Building:
+	var b := Building.new()
+	b.id = next_building_id
+	next_building_id += 1
+	b.type = type
+	b.cell = cell
+	b.state = Building.State.COMPLETE if complete else Building.State.PLANNED
+	buildings[b.id] = b
+	for c in b.cells():
+		world.blocked[c] = b.id
+		pathing.update_cell(c)
+	if complete:
+		_on_building_completed(b)
+	building_changed.emit(b)
+	return b
+
+
+## 建設予約(M2-T07)
+func plan_building(type: String, cell: Vector2i) -> Dictionary:
+	var error: String = building_error(type, cell)
+	if not error.is_empty():
+		return {"ok": false, "message": Texts.t(error)}
+	return {"ok": true, "building": add_building(type, cell)}
+
+
+func _on_building_completed(_b: Building) -> void:
+	pass
+
+
 # --- 物と倉庫 -----------------------------------------------------------
 
 func item_def(item: String) -> Dictionary:
