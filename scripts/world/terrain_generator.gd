@@ -99,8 +99,36 @@ static func generate(seed: int) -> WorldData:
 			world.biomes[column] = biome
 			world.top[column] = maxi(h, water_top)
 
+	_place_ores(world, cfg, seed)
 	world.original_top = world.top.duplicate()
 	return world
+
+
+## 岩山の地表のすぐ下(掘れる深さの中)に鉄鉱石と石炭を混ぜる(M8-T02)
+static func _place_ores(world: WorldData, cfg: Dictionary, seed: int) -> void:
+	var ores: Dictionary = cfg.get("ores", {})
+	if ores.is_empty():
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed + 4
+	var ids: Dictionary = cfg["blocks"]
+	var stone: int = int(ids["stone"])
+	var depth: int = int(ores["depth"])
+	for z in world.size.z:
+		for x in world.size.x:
+			var column: int = world.column_index(x, z)
+			if world.biomes[column] != WorldData.Biome.MOUNTAIN:
+				continue
+			var top: int = world.top[column]
+			for y in range(top - depth, top):
+				var index: int = column * world.size.y + y
+				if y < 0 or world.blocks[index] != stone:
+					continue
+				var roll: float = rng.randf()
+				if roll < float(ores["iron_ore"]):
+					world.blocks[index] = int(ids["iron_ore"])
+				elif roll < float(ores["iron_ore"]) + float(ores["coal"]):
+					world.blocks[index] = int(ids["coal"])
 
 
 static func _column(cfg: Dictionary, height_limit: int, h: int, top_block: int, water_top: int) -> PackedByteArray:

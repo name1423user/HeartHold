@@ -41,13 +41,23 @@ static func evaluate(village: Village, applicant: Applicant) -> Dictionary:
 
 
 static func score_village(village: Village) -> Dictionary:
-	return {
+	var scores: Dictionary = {
 		"food": food_score(village),
 		"housing": housing_score(village),
 		"safety": safety_score(village),
 		"facilities": facilities_score(village),
 		"satisfaction": satisfaction_score(village),
 	}
+	# 建物の効果(兵舎・礼拝堂・酒場・市場)と村の象徴(全項目に足す)
+	var effects: BuildingEffects = village.system("building_effects") as BuildingEffects
+	if effects != null:
+		scores["safety"] = minf(100.0, float(scores["safety"]) + effects.score_bonus("safety"))
+		scores["satisfaction"] = minf(100.0, float(scores["satisfaction"]) + effects.score_bonus("satisfaction"))
+		var bonus: float = effects.score_bonus("inspection_bonus")
+		for key: String in scores:
+			if key != "housing" or float(scores[key]) > 0.0:
+				scores[key] = minf(100.0, float(scores[key]) + bonus)
+	return scores
 
 
 static func food_score(village: Village) -> float:
@@ -61,7 +71,7 @@ static func housing_score(village: Village) -> float:
 	var bonus: float = 0.0
 	for b: Building in village.houses():
 		beds += int(b.def().get("residents", 0))
-		bonus += BuildingFixture.sum_effect(b, "housing_score")
+		bonus += BuildingFixture.sum_effect(b, "housing_score") + float(b.def().get("effects", {}).get("housing_score", 0.0))
 	var free: int = beds - village.living_villagers().size()
 	if free < 1:
 		return 0.0

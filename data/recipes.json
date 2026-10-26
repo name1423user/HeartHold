@@ -9,7 +9,8 @@
 			"plank": 4
 		},
 		"work": 15.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"fence_post": {
 		"name": "柵の杭",
@@ -21,7 +22,8 @@
 			"fence_post": 1
 		},
 		"work": 10.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"meal": {
 		"name": "料理",
@@ -33,7 +35,8 @@
 			"meal": 1
 		},
 		"work": 10.0,
-		"skill": "cook"
+		"skill": "cook",
+		"era": "stone"
 	},
 	"stone_axe": {
 		"name": "石の斧",
@@ -46,7 +49,8 @@
 			"stone_axe": 1
 		},
 		"work": 20.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"stone_pickaxe": {
 		"name": "石のつるはし",
@@ -59,7 +63,8 @@
 			"stone_pickaxe": 1
 		},
 		"work": 20.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"stone_knife": {
 		"name": "石のナイフ",
@@ -71,7 +76,8 @@
 			"stone_knife": 1
 		},
 		"work": 10.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"wooden_spear": {
 		"name": "木の槍",
@@ -83,7 +89,8 @@
 			"wooden_spear": 1
 		},
 		"work": 20.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"sling": {
 		"name": "投石紐",
@@ -96,7 +103,8 @@
 			"sling": 1
 		},
 		"work": 15.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"fur_coat": {
 		"name": "毛皮の上着",
@@ -108,7 +116,8 @@
 			"fur_coat": 1
 		},
 		"work": 20.0,
-		"skill": "craft"
+		"skill": "craft",
+		"era": "stone"
 	},
 	"wool_cloak": {
 		"name": "羊毛の外套",
@@ -200,7 +209,8 @@
 			"meal": 1
 		},
 		"work": 8.0,
-		"skill": "cook"
+		"skill": "cook",
+		"era": "stone"
 	},
 	"cabbage_stew": {
 		"name": "キャベツ煮",
@@ -215,5 +225,308 @@
 		"work": 12.0,
 		"skill": "cook",
 		"era": "iron"
+	},
+	"charcoal": {
+		"name": "木炭",
+		"station": "charcoal_kiln",
+		"inputs": {
+			"log": 2
+		},
+		"outputs": {
+			"charcoal": 1
+		},
+		"work": 20.0,
+		"skill": "smith",
+		"era": "iron",
+		"task_type": "smith"
+	},
+	"iron_ingot": {
+		"name": "鉄の延べ棒",
+		"station": "smithy",
+		"inputs": {
+			"iron_ore": 2,
+			"charcoal": 1
+		},
+		"outputs": {
+			"iron_ingot": 1
+		},
+		"work": 30.0,
+		"skill": "smith",
+		"era": "iron",
+		"task_type": "smith"
+	},
+	"iron_ingot_coal": {
+		"name": "鉄の延べ棒(石炭)",
+		"station": "smithy",
+		"inputs": {
+			"iron_ore": 2,
+			"coal": 1
+		},
+		"outputs": {
+			"iron_ingot": 1
+		},
+		"work": 30.0,
+		"skill": "smith",
+		"era": "iron",
+		"task_type": "smith"
+	},
+	"steel_ingot": {
+		"name": "鋼の延べ棒",
+		"station": "smithy",
+		"inputs": {
+			"iron_ingot": 2,
+			"charcoal": 2
+		},
+		"outputs": {
+			"steel_ingot": 1
+		},
+		"work": 45.0,
+		"skill": "smith",
+		"era": "medieval",
+		"task_type": "smith"
+	},
+	"cut_stone": {
+		"name": "切り石",
+		"station": "workbench",
+		"inputs": {
+			"stone": 2
+		},
+		"outputs": {
+			"cut_stone": 1
+		},
+		"work": 12.0,
+		"skill": "craft",
+		"era": "iron"
+	},
+	"iron_axe": {
+		"name": "鉄の斧",
+		"station": "smithy",
+		"inputs": {
+			"plank": 1,
+			"iron_ingot": 2
+		},
+		"outputs": {
+			"iron_axe": 1
+		},
+		"work": 30.0,
+		"skill": "smith",
+		"era": "iron",
+		"task_type": "smith"
+	},
+	"iron_pickaxe": {
+		"name": "鉄のつるはし",
+		"station": "smithy",
+		"inputs": {
+			"plank": 1,
+			"iron_ingot": 2
+		},
+		"outputs": {
+			"iron_pickaxe": 1
+		},
+		"work": 30.0,
+		"skill": "smith",
+		"era": "iron",
+		"task_type": "smith"
+	},
+	"steel_axe": {
+		"name": "鋼の斧",
+		"station": "smithy",
+		"inputs": {
+			"plank": 1,
+			"steel_ingot": 2
+		},
+		"outputs": {
+			"steel_axe": 1
+		},
+		"work": 40.0,
+		"skill": "smith",
+		"era": "medieval",
+		"task_type": "smith"
+	},
+	"steel_pickaxe": {
+		"name": "鋼のつるはし",
+		"station": "smithy",
+		"inputs": {
+			"plank": 1,
+			"steel_ingot": 2
+		},
+		"outputs": {
+			"steel_pickaxe": 1
+		},
+		"work": 40.0,
+		"skill": "smith",
+		"era": "medieval",
+		"task_type": "smith"
+	},
+	"iron_sword": {
+		"name": "鉄の剣",
+		"station": "smithy",
+		"inputs": {
+			"iron_ingot": 3,
+			"plank": 1
+		},
+		"outputs": {
+			"iron_sword": 1
+		},
+		"work": 40.0,
+		"skill": "smith",
+		"era": "iron",
+		"task_type": "smith"
+	},
+	"bow": {
+		"name": "弓",
+		"station": "workbench",
+		"inputs": {
+			"plank": 4,
+			"fur": 1
+		},
+		"outputs": {
+			"bow": 1
+		},
+		"work": 30.0,
+		"skill": "craft",
+		"era": "iron"
+	},
+	"crossbow": {
+		"name": "クロスボウ",
+		"station": "smithy",
+		"inputs": {
+			"plank": 4,
+			"iron_ingot": 2
+		},
+		"outputs": {
+			"crossbow": 1
+		},
+		"work": 45.0,
+		"skill": "smith",
+		"era": "medieval",
+		"task_type": "smith",
+		"requires_fixture": "special_bench"
+	},
+	"musket": {
+		"name": "マスケット",
+		"station": "smithy",
+		"inputs": {
+			"steel_ingot": 3,
+			"plank": 3
+		},
+		"outputs": {
+			"musket": 1
+		},
+		"work": 60.0,
+		"skill": "smith",
+		"era": "early_modern",
+		"task_type": "smith",
+		"requires_fixture": "special_bench"
+	},
+	"magic_staff": {
+		"name": "魔法の杖",
+		"station": "mage_tower",
+		"inputs": {
+			"plank": 3,
+			"mana_crystal": 1
+		},
+		"outputs": {
+			"magic_staff": 1
+		},
+		"work": 40.0,
+		"skill": "magic",
+		"era": "medieval"
+	},
+	"leather_cap": {
+		"name": "革の帽子",
+		"station": "workbench",
+		"inputs": {
+			"fur": 2
+		},
+		"outputs": {
+			"leather_cap": 1
+		},
+		"work": 15.0,
+		"skill": "craft",
+		"era": "stone"
+	},
+	"leather_vest": {
+		"name": "革の胴着",
+		"station": "workbench",
+		"inputs": {
+			"fur": 4
+		},
+		"outputs": {
+			"leather_vest": 1
+		},
+		"work": 25.0,
+		"skill": "craft",
+		"era": "stone"
+	},
+	"iron_helmet": {
+		"name": "鉄の兜",
+		"station": "smithy",
+		"inputs": {
+			"iron_ingot": 2
+		},
+		"outputs": {
+			"iron_helmet": 1
+		},
+		"work": 30.0,
+		"skill": "smith",
+		"era": "iron",
+		"task_type": "smith"
+	},
+	"chainmail": {
+		"name": "鎖かたびら",
+		"station": "smithy",
+		"inputs": {
+			"iron_ingot": 5
+		},
+		"outputs": {
+			"chainmail": 1
+		},
+		"work": 60.0,
+		"skill": "smith",
+		"era": "medieval",
+		"task_type": "smith"
+	},
+	"handcart": {
+		"name": "手押し車",
+		"station": "workbench",
+		"inputs": {
+			"plank": 10,
+			"iron_ingot": 2
+		},
+		"outputs": {
+			"handcart": 1
+		},
+		"work": 40.0,
+		"skill": "craft",
+		"era": "medieval"
+	},
+	"trap_kit": {
+		"name": "罠の材料",
+		"station": "workbench",
+		"inputs": {
+			"plank": 2,
+			"log": 1
+		},
+		"outputs": {
+			"trap_kit": 1
+		},
+		"work": 10.0,
+		"skill": "craft",
+		"era": "stone"
+	},
+	"medicine": {
+		"name": "薬",
+		"station": "infirmary",
+		"inputs": {
+			"herb": 2
+		},
+		"outputs": {
+			"medicine": 1
+		},
+		"work": 15.0,
+		"skill": "craft",
+		"era": "iron",
+		"requires_fixture": "medicine_cabinet"
 	}
 }

@@ -25,7 +25,7 @@ var carry_item: String = ""
 var carry_count: int = 0
 
 ## 道具・武器(M2-T09)。{"id": 装備ID, "durability": 残り} か空
-var equipment: Dictionary = {"tool": {}, "weapon": {}, "clothes": {}}
+var equipment: Dictionary = {"tool": {}, "weapon": {}, "clothes": {}, "head": {}, "body": {}, "cart": {}}
 ## 作業の種類ごとの経験値(M2-T10)
 var experience: Dictionary = {}
 ## 気絶・瀕死・治療の残り時間など(M3)
@@ -96,7 +96,7 @@ static func from_dict(data: Dictionary) -> Villager:
 	v.parents = (data.get("parents", []) as Array).duplicate()
 	v.mana = float(data.get("mana", 0.0))
 	v.diet = (data.get("diet", []) as Array).duplicate()
-	for slot in ["tool", "weapon", "clothes"]:
+	for slot in ["tool", "weapon", "clothes", "head", "body", "cart"]:
 		if not v.equipment.has(slot):
 			v.equipment[slot] = {}
 	return v

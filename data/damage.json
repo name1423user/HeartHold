@@ -1,0 +1,6 @@
+{
+	"repair_fraction": 0.25,
+	"repair_below": 0.9,
+	"repair_minutes": 30.0,
+	"monster_attack_reach": 1.6
+}

@@ -29,12 +29,14 @@ func has_type_at(type: String, cell: Vector2i) -> bool:
 
 
 ## types の順に、拾える仕事を近い順で探す
-func find_for(types: Array, from: Vector2i, now: float) -> JobTask:
+func find_for(types: Array, from: Vector2i, now: float, allowed: Callable = Callable()) -> JobTask:
 	for type: String in types:
 		var best: JobTask = null
 		var best_distance: int = 1 << 30
 		for task: JobTask in tasks.values():
 			if task.type != type or not task.is_available(now):
+				continue
+			if allowed.is_valid() and not allowed.call(task):
 				continue
 			var distance: int = absi(task.cell.x - from.x) + absi(task.cell.y - from.y)
 			if distance < best_distance:

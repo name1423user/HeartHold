@@ -47,7 +47,7 @@ func refresh(game: Game) -> void:
 		grid.add_child(slot)
 
 	_label(Texts.t("job_label"))
-	var jobs: Array[String] = Job.ids()
+	var jobs: Array[String] = Job.available(village)
 	for v in village.living_villagers():
 		if v.is_chief:
 			continue
@@ -58,6 +58,9 @@ func refresh(game: Game) -> void:
 		name_label.custom_minimum_size = Vector2(110, 0)
 		row.add_child(name_label)
 		var option := OptionButton.new()
+		if not jobs.has(v.job):
+			jobs = jobs.duplicate()
+			jobs.append(v.job)
 		for i in jobs.size():
 			option.add_item(Job.display_name(jobs[i]), i)
 			if jobs[i] == v.job:

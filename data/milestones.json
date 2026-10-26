@@ -1,25 +1,134 @@
 {
 	"start_level": 0,
 	"levels": [
-		{"level": 1, "name": "開拓地", "era": "stone", "goals": [
-			{"type": "building_count", "building": "house", "count": 1, "label": "家1軒"},
-			{"type": "building_count", "building": "storage", "count": 1, "label": "倉庫1つ"}
-		]},
-		{"level": 2, "name": "小さな村", "era": "stone", "goals": [
-			{"type": "building_count", "building": "house", "count": 3, "label": "家3軒"},
-			{"type": "residents", "count": 5, "label": "住人5人"},
-			{"type": "satisfaction", "value": 60.0, "label": "満足度平均60以上"}
-		]},
-		{"level": 3, "name": "村", "era": "stone", "goals": [
-			{"type": "building_count", "building": "watchtower", "count": 1, "label": "見張り台1つ"},
-			{"type": "residents", "count": 8, "label": "住人8人"},
-			{"type": "food_days", "days": 7, "label": "食料7日分"}
-		]}
+		{
+			"level": 1,
+			"name": "開拓地",
+			"era": "stone",
+			"goals": [
+				{
+					"type": "building_count",
+					"building": "house",
+					"count": 1,
+					"label": "家1軒"
+				},
+				{
+					"type": "building_count",
+					"building": "storage",
+					"count": 1,
+					"label": "倉庫1つ"
+				}
+			]
+		},
+		{
+			"level": 2,
+			"name": "小さな村",
+			"era": "stone",
+			"goals": [
+				{
+					"type": "building_count",
+					"building": "house",
+					"count": 3,
+					"label": "家3軒"
+				},
+				{
+					"type": "residents",
+					"count": 5,
+					"label": "住人5人"
+				},
+				{
+					"type": "satisfaction",
+					"value": 60.0,
+					"label": "満足度平均60以上"
+				}
+			]
+		},
+		{
+			"level": 3,
+			"name": "村",
+			"era": "stone",
+			"goals": [
+				{
+					"type": "building_count",
+					"building": "watchtower",
+					"count": 1,
+					"label": "見張り台1つ"
+				},
+				{
+					"type": "residents",
+					"count": 8,
+					"label": "住人8人"
+				},
+				{
+					"type": "food_days",
+					"days": 7,
+					"label": "食料7日分"
+				}
+			]
+		},
+		{
+			"level": 4,
+			"name": "大きな村",
+			"era": "iron",
+			"goals": [
+				{
+					"type": "building_count",
+					"building": "smithy",
+					"count": 1,
+					"label": "鍛冶屋1つ"
+				},
+				{
+					"type": "residents",
+					"count": 12,
+					"label": "住人12人"
+				},
+				{
+					"type": "food_days",
+					"days": 10,
+					"label": "食料10日分"
+				}
+			]
+		},
+		{
+			"level": 5,
+			"name": "町",
+			"era": "medieval",
+			"goals": [
+				{
+					"type": "building_count",
+					"building": "chapel",
+					"count": 1,
+					"label": "礼拝堂1つ"
+				},
+				{
+					"type": "residents",
+					"count": 18,
+					"label": "住人18人"
+				},
+				{
+					"type": "satisfaction",
+					"value": 70.0,
+					"label": "満足度平均70以上"
+				}
+			]
+		}
 	],
 	"eras": {
-		"stone": {"name": "石と木の時代", "playable": true},
-		"iron": {"name": "鉄の時代", "playable": false},
-		"medieval": {"name": "中世", "playable": false},
-		"early_modern": {"name": "近世", "playable": false}
+		"stone": {
+			"name": "石と木の時代",
+			"playable": true
+		},
+		"iron": {
+			"name": "鉄の時代",
+			"playable": true
+		},
+		"medieval": {
+			"name": "中世",
+			"playable": true
+		},
+		"early_modern": {
+			"name": "近世",
+			"playable": true
+		}
 	}
 }

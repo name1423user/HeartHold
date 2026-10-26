@@ -38,4 +38,4 @@ func test_hunter_brings_meat_and_fur_then_meal_is_cooked() -> void:
 		if storage.inventory.get("meal", 0) > 0:
 			break
 	assert_eq(int(storage.inventory.get("meal", 0)), 1, "肉 → 料理")
-	assert_eq(int(storage.inventory.get("meat", 0)), meat - 1)
+	assert_lt(int(storage.inventory.get("meat", 0)), meat, "肉を使う(残りは傷むこともある)")

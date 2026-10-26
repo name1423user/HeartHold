@@ -369,6 +369,14 @@ func set_plan(v: Villager, kind: String, steps: Array[Dictionary]) -> void:
 	_set_plan(v, kind, steps)
 
 
+## 職人の腕で決まる設備(M8-T05): 上位の設備は熟練度の高い建築係だけが置ける
+func can_take(v: Villager, task: JobTask) -> bool:
+	if task.type == "fixture":
+		var need: int = int(BuildingFixture.def(str(task.extra.get("fixture", ""))).get("min_builder_level", 0))
+		return maxi(Proficiency.level(v, "build"), Proficiency.level(v, "fixture")) >= need
+	return true
+
+
 ## 働けるか(村長と子どもは働かない)
 func can_work(v: Villager) -> bool:
 	return not v.is_chief and not LifeCycle.is_child(v)
@@ -521,7 +529,7 @@ func _choose_post_plan(v: Villager) -> bool:
 func _choose_task_plan(v: Villager) -> bool:
 	if not can_work(v):
 		return false
-	var task: JobTask = tasks.find_for(task_types_for(v), v.cell(), clock.minutes)
+	var task: JobTask = tasks.find_for(task_types_for(v), v.cell(), clock.minutes, func(t: JobTask) -> bool: return can_take(v, t))
 	if task == null:
 		return false
 	task.assigned = v.id
@@ -551,7 +559,7 @@ func plan_for_task(v: Villager, task: JobTask) -> Array[Dictionary]:
 			return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
 		"dig":
 			return [{"op": "goto", "target": task.cell, "adjacent": true}, {"op": "work"}]
-		"build", "fixture", "craft":
+		"build", "fixture", "craft", "smith", "repair":
 			return [{"op": "supply"}]
 		"hunt":
 			return [{"op": "hunt"}]
@@ -708,10 +716,13 @@ func _execute_extra(v: Villager, step: Dictionary, budget: float) -> float:
 		"equip":
 			v.plan.pop_front()
 			if v.carry_count > 0 and Equipment.is_equipment(v.carry_item):
-				Equipment.equip(v, v.carry_item)
+				var previous: String = Equipment.equip(v, v.carry_item)
 				v.carry_count -= 1
 				if v.carry_count <= 0:
 					v.carry_item = ""
+				# 前の装備は倉庫へ戻す
+				if not previous.is_empty():
+					drop_on_ground(v.cell(), previous, 1)
 			return 0.0
 		"hunt":
 			var task: JobTask = tasks.get_task(v.task_id)
@@ -804,7 +815,7 @@ func _step_work(v: Villager, budget: float) -> float:
 		v.plan.pop_front()
 		return 0.0
 	var skill: String = task_skill(task)
-	var speed: float = work_speed(v, skill)
+	var speed: float = work_speed(v, skill) * station_speed(task)
 	var left: float = task.work_needed - task.progress
 	var time_needed: float = left / speed
 	if time_needed <= budget:
@@ -818,9 +829,20 @@ func _step_work(v: Villager, budget: float) -> float:
 	return budget
 
 
+## 作業場の設備(道具掛けなど)による速さ
+func station_speed(task: JobTask) -> float:
+	if task.type != "craft" and task.type != "smith":
+		return 1.0
+	var r: Dictionary = Crafting.recipe(task.recipe)
+	var station: Building = Crafting.find_station(self, str(r.get("station", "")))
+	return BuildingFixture.product_effect(station, "craft_speed") if station != null else 1.0
+
+
 ## 熟練度の経験値を足す(M2-T10)
 func gain_experience(v: Villager, kind: String, minutes: float) -> void:
-	v.experience[kind] = float(v.experience.get(kind, 0.0)) + minutes
+	var effects: BuildingEffects = system("building_effects") as BuildingEffects
+	var rate: float = effects.experience_rate(kind) if effects != null else 1.0
+	v.experience[kind] = float(v.experience.get(kind, 0.0)) + minutes * rate
 
 
 func _complete_task(v: Villager, task: JobTask) -> void:
@@ -856,7 +878,7 @@ func _complete_task_extra(v: Villager, task: JobTask) -> void:
 		if s.complete_task(v, task):
 			return
 	match task.type:
-		"craft":
+		"craft", "smith":
 			Crafting.complete(self, v, task)
 			wear_tool(v, task_skill(task))
 		"fixture":
@@ -880,7 +902,7 @@ func wear_tool(v: Villager, kind: String) -> void:
 
 ## 仕事の種類から、速度や熟練度に使う作業の種類を出す(加工はレシピの種類)
 func task_skill(task: JobTask) -> String:
-	if task.type == "craft":
+	if task.type == "craft" or task.type == "smith":
 		return str(Crafting.recipe(task.recipe).get("skill", "craft"))
 	return task.type
 
@@ -893,6 +915,17 @@ func _block_name(id: int) -> String:
 	return ""
 
 
+## 仕事で出た物: 1種類目は手に持って倉庫へ運び、残りはその場に置く(あとで運ぶ)
+func give_or_drop(v: Villager, items: Dictionary) -> void:
+	var first: bool = v.carry_count == 0
+	for item: String in items:
+		if first:
+			_give(v, item, int(items[item]))
+			first = false
+		else:
+			drop_on_ground(v.cell(), item, int(items[item]))
+
+
 func _give(v: Villager, item: String, count: int) -> void:
 	if v.carry_count > 0 and v.carry_item != item:
 		drop_on_ground(v.cell(), v.carry_item, v.carry_count)
@@ -901,9 +934,18 @@ func _give(v: Villager, item: String, count: int) -> void:
 	v.carry_count += count
 
 
+## 一度に運べる数(手押し車で増える、M8-T08)
+func carry_capacity(v: Villager) -> int:
+	var cart: String = Equipment.equipped(v, "cart")
+	if not cart.is_empty():
+		return int(Equipment.def(cart).get("capacity", 10))
+	return int(villager_cfg.get("carry_capacity", 10))
+
+
 func _step_take(v: Villager, step: Dictionary) -> void:
 	v.plan.pop_front()
-	var taken: int = take_from(step["source"], str(step["item"]), int(step["count"]))
+	var room: int = carry_capacity(v) - (v.carry_count if v.carry_item == str(step["item"]) else 0)
+	var taken: int = take_from(step["source"], str(step["item"]), mini(int(step["count"]), maxi(room, 1)))
 	if taken > 0:
 		_give(v, str(step["item"]), taken)
 
@@ -982,7 +1024,7 @@ func _step_supply(v: Villager) -> void:
 		var source: Dictionary = find_item_source(item, v.cell())
 		if source.is_empty():
 			continue
-		var count: int = mini(int(missing[item]), int(source["count"]))
+		var count: int = mini(mini(int(missing[item]), int(source["count"])), carry_capacity(v))
 		v.plan.push_front({"op": "supply"})
 		v.plan.push_front({"op": "deliver"})
 		v.plan.push_front({"op": "goto", "target": site["cell"], "adjacent": true, "building": site.get("building", -1)})
@@ -1004,7 +1046,7 @@ func supply_site(task: JobTask) -> Dictionary:
 		if not site.is_empty():
 			return site
 	match task.type:
-		"craft":
+		"craft", "smith":
 			return Crafting.supply_site(self, task)
 		"fixture":
 			return BuildingFixture.supply_site(self, task)
@@ -1058,7 +1100,20 @@ func building_error(type: String, cell: Vector2i) -> String:
 			height = world.top_y(c)
 		elif absi(world.top_y(c) - height) > int(GameData.get_dict("terrain")["max_step"]):
 			return "cannot_build_here"
+	if bool(def.get("near_water", false)) and nearest_water(cell, 4) == NO_CELL:
+		return "need_water"
+	if str(def.get("near_biome", "")) == "mountain" and not _near_mountain(cell, 5):
+		return "need_mountain"
 	return ""
+
+
+func _near_mountain(cell: Vector2i, radius: int) -> bool:
+	for dz in range(-radius, radius + 1):
+		for dx in range(-radius, radius + 1):
+			var c: Vector2i = cell + Vector2i(dx, dz)
+			if world.in_bounds_2d(c) and world.biome_at(c) == WorldData.Biome.MOUNTAIN:
+				return true
+	return false
 
 
 ## 建物を置く。complete なら完成した状態で置く(開始時やテスト用)
@@ -1102,12 +1157,41 @@ func plan_building(type: String, cell: Vector2i) -> Dictionary:
 	return {"ok": true, "building": b}
 
 
-## 村レベルの解放条件も見る建設予約(画面から使う)
-func plan_building_checked(type: String, cell: Vector2i, village_level: int) -> Dictionary:
-	var unlock: int = int(GameData.get_dict("buildings").get(type, {}).get("unlock_level", 0))
+## まだ建てられない理由(村レベル・時代・村の象徴は1つだけ)。建てられるなら空
+func building_lock(type: String, village_level: int) -> String:
+	var def: Dictionary = GameData.get_dict("buildings").get(type, {})
+	var unlock: int = int(def.get("unlock_level", 0))
 	if unlock > village_level:
-		return {"ok": false, "message": Texts.t("locked_level", {"level": unlock})}
+		return Texts.t("locked_level", {"level": unlock})
+	if not Era.allows(def, era()):
+		return Texts.t("locked_era", {"era": Era.display_name(str(def.get("era", "stone")))})
+	if bool(def.get("landmark", false)) and (system("building_effects") as BuildingEffects).has_landmark():
+		return Texts.t("landmark_exists")
+	return ""
+
+
+## 村レベル・時代の解放条件も見る建設予約(画面から使う)
+func plan_building_checked(type: String, cell: Vector2i, village_level: int) -> Dictionary:
+	var lock: String = building_lock(type, village_level)
+	if not lock.is_empty():
+		return {"ok": false, "message": lock}
 	return plan_building(type, cell)
+
+
+## 建物を取り除く(壊された柵など)
+func remove_building(b: Building) -> void:
+	buildings.erase(b.id)
+	for c in b.cells():
+		if int(world.blocked.get(c, -1)) == b.id:
+			world.blocked.erase(c)
+			pathing.update_cell(c)
+	for task: JobTask in tasks.tasks.values():
+		if task.building_id == b.id:
+			tasks.remove(task.id)
+	for v in villagers:
+		if v.home_id == b.id:
+			v.home_id = -1
+	building_changed.emit(b)
 
 
 func _on_building_completed(b: Building) -> void:
@@ -1290,8 +1374,14 @@ func consume_stock(items: Dictionary) -> bool:
 
 # --- 速度と倍率 ---------------------------------------------------------
 
-func walk_speed(_v: Villager) -> float:
-	return float(villager_cfg["walk_blocks_per_minute"])
+func walk_speed(v: Villager) -> float:
+	var speed: float = float(villager_cfg["walk_blocks_per_minute"])
+	# 見張り台の鐘があれば、避難が速い
+	if v.plan_kind == "shelter":
+		for b: Building in buildings.values():
+			if b.is_complete() and b.type == "watchtower":
+				speed *= BuildingFixture.product_effect(b, "evacuation_speed")
+	return speed
 
 
 ## 作業速度。装備・熟練度・特技・村長の方針の倍率をかける

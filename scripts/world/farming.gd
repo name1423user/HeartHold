@@ -171,9 +171,7 @@ func complete_task(v: Villager, task: JobTask) -> bool:
 		"harvest":
 			var f: Dictionary = fields.get(task.building_id, {})
 			if not f.is_empty() and f["stage"] == "ripe":
-				var crop_yield: Dictionary = cfg()["crops"][f["crop"]]["yield"]
-				for item: String in crop_yield:
-					village.drop_on_ground(v.cell(), item, int(crop_yield[item]))
+				village.give_or_drop(v, cfg()["crops"][f["crop"]]["yield"])
 				f["stage"] = "empty"
 				f["growth"] = 0.0
 			return true
@@ -186,8 +184,7 @@ func complete_task(v: Villager, task: JobTask) -> bool:
 			var barn: Dictionary = barns.get(task.building_id, {})
 			if not barn.is_empty():
 				var stock: Dictionary = barn["stock"]
-				for item: String in stock:
-					village.drop_on_ground(v.cell(), item, int(stock[item]))
+				village.give_or_drop(v, stock.duplicate())
 				stock.clear()
 			return true
 	return false

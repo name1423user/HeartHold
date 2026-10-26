@@ -76,7 +76,8 @@
 			"attack": 8.0,
 			"range": 1.5,
 			"durability": 40,
-			"era": "stone"
+			"era": "stone",
+			"affinity": "spear"
 		},
 		"sling": {
 			"slot": "weapon",
@@ -85,7 +86,8 @@
 			"range": 8.0,
 			"tower_range_multiplier": 1.5,
 			"durability": 60,
-			"era": "stone"
+			"era": "stone",
+			"affinity": "sling"
 		},
 		"fur_coat": {
 			"slot": "clothes",
@@ -98,24 +100,144 @@
 			"insulation": 12.0,
 			"durability": 90,
 			"era": "iron"
+		},
+		"iron_sword": {
+			"slot": "weapon",
+			"kind": "melee",
+			"attack": 14.0,
+			"range": 1.5,
+			"durability": 120,
+			"era": "iron",
+			"affinity": "sword"
+		},
+		"bow": {
+			"slot": "weapon",
+			"kind": "ranged",
+			"attack": 7.0,
+			"range": 14.0,
+			"tower_range_multiplier": 1.5,
+			"durability": 100,
+			"era": "iron",
+			"affinity": "bow"
+		},
+		"crossbow": {
+			"slot": "weapon",
+			"kind": "ranged",
+			"attack": 12.0,
+			"range": 16.0,
+			"tower_range_multiplier": 1.5,
+			"durability": 150,
+			"era": "medieval",
+			"affinity": "bow"
+		},
+		"musket": {
+			"slot": "weapon",
+			"kind": "ranged",
+			"attack": 25.0,
+			"range": 18.0,
+			"tower_range_multiplier": 1.5,
+			"durability": 120,
+			"era": "early_modern",
+			"affinity": "gun"
+		},
+		"magic_staff": {
+			"slot": "weapon",
+			"kind": "ranged",
+			"attack": 10.0,
+			"range": 12.0,
+			"durability": -1,
+			"era": "medieval",
+			"affinity": "magic",
+			"mana_per_attack": 5.0,
+			"requires_job": "mage"
+		},
+		"leather_cap": {
+			"slot": "head",
+			"reduction": 0.1,
+			"durability": 80,
+			"era": "stone"
+		},
+		"leather_vest": {
+			"slot": "body",
+			"reduction": 0.15,
+			"durability": 80,
+			"era": "stone"
+		},
+		"iron_helmet": {
+			"slot": "head",
+			"reduction": 0.2,
+			"durability": 150,
+			"era": "iron"
+		},
+		"chainmail": {
+			"slot": "body",
+			"reduction": 0.3,
+			"durability": 200,
+			"era": "medieval"
+		},
+		"handcart": {
+			"slot": "cart",
+			"capacity": 30,
+			"durability": 300,
+			"era": "medieval"
 		}
 	},
 	"wanted": {
 		"gatherer": [
+			"steel_axe",
+			"iron_axe",
 			"stone_axe",
-			"stone_pickaxe"
+			"steel_pickaxe",
+			"iron_pickaxe",
+			"stone_pickaxe",
+			"handcart"
 		],
-		"builder": [],
+		"builder": [
+			"handcart"
+		],
 		"hunter": [
-			"stone_knife"
+			"stone_knife",
+			"bow"
 		],
 		"guard": [
+			"musket",
+			"crossbow",
+			"iron_sword",
+			"bow",
 			"wooden_spear",
-			"sling"
+			"sling",
+			"chainmail",
+			"leather_vest",
+			"iron_helmet",
+			"leather_cap"
+		],
+		"farmer": [
+			"handcart"
+		],
+		"herder": [],
+		"miner": [
+			"steel_pickaxe",
+			"iron_pickaxe",
+			"stone_pickaxe"
+		],
+		"smith": [],
+		"mage": [
+			"magic_staff"
+		],
+		"merchant": [
+			"handcart"
 		]
 	},
 	"wanted_all": [
 		"wool_cloak",
 		"fur_coat"
+	],
+	"slots": [
+		"tool",
+		"weapon",
+		"clothes",
+		"head",
+		"body",
+		"cart"
 	]
 }

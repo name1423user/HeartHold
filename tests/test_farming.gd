@@ -24,7 +24,7 @@ func test_field_sow_grow_harvest() -> void:
 	assert_eq(farming.fields[field.id]["stage"], "growing", "種をまく")
 	for i in 10 * 24:
 		village.tick(60.0)
-		if int(storage.inventory.get("wheat", 0)) > 0:
+		if int(storage.inventory.get("wheat", 0)) > 0 and int(storage.inventory.get("hay", 0)) > 0:
 			break
 	assert_eq(int(storage.inventory.get("wheat", 0)), 8, "実って収穫し、倉庫へ")
 	assert_eq(int(storage.inventory.get("hay", 0)), 4)

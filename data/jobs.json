@@ -5,30 +5,36 @@
 			"chop",
 			"dig",
 			"plant"
-		]
+		],
+		"era": "stone"
 	},
 	"builder": {
 		"name": "建築係",
 		"priority": [
 			"build",
 			"fixture"
-		]
+		],
+		"era": "stone"
 	},
 	"hunter": {
 		"name": "狩人",
 		"priority": [
 			"hunt",
 			"butcher"
-		]
+		],
+		"era": "stone"
 	},
 	"guard": {
 		"name": "衛兵",
-		"priority": []
+		"priority": [],
+		"era": "stone"
 	},
 	"shared": [
 		"build",
 		"fixture",
+		"repair",
 		"craft",
+		"smith",
 		"investigate",
 		"chop",
 		"dig",
@@ -55,5 +61,39 @@
 		],
 		"era": "iron",
 		"requires_building": "barn"
+	},
+	"miner": {
+		"name": "鉱夫",
+		"priority": [
+			"mine",
+			"dig"
+		],
+		"era": "iron",
+		"requires_building": "mine"
+	},
+	"smith": {
+		"name": "鍛冶師",
+		"priority": [
+			"smith",
+			"craft"
+		],
+		"era": "iron",
+		"requires_building": "smithy"
+	},
+	"mage": {
+		"name": "魔術師",
+		"priority": [
+			"magic"
+		],
+		"era": "medieval",
+		"requires_building": "mage_tower"
+	},
+	"merchant": {
+		"name": "商人",
+		"priority": [
+			"trade"
+		],
+		"era": "medieval",
+		"requires_building": "trading_post"
 	}
 }

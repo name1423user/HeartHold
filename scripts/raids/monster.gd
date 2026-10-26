@@ -53,6 +53,16 @@ func update(village: Village, dt: float) -> void:
 		if not path.is_empty():
 			path.pop_front()
 	if path.is_empty():
+		# 道がなければ、近くの道をふさぐ建物(柵・壁・門)を叩く
+		_attack_obstacle(village)
+		return
+	if village.world.blocked.has(path[0]):
+		# 歩いている間に建物が建った。道を探し直す
+		path.clear()
+		return
+	var gate: Building = _gate_at(village, path[0])
+	if gate != null:
+		_hit_building(village, gate)
 		return
 	var next_pos: Vector2 = Vector2(path[0]) + Vector2(0.5, 0.5)
 	var step: float = float(def()["speed_blocks_per_minute"]) * dt
@@ -61,6 +71,41 @@ func update(village: Village, dt: float) -> void:
 		path.pop_front()
 	else:
 		pos = pos.move_toward(next_pos, step)
+
+
+func _gate_at(village: Village, cell: Vector2i) -> Building:
+	for b: Building in village.buildings.values():
+		if bool(b.def().get("gate", false)) and b.cell == cell and b.state == Building.State.COMPLETE:
+			return b
+	return null
+
+
+func _attack_obstacle(village: Village) -> void:
+	var reach: float = float(BuildingDamage.cfg()["monster_attack_reach"])
+	var best: Building = null
+	var best_distance: float = INF
+	for b: Building in village.buildings.values():
+		if b.state != Building.State.COMPLETE:
+			continue
+		for c in b.cells():
+			var distance: float = pos.distance_to(Vector2(c) + Vector2(0.5, 0.5))
+			if distance <= reach and distance < best_distance:
+				best = b
+				best_distance = distance
+	if best != null:
+		_hit_building(village, best)
+	else:
+		# まわりにもないときは、村の中心へまっすぐ近づける所まで歩く
+		var toward: Vector2i = cell() + Vector2i(signi(village.world.start.x - cell().x), signi(village.world.start.y - cell().y))
+		if village.world.is_walkable(toward):
+			pos = pos.move_toward(Vector2(toward) + Vector2(0.5, 0.5), float(def()["speed_blocks_per_minute"]))
+
+
+func _hit_building(village: Village, b: Building) -> void:
+	if cooldown > 0.0:
+		return
+	cooldown = float(def()["attack_interval_minutes"])
+	(village.system("building_damage") as BuildingDamage).damage(b, attack_power(village) * float(def().get("building_damage", 1.0)))
 
 
 func _nearest_target(village: Village) -> Villager:

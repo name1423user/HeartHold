@@ -11,7 +11,9 @@
 		"stone": 3,
 		"water": 4,
 		"sand": 5,
-		"wood_wall": 6
+		"wood_wall": 6,
+		"iron_ore": 7,
+		"coal": 8
 	},
 	"block_colors": {
 		"grass": "#6b9a3c",
@@ -19,7 +21,9 @@
 		"stone": "#8a8780",
 		"water": "#3f6fa8",
 		"sand": "#d8c48a",
-		"wood_wall": "#a0703c"
+		"wood_wall": "#a0703c",
+		"iron_ore": "#a0786a",
+		"coal": "#2e2e2e"
 	},
 	"base_height": 20,
 	"hill_amplitude": 3.0,
@@ -53,5 +57,10 @@
 	"tree_color": "#5a9a40",
 	"max_dig_depth": 4,
 	"max_step": 1,
-	"trunk_color": "#8a5a33"
+	"trunk_color": "#8a5a33",
+	"ores": {
+		"iron_ore": 0.1,
+		"coal": 0.07,
+		"depth": 3
+	}
 }

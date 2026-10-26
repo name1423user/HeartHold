@@ -13,7 +13,7 @@ static func towers(village: Village) -> Array[Building]:
 
 
 static func sees(tower: Building, pos: Vector2) -> bool:
-	return pos.distance_to(tower.center()) <= float(tower.def()["vision"])
+	return pos.distance_to(tower.center()) <= float(tower.def()["vision"]) * (1.0 + BuildingFixture.sum_effect(tower, "vision_bonus"))
 
 
 ## 見張り台の視界に入った魔物がいれば、まだなら警告を出す

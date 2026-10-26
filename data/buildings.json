@@ -12,7 +12,8 @@
 		"work": 120.0,
 		"residents": 2,
 		"unlock_level": 0,
-		"era": "stone"
+		"era": "stone",
+		"hp": 150
 	},
 	"storage": {
 		"name": "倉庫",
@@ -26,7 +27,8 @@
 		"work": 60.0,
 		"capacity": 200,
 		"unlock_level": 0,
-		"era": "stone"
+		"era": "stone",
+		"hp": 150
 	},
 	"workbench": {
 		"name": "作業台",
@@ -39,7 +41,8 @@
 		},
 		"work": 40.0,
 		"unlock_level": 0,
-		"era": "stone"
+		"era": "stone",
+		"hp": 80
 	},
 	"infirmary": {
 		"name": "救護室",
@@ -53,7 +56,8 @@
 		},
 		"work": 150.0,
 		"unlock_level": 0,
-		"era": "stone"
+		"era": "stone",
+		"hp": 150
 	},
 	"fence": {
 		"name": "柵",
@@ -66,7 +70,9 @@
 		},
 		"work": 10.0,
 		"unlock_level": 0,
-		"era": "stone"
+		"era": "stone",
+		"hp": 60,
+		"blocks_monsters": true
 	},
 	"watchtower": {
 		"name": "見張り台",
@@ -81,7 +87,11 @@
 		"work": 120.0,
 		"vision": 24,
 		"unlock_level": 1,
-		"era": "stone"
+		"era": "stone",
+		"hp": 120,
+		"effects": {
+			"safety": 0.0
+		}
 	},
 	"field": {
 		"name": "畑",
@@ -95,7 +105,8 @@
 		"work": 40.0,
 		"unlock_level": 0,
 		"era": "iron",
-		"walkable": true
+		"walkable": true,
+		"hp": 50
 	},
 	"barn": {
 		"name": "家畜小屋",
@@ -110,7 +121,8 @@
 		"work": 120.0,
 		"unlock_level": 0,
 		"era": "iron",
-		"capacity_animals": 8
+		"capacity_animals": 8,
+		"hp": 150
 	},
 	"campfire": {
 		"name": "焚き火",
@@ -124,7 +136,9 @@
 		},
 		"work": 15.0,
 		"unlock_level": 0,
-		"era": "stone"
+		"era": "stone",
+		"hp": 40,
+		"effects": {}
 	},
 	"chapel": {
 		"name": "礼拝堂",
@@ -140,7 +154,437 @@
 		"unlock_level": 0,
 		"era": "medieval",
 		"effects": {
-			"calm_rate": 0.3
+			"calm_rate": 0.3,
+			"satisfaction": 5.0
+		},
+		"hp": 300
+	},
+	"hunting_lodge": {
+		"name": "狩猟小屋",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"log": 8,
+			"plank": 4
+		},
+		"work": 80.0,
+		"unlock_level": 0,
+		"era": "stone",
+		"hp": 120,
+		"effects": {
+			"work_speed": {
+				"hunt": 1.2,
+				"cook": 1.1
+			}
+		}
+	},
+	"smithy": {
+		"name": "鍛冶屋",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"stone": 12,
+			"plank": 10
+		},
+		"work": 150.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 200
+	},
+	"charcoal_kiln": {
+		"name": "炭焼き窯",
+		"size": [
+			2,
+			2
+		],
+		"materials": {
+			"stone": 10,
+			"dirt": 6
+		},
+		"work": 80.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 150
+	},
+	"mine": {
+		"name": "炭鉱",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"plank": 14,
+			"log": 10
+		},
+		"work": 160.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 200,
+		"near_biome": "mountain"
+	},
+	"well": {
+		"name": "井戸",
+		"size": [
+			1,
+			1
+		],
+		"materials": {
+			"stone": 8
+		},
+		"work": 60.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 100
+	},
+	"smokehouse": {
+		"name": "燻製小屋",
+		"size": [
+			2,
+			2
+		],
+		"materials": {
+			"plank": 10,
+			"stone": 4
+		},
+		"work": 90.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 120
+	},
+	"stone_house": {
+		"name": "石造りの家",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"stone": 20,
+			"plank": 8
+		},
+		"work": 200.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 300,
+		"residents": 3,
+		"effects": {
+			"housing_score": 8.0,
+			"heating": 6.0
+		}
+	},
+	"village_monument": {
+		"name": "村の象徴の像",
+		"size": [
+			2,
+			2
+		],
+		"materials": {
+			"cut_stone": 20,
+			"iron_ingot": 4
+		},
+		"work": 240.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 400,
+		"landmark": true,
+		"effects": {
+			"reputation": 15.0,
+			"inspection_bonus": 15.0
+		}
+	},
+	"tavern": {
+		"name": "酒場",
+		"size": [
+			4,
+			4
+		],
+		"materials": {
+			"plank": 24,
+			"stone": 10
+		},
+		"work": 220.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 200,
+		"effects": {
+			"satisfaction": 5.0
+		}
+	},
+	"bathhouse": {
+		"name": "浴場",
+		"size": [
+			4,
+			3
+		],
+		"materials": {
+			"stone": 24,
+			"plank": 12
+		},
+		"work": 220.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 200
+	},
+	"windmill": {
+		"name": "風車",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"plank": 24,
+			"cut_stone": 10
+		},
+		"work": 240.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 200
+	},
+	"watermill": {
+		"name": "水車",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"plank": 20,
+			"cut_stone": 10,
+			"iron_ingot": 2
+		},
+		"work": 240.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 200,
+		"near_water": true,
+		"effects": {
+			"work_speed": {
+				"craft": 1.3,
+				"smith": 1.3
+			}
+		}
+	},
+	"stone_wall": {
+		"name": "石壁",
+		"size": [
+			1,
+			1
+		],
+		"materials": {
+			"cut_stone": 3
+		},
+		"work": 30.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 300,
+		"blocks_monsters": true,
+		"effects": {
+			"safety": 1.0
+		}
+	},
+	"gate": {
+		"name": "門",
+		"size": [
+			1,
+			1
+		],
+		"materials": {
+			"plank": 6,
+			"iron_ingot": 1
+		},
+		"work": 40.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 200,
+		"walkable": true,
+		"gate": true
+	},
+	"barracks": {
+		"name": "兵舎",
+		"size": [
+			4,
+			3
+		],
+		"materials": {
+			"cut_stone": 16,
+			"plank": 16
+		},
+		"work": 240.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 250,
+		"effects": {
+			"safety": 15.0,
+			"experience_rate": {
+				"combat": 2.0
+			}
+		},
+		"residents": 2
+	},
+	"trading_post": {
+		"name": "取引所",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"plank": 20,
+			"cut_stone": 8
+		},
+		"work": 200.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 200
+	},
+	"mage_tower": {
+		"name": "魔術師の塔",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"cut_stone": 30,
+			"mana_crystal": 2
+		},
+		"work": 300.0,
+		"unlock_level": 0,
+		"era": "medieval",
+		"hp": 300
+	},
+	"market": {
+		"name": "市場",
+		"size": [
+			4,
+			4
+		],
+		"materials": {
+			"plank": 30,
+			"cut_stone": 12
+		},
+		"work": 260.0,
+		"unlock_level": 0,
+		"era": "early_modern",
+		"hp": 200,
+		"effects": {
+			"satisfaction": 10.0,
+			"trade_price": 0.9
+		}
+	},
+	"school": {
+		"name": "学舎",
+		"size": [
+			4,
+			3
+		],
+		"materials": {
+			"plank": 24,
+			"cut_stone": 16
+		},
+		"work": 260.0,
+		"unlock_level": 0,
+		"era": "early_modern",
+		"hp": 200,
+		"effects": {
+			"experience_rate": {
+				"*": 1.5
+			}
+		}
+	},
+	"clock_tower": {
+		"name": "時計塔",
+		"size": [
+			2,
+			2
+		],
+		"materials": {
+			"cut_stone": 40,
+			"steel_ingot": 6
+		},
+		"work": 400.0,
+		"unlock_level": 0,
+		"era": "early_modern",
+		"hp": 400,
+		"landmark": true,
+		"effects": {
+			"reputation": 25.0,
+			"inspection_bonus": 25.0
+		}
+	},
+	"fort": {
+		"name": "砦",
+		"size": [
+			5,
+			5
+		],
+		"materials": {
+			"cut_stone": 60,
+			"steel_ingot": 8
+		},
+		"work": 500.0,
+		"unlock_level": 0,
+		"era": "early_modern",
+		"hp": 800,
+		"effects": {
+			"safety": 30.0
+		},
+		"residents": 4
+	},
+	"magic_lab": {
+		"name": "魔法の研究所",
+		"size": [
+			3,
+			3
+		],
+		"materials": {
+			"cut_stone": 30,
+			"mana_crystal": 6
+		},
+		"work": 350.0,
+		"unlock_level": 0,
+		"era": "early_modern",
+		"hp": 250
+	},
+	"spike_trap": {
+		"name": "杭の罠",
+		"size": [
+			1,
+			1
+		],
+		"materials": {
+			"plank": 2,
+			"log": 1
+		},
+		"work": 10.0,
+		"unlock_level": 0,
+		"era": "stone",
+		"hp": 30,
+		"walkable": true,
+		"trap": {
+			"damage": 15.0,
+			"uses": 3,
+			"stun_minutes": 0.0
+		}
+	},
+	"pit_trap": {
+		"name": "落とし穴",
+		"size": [
+			1,
+			1
+		],
+		"materials": {
+			"plank": 2
+		},
+		"work": 30.0,
+		"unlock_level": 0,
+		"era": "iron",
+		"hp": 30,
+		"walkable": true,
+		"trap": {
+			"damage": 5.0,
+			"uses": 2,
+			"stun_minutes": 20.0
 		}
 	}
 }

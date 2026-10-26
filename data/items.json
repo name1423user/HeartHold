@@ -1,136 +1,271 @@
 {
 	"log": {
 		"name": "原木",
-		"category": "material"
+		"category": "material",
+		"value": 1
 	},
 	"plank": {
 		"name": "木材",
-		"category": "material"
+		"category": "material",
+		"value": 1
 	},
 	"stone": {
 		"name": "石",
-		"category": "material"
+		"category": "material",
+		"value": 1
 	},
 	"dirt": {
 		"name": "土",
-		"category": "material"
+		"category": "material",
+		"value": 0
 	},
 	"fur": {
 		"name": "毛皮",
-		"category": "material"
+		"category": "material",
+		"value": 3
 	},
 	"meat": {
 		"name": "肉",
 		"category": "food",
 		"food": 25.0,
-		"spoil_days": 3.0
+		"spoil_days": 3.0,
+		"value": 2
 	},
 	"meal": {
 		"name": "料理",
 		"category": "food",
 		"food": 50.0,
-		"spoil_days": 2.0
+		"spoil_days": 2.0,
+		"value": 3
 	},
 	"fence_post": {
 		"name": "柵の杭",
-		"category": "material"
+		"category": "material",
+		"value": 2
 	},
 	"stone_axe": {
 		"name": "石の斧",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 6
 	},
 	"stone_pickaxe": {
 		"name": "石のつるはし",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 6
 	},
 	"stone_knife": {
 		"name": "石のナイフ",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 3
 	},
 	"iron_axe": {
 		"name": "鉄の斧",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 20
 	},
 	"iron_pickaxe": {
 		"name": "鉄のつるはし",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 20
 	},
 	"steel_axe": {
 		"name": "鋼の斧",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 45
 	},
 	"steel_pickaxe": {
 		"name": "鋼のつるはし",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 45
 	},
 	"wooden_spear": {
 		"name": "木の槍",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 5
 	},
 	"sling": {
 		"name": "投石紐",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 4
 	},
 	"fur_coat": {
 		"name": "毛皮の上着",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 10
 	},
 	"wool_cloak": {
 		"name": "羊毛の外套",
-		"category": "equipment"
+		"category": "equipment",
+		"value": 15
 	},
 	"wool": {
 		"name": "羊毛",
-		"category": "material"
+		"category": "material",
+		"value": 2
 	},
 	"smoked_meat": {
 		"name": "燻製肉",
 		"category": "food",
 		"food": 30.0,
-		"spoil_days": 30.0
+		"spoil_days": 30.0,
+		"value": 4
 	},
 	"salted_meat": {
 		"name": "塩漬け肉",
 		"category": "food",
 		"food": 30.0,
-		"spoil_days": 40.0
+		"spoil_days": 40.0,
+		"value": 4
 	},
 	"salt": {
 		"name": "塩",
-		"category": "material"
+		"category": "material",
+		"value": 3
 	},
 	"bread": {
 		"name": "パン",
 		"category": "food",
 		"food": 45.0,
-		"spoil_days": 5.0
+		"spoil_days": 5.0,
+		"value": 3
 	},
 	"egg": {
 		"name": "卵",
 		"category": "food",
 		"food": 15.0,
-		"spoil_days": 4.0
+		"spoil_days": 4.0,
+		"value": 1
 	},
 	"cabbage": {
 		"name": "キャベツ",
 		"category": "food",
 		"food": 20.0,
-		"spoil_days": 6.0
+		"spoil_days": 6.0,
+		"value": 1
 	},
 	"wheat": {
 		"name": "小麦",
-		"category": "material"
+		"category": "material",
+		"value": 1
 	},
 	"flour": {
 		"name": "小麦粉",
-		"category": "material"
+		"category": "material",
+		"value": 2
 	},
 	"hay": {
 		"name": "干し草",
-		"category": "material"
+		"category": "material",
+		"value": 1
 	},
 	"sapling": {
 		"name": "苗木",
-		"category": "material"
+		"category": "material",
+		"value": 1
+	},
+	"iron_ore": {
+		"name": "鉄鉱石",
+		"category": "material",
+		"value": 3
+	},
+	"coal": {
+		"name": "石炭",
+		"category": "material",
+		"value": 2
+	},
+	"charcoal": {
+		"name": "木炭",
+		"category": "material",
+		"value": 2
+	},
+	"iron_ingot": {
+		"name": "鉄の延べ棒",
+		"category": "material",
+		"value": 8
+	},
+	"steel_ingot": {
+		"name": "鋼の延べ棒",
+		"category": "material",
+		"value": 20
+	},
+	"cut_stone": {
+		"name": "切り石",
+		"category": "material",
+		"value": 3
+	},
+	"handcart": {
+		"name": "手押し車",
+		"category": "equipment",
+		"value": 30
+	},
+	"iron_sword": {
+		"name": "鉄の剣",
+		"category": "equipment",
+		"value": 30
+	},
+	"bow": {
+		"name": "弓",
+		"category": "equipment",
+		"value": 20
+	},
+	"crossbow": {
+		"name": "クロスボウ",
+		"category": "equipment",
+		"value": 40
+	},
+	"musket": {
+		"name": "マスケット",
+		"category": "equipment",
+		"value": 80
+	},
+	"magic_staff": {
+		"name": "魔法の杖",
+		"category": "equipment",
+		"value": 60
+	},
+	"mana_crystal": {
+		"name": "魔素の結晶",
+		"category": "material",
+		"value": 25
+	},
+	"leather_cap": {
+		"name": "革の帽子",
+		"category": "equipment",
+		"value": 6
+	},
+	"leather_vest": {
+		"name": "革の胴着",
+		"category": "equipment",
+		"value": 10
+	},
+	"iron_helmet": {
+		"name": "鉄の兜",
+		"category": "equipment",
+		"value": 30
+	},
+	"chainmail": {
+		"name": "鎖かたびら",
+		"category": "equipment",
+		"value": 50
+	},
+	"trap_kit": {
+		"name": "罠の材料",
+		"category": "material",
+		"value": 5
+	},
+	"coin": {
+		"name": "銀貨",
+		"category": "material",
+		"value": 1
+	},
+	"medicine": {
+		"name": "薬",
+		"category": "material",
+		"value": 6
+	},
+	"herb": {
+		"name": "薬草",
+		"category": "material",
+		"value": 2
 	}
 }

@@ -34,12 +34,14 @@ static func install_initial(b: Building) -> void:
 
 
 ## 置けない理由の文言キー。置けるなら空
-static func error(b: Building, fixture: String) -> String:
+static func error(b: Building, fixture: String, era: String = "early_modern") -> String:
 	var d: Dictionary = def(fixture)
 	if d.is_empty() or d.get("building", "") != b.type:
 		return "fixture_wrong_building"
 	if not b.is_complete():
 		return "fixture_not_built"
+	if not Era.allows(d, era):
+		return "fixture_era"
 	if d.has("upgrade_of"):
 		return "" if b.fixtures.has(str(d["upgrade_of"])) else "fixture_limit"
 	if count_group(b, str(d["group"])) >= limit(b, fixture):
@@ -48,20 +50,24 @@ static func error(b: Building, fixture: String) -> String:
 
 
 ## 建物を選んだときに出す一覧: [{"id", "name", "materials", "ok", "reason"}]
-static func options(b: Building) -> Array[Dictionary]:
+static func options(b: Building, era: String = "early_modern") -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for fixture: String in defs():
 		var d: Dictionary = def(fixture)
 		if d.get("building", "") != b.type:
 			continue
-		var reason: String = error(b, fixture)
+		var reason: String = error(b, fixture, era)
+		var need: int = int(d.get("min_builder_level", 0))
+		if reason.is_empty() and need > 0:
+			d = d.duplicate()
+			d["name"] = "%s(%s)" % [d["name"], Texts.t("fixture_skill", {"level": need})]
 		result.append({"id": fixture, "name": str(d["name"]), "materials": d["materials"], "ok": reason.is_empty(), "reason": Texts.t(reason) if not reason.is_empty() else ""})
 	return result
 
 
 ## 設備の建設予約。建築係が素材を運んで設置する
 static func order(village: Village, b: Building, fixture: String) -> Dictionary:
-	var reason: String = error(b, fixture)
+	var reason: String = error(b, fixture, village.era())
 	if reason.is_empty():
 		var pending: int = 0
 		for task: JobTask in village.tasks.of_type("fixture"):

@@ -64,7 +64,7 @@ func vision_sources() -> Array[Dictionary]:
 			sources.append({"cell": v.cell(), "radius": roundi(float(cfg["vision_radius"]) * Traits.product(v, "vision"))})
 	for b: Building in village.buildings.values():
 		if b.is_complete() and b.def().has("vision"):
-			sources.append({"cell": Vector2i(b.center()), "radius": int(b.def()["vision"])})
+			sources.append({"cell": Vector2i(b.center()), "radius": roundi(float(b.def()["vision"]) * (1.0 + BuildingFixture.sum_effect(b, "vision_bonus")))})
 	return sources
 
 

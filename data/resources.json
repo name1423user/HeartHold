@@ -5,7 +5,9 @@
 		"dirt": "dirt",
 		"sand": "dirt",
 		"stone": "stone",
-		"wood_wall": "plank"
+		"wood_wall": "plank",
+		"iron_ore": "iron_ore",
+		"coal": "coal"
 	},
 	"work_minutes": {
 		"chop": 20.0,

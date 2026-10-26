@@ -20,6 +20,9 @@ var priority: int = 0
 var fixtures: Array = []
 ## 素材不足で建設が止まっている(不足アイコンを出す)
 var short: bool = false
+## 耐久(M8-T06)。0で壊れる(柵・壁・門は消える)
+var hp: float = -1.0
+var broken: bool = false
 
 
 func def() -> Dictionary:
@@ -44,8 +47,17 @@ func center() -> Vector2:
 	return Vector2(cell) + Vector2(size()) * 0.5
 
 
+## 完成していて、壊れていない(使える)
 func is_complete() -> bool:
-	return state == State.COMPLETE
+	return state == State.COMPLETE and not broken
+
+
+func max_hp() -> float:
+	return float(def().get("hp", 100.0)) * BuildingFixture.product_effect(self, "hp_multiplier")
+
+
+func current_hp() -> float:
+	return max_hp() if hp < 0.0 else hp
 
 
 func display_name() -> String:
@@ -67,7 +79,7 @@ func missing_materials() -> Dictionary:
 
 
 func capacity() -> int:
-	return int(def().get("capacity", 0))
+	return int(float(def().get("capacity", 0)) * (1.0 + BuildingFixture.sum_effect(self, "capacity_bonus")))
 
 
 func stored_total() -> int:
@@ -85,7 +97,7 @@ func to_dict() -> Dictionary:
 	return {
 		"id": id, "type": type, "cell": [cell.x, cell.y], "state": state, "delivered": delivered.duplicate(),
 		"progress": progress, "inventory": inventory.duplicate(), "filter": filter.duplicate(),
-		"priority": priority, "fixtures": fixtures.duplicate(),
+		"priority": priority, "fixtures": fixtures.duplicate(), "hp": hp, "broken": broken,
 	}
 
 
@@ -101,6 +113,8 @@ static func from_dict(data: Dictionary) -> Building:
 	b.filter = (data.get("filter", []) as Array).duplicate()
 	b.priority = int(data.get("priority", 0))
 	b.fixtures = (data.get("fixtures", []) as Array).duplicate()
+	b.hp = float(data.get("hp", -1.0))
+	b.broken = bool(data.get("broken", false))
 	return b
 
 

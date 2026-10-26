@@ -32,9 +32,9 @@ func refresh(game: Game) -> void:
 	for type: String in defs:
 		var def: Dictionary = defs[type]
 		var button := Button.new()
-		var unlock: int = int(def.get("unlock_level", 0))
-		var locked: bool = unlock > game.level.level
-		button.text = "%s  %s" % [def["name"], Texts.t("locked_level", {"level": unlock}) if locked else materials_text(village, def["materials"])]
+		var lock: String = village.building_lock(type, game.level.level)
+		var locked: bool = not lock.is_empty()
+		button.text = "%s  %s" % [def["name"], lock if locked else materials_text(village, def["materials"])]
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.disabled = locked
 		button.tooltip_text = Texts.t("tooltip_building_" + type)
@@ -49,6 +49,10 @@ func refresh(game: Game) -> void:
 		button.text = "%s ← %s" % [recipe["name"], materials_text(village, recipe["inputs"])]
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.tooltip_text = Texts.t("tooltip_craft")
+		var error: String = Crafting.order_error(village, recipe_id)
+		button.disabled = not error.is_empty()
+		if not error.is_empty():
+			button.text += "  " + error
 		button.pressed.connect(func() -> void:
 			Crafting.order(village, recipe_id)
 			game.hud.toast(Texts.t("craft_ordered", {"name": recipe["name"]})))
@@ -58,8 +62,8 @@ func refresh(game: Game) -> void:
 	if b == null:
 		_label(Texts.t("no_building_selected"))
 		return
-	_label(Texts.t("selected_building", {"name": b.display_name()}))
-	for option in BuildingFixture.options(b):
+	_label(Texts.t("selected_building", {"name": b.display_name()}) + ("  " + Texts.t("broken_label") if b.broken else "") + "  %d/%d" % [roundi(b.current_hp()), roundi(b.max_hp())])
+	for option in BuildingFixture.options(b, village.era()):
 		var button := Button.new()
 		button.text = "%s  %s" % [option["name"], materials_text(village, option["materials"]) if option["ok"] else option["reason"]]
 		button.disabled = not option["ok"]
