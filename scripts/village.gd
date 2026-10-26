@@ -494,6 +494,8 @@ func _complete_task_extra(v: Villager, task: JobTask) -> void:
 		"craft":
 			Crafting.complete(self, v, task)
 			wear_tool(v, task_skill(task))
+		"fixture":
+			BuildingFixture.complete(self, task)
 		"build":
 			var b: Building = buildings.get(task.building_id) as Building
 			if b != null:
@@ -620,7 +622,7 @@ func _step_supply(v: Villager) -> void:
 		return
 	raise_alert("material", Texts.t("alert_missing_materials"), task.cell)
 	var short: Building = buildings.get(task.building_id) as Building
-	if short != null:
+	if short != null and task.type == "build":
 		short.short = true
 		building_changed.emit(short)
 	_abort_plan(v, "missing_materials")
@@ -631,6 +633,8 @@ func supply_site(task: JobTask) -> Dictionary:
 	match task.type:
 		"craft":
 			return Crafting.supply_site(self, task)
+		"fixture":
+			return BuildingFixture.supply_site(self, task)
 		"build":
 			var b: Building = buildings.get(task.building_id) as Building
 			if b == null:
@@ -725,6 +729,7 @@ func plan_building(type: String, cell: Vector2i) -> Dictionary:
 
 func _on_building_completed(b: Building) -> void:
 	b.short = false
+	BuildingFixture.install_initial(b)
 	if b.def().has("residents"):
 		assign_homes()
 
@@ -915,18 +920,17 @@ func work_speed(v: Villager, kind: String) -> float:
 func _sleep_multiplier(v: Villager) -> float:
 	var home: Building = buildings.get(v.home_id) as Building
 	if v.plan_kind == "sleep" and not v.plan.is_empty() and int(v.plan[0].get("building", -1)) != -1 and home != null:
-		return bed_multiplier(home)
+		return BuildingFixture.bed_multiplier_for(self, home, v)
 	return float(needs_cfg["ground_sleep_multiplier"])
 
 
-## 家のベッドの睡眠回復倍率(M2-T12)
-func bed_multiplier(_home: Building) -> float:
-	return 1.0
-
-
-## 気分の回復倍率(飾り・村長の方針)
-func mood_rate(_v: Villager) -> float:
-	return 1.0
+## 気分の回復倍率。家の飾りの分だけ上がる(村長の方針は M3-T06)
+func mood_rate(v: Villager) -> float:
+	var rate: float = 1.0
+	var home: Building = buildings.get(v.home_id) as Building
+	if home != null and home.is_complete():
+		rate += BuildingFixture.sum_effect(home, "mood_rate_bonus")
+	return rate
 
 
 func _on_block_changed(pos: Vector3i, id: int) -> void:

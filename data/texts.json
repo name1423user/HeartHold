@@ -15,5 +15,8 @@
 	"task_no_station": "作業台がありません",
 	"alert_built": "{name}が完成しました",
 	"alert_tool_broken": "{name}の{item}が壊れました",
-	"stockpile_all": "何でも"
+	"stockpile_all": "何でも",
+	"fixture_wrong_building": "この建物には置けません",
+	"fixture_not_built": "建物が完成していません",
+	"fixture_limit": "これ以上は置けません"
 }
