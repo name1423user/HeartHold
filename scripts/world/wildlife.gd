@@ -44,12 +44,24 @@ func update(dt: float) -> void:
 		var next: Vector2i = here + Pathing.NEIGHBORS[village.rng.randi_range(0, 3)]
 		if village.world.is_walkable(next) and absi(village.world.top_y(next) - village.world.top_y(here)) <= 1:
 			animal["pos"] = Vector2(next) + Vector2(0.5, 0.5)
-	if animals.size() < int(cfg["count"]):
-		respawn_timer += dt
-		if respawn_timer >= float(cfg["respawn_minutes"]):
-			respawn_timer = 0.0
-			spawn()
+	_breed(dt)
 	_keep_hunt_tasks()
+
+
+## 獲物の増減(M7-T07): 1日ごとに今の数に応じて増え、上限で止まる。狩り尽くすと増えず、
+## 数日に1匹だけマップの外から入ってくる。respawn_timer は日の端数を持つ
+func _breed(dt: float) -> void:
+	respawn_timer += dt / GameClock.MINUTES_PER_DAY
+	var growth: float = float(cfg["growth_per_day"]) * village.calendar().growth() if village.calendar() != null else float(cfg["growth_per_day"])
+	if animals.size() >= int(cfg["min_to_breed"]):
+		while respawn_timer >= 1.0 / maxf(growth * animals.size(), 0.0001) and animals.size() < int(cfg["max"]):
+			respawn_timer -= 1.0 / maxf(growth * animals.size(), 0.0001)
+			spawn()
+		if animals.size() >= int(cfg["max"]):
+			respawn_timer = 0.0
+	elif respawn_timer >= float(cfg["immigrate_days"]):
+		respawn_timer = 0.0
+		spawn()
 
 
 ## 狩人の数だけ、近いウサギの狩りを予約しておく

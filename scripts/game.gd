@@ -207,6 +207,9 @@ func _apply_tool(start: Vector2i, end: Vector2i) -> void:
 	if tool == "chop":
 		var count: int = Designation.chop_area(village, area)
 		hud.toast(Texts.t("chop_created", {"count": count}) if count > 0 else Texts.t("nothing_to_chop"))
+	elif tool == "plant":
+		var planted: int = (village.system("regrowth") as Regrowth).plant_area(area)
+		hud.toast(Texts.t("plant_created", {"count": planted}))
 	elif tool == "dig":
 		var result: Dictionary = Designation.dig_area(village, area)
 		hud.toast(Texts.t("dig_created", {"count": result["created"]}) if int(result["created"]) > 0 else str(result["message"]))

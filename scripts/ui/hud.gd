@@ -189,7 +189,7 @@ func toast(message: String) -> void:
 
 func refresh_tool() -> void:
 	var text: String = ""
-	if game.tool == "chop" or game.tool == "dig":
+	if game.tool in ["chop", "dig", "plant"]:
 		text = Texts.t("tool_hint_" + game.tool)
 	elif game.tool.begins_with("build:"):
 		text = Texts.t("tool_hint_build", {"name": GameData.get_dict("buildings")[game.tool.get_slice(":", 1)]["name"]})

@@ -60,7 +60,7 @@ func test_chop_build_house_and_one_applicant_passes() -> void:
 	# 安全を重く見る希望者にも備えて、見張り台も建てる
 	village.add_building("watchtower", start + Vector2i(10, 2), true)
 	# ここから数日分の狩りの成果を足して、希望者の来る日まで進める
-	village.stockpiles()[0].inventory["meal"] = int(village.stockpiles()[0].inventory.get("meal", 0)) + 60
+	village.stockpiles()[0].inventory["smoked_meat"] = int(village.stockpiles()[0].inventory.get("smoked_meat", 0)) + 100
 	village.stockpiles()[0].inventory["plank"] = int(village.stockpiles()[0].inventory.get("plank", 0)) + 30
 	village.stockpiles()[0].inventory["stone"] = int(village.stockpiles()[0].inventory.get("stone", 0)) + 10
 	assert_true(_run_until(72, func() -> bool: return village.houses().size() >= 3), "家が3軒")

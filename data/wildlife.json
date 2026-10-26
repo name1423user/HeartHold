@@ -7,7 +7,13 @@
 		"move_interval_minutes": 6.0,
 		"hunt_work_minutes": 5.0,
 		"hunt_reach": 1.5,
-		"drops": {"meat": 2, "fur": 1},
-		"respawn_minutes": 240.0
+		"drops": {
+			"meat": 2,
+			"fur": 1
+		},
+		"growth_per_day": 0.15,
+		"max": 36,
+		"min_to_breed": 2,
+		"immigrate_days": 3.0
 	}
 }

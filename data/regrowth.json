@@ -1,0 +1,6 @@
+{
+	"grow_days": 5.0,
+	"spread_per_tree_per_day": 0.002,
+	"spread_radius": 3,
+	"plant_minutes": 5.0
+}

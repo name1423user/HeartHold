@@ -3,7 +3,8 @@
 		"name": "採集係",
 		"priority": [
 			"chop",
-			"dig"
+			"dig",
+			"plant"
 		]
 	},
 	"builder": {
@@ -30,6 +31,7 @@
 		"craft",
 		"investigate",
 		"chop",
-		"dig"
+		"dig",
+		"plant"
 	]
 }

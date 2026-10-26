@@ -163,6 +163,9 @@ func _sync_applicant() -> void:
 
 func _sync_marks() -> void:
 	var cells: Array[Vector3] = []
+	var regrowth: Regrowth = village.system("regrowth") as Regrowth
+	for cell: Vector2i in regrowth.saplings:
+		cells.append(Vector3(cell.x + 0.5, village.world.top_y(cell) + 1.3, cell.y + 0.5))
 	for task: JobTask in village.tasks.tasks.values():
 		if task.type == "chop" or task.type == "dig":
 			cells.append(Vector3(task.cell.x + 0.5, village.world.top_y(task.cell) + 1.3, task.cell.y + 0.5))

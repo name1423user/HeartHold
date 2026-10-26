@@ -9,7 +9,7 @@ func refresh(game: Game) -> void:
 	var village: Village = game.village
 	var tools := HBoxContainer.new()
 	add_child(tools)
-	for tool: String in ["select", "chop", "dig"]:
+	for tool: String in ["select", "chop", "dig", "plant"]:
 		var button := Button.new()
 		button.text = Texts.t("tool_" + tool)
 		button.tooltip_text = Texts.t("tooltip_tool_" + tool)
