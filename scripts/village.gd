@@ -141,15 +141,17 @@ func _update_villager(v: Villager, dt: float) -> void:
 	_run_step(v, dt)
 
 
-## 気絶・治療中の更新(M3-T05 で中身を入れる)
-func _update_incapacitated(_v: Villager, _dt: float) -> void:
-	pass
+## 気絶・治療中の更新
+func _update_incapacitated(v: Villager, dt: float) -> void:
+	HealthState.update(self, v, dt)
 
 
 func knock_out(v: Villager) -> void:
 	_abort_plan(v, "")
 	v.state = Villager.State.UNCONSCIOUS
-	raise_alert("faint", Texts.t("alert_faint", {"name": v.display_name}), v.cell())
+	HealthState.on_knocked_out(self, v)
+	var key: String = "alert_chief_dying" if v.is_chief else "alert_faint"
+	raise_alert("faint", Texts.t(key, {"name": v.display_name}), v.cell())
 
 
 ## 魔物などから受けた傷。体力0で気絶する
@@ -176,6 +178,8 @@ func _choose_plan(v: Villager) -> void:
 	if v.carry_count > 0:
 		_set_plan(v, "store", [{"op": "store_carry"}])
 		return
+	if _choose_rescue_plan(v):
+		return
 	if _choose_need_plan(v):
 		return
 	if _choose_equipment_plan(v):
@@ -185,6 +189,19 @@ func _choose_plan(v: Villager) -> void:
 	if _choose_haul_plan(v):
 		return
 	_set_plan(v, "idle", [{"op": "wander"}, {"op": "wait", "minutes": 10.0}])
+
+
+## 倒れた人がいれば最優先で救護室へ運ぶ
+func _choose_rescue_plan(v: Villager) -> bool:
+	if v.is_chief:
+		return false
+	var task: JobTask = tasks.find_for(["rescue"], v.cell(), clock.minutes)
+	if task == null or HealthState.infirmary_for(self, v.pos) == null:
+		return false
+	task.assigned = v.id
+	v.task_id = task.id
+	_set_plan(v, "task", HealthState.plan_rescue(self, task))
+	return true
 
 
 ## 襲撃中: 衛兵は迎え撃ち、他は避難する
@@ -367,6 +384,13 @@ func _abort_plan(v: Villager, reason: String) -> void:
 	for cell: Vector2i in ground_reserved.keys():
 		if ground_reserved[cell] == v.id:
 			ground_reserved.erase(cell)
+	# 担いでいた人はその場に降ろす
+	for other in villagers:
+		if int(other.timers.get("carried_by", -1)) == v.id:
+			other.timers.erase("carried_by")
+			var rescue: JobTask = HealthState.rescue_task_for(self, other)
+			if rescue != null:
+				rescue.cell = other.cell()
 	v.clear_plan()
 
 
@@ -454,6 +478,15 @@ func _execute(v: Villager, step: Dictionary, budget: float) -> float:
 ## そのほかの手順(狩り・戦い・運ぶ人を担ぐ など)
 func _execute_extra(v: Villager, step: Dictionary, budget: float) -> float:
 	match str(step["op"]):
+		"pickup":
+			HealthState.step_pickup(self, v)
+			return 0.0
+		"carry_to_infirmary":
+			HealthState.step_carry(self, v)
+			return 0.0
+		"admit":
+			HealthState.step_admit(self, v, step)
+			return 0.0
 		"fight":
 			return Combat.step_fight(self, v, budget)
 		"equip":

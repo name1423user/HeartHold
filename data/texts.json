@@ -23,5 +23,8 @@
 	"alert_accepted": "{name}が審査に合格し、村の一員になりました",
 	"alert_rejected": "{name}は審査に落ちて去りました",
 	"alert_raid_end": "襲撃を退けました",
-	"alert_raid": "魔物が近づいています"
+	"alert_raid": "魔物が近づいています",
+	"alert_recovered": "{name}が回復しました",
+	"alert_death": "{name}が亡くなりました",
+	"alert_chief_dying": "村長{name}が瀕死です"
 }

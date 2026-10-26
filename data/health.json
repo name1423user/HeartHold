@@ -1,0 +1,6 @@
+{
+	"death_minutes": 720.0,
+	"treatment_minutes": 240.0,
+	"recovered_health": 60.0,
+	"chief_treatment_real_seconds": 180.0
+}
