@@ -7,8 +7,11 @@ static func cfg() -> Dictionary:
 
 
 ## 攻撃力 = 武器 × 特技「槍の心得」 × 村長の方針「守り」
-static func attack_damage(village: Village, v: Villager) -> float:
-	return Equipment.attack(v) * Specialty.speed(v, "combat") * village.chief.guard_attack(v) * Traits.product(v, "attack")
+static func attack_damage(village: Village, v: Villager, target: Monster = null) -> float:
+	var damage: float = Equipment.attack(v) * Specialty.speed(v, "combat") * village.chief.guard_attack(v) * Traits.product(v, "attack")
+	if target != null:
+		damage *= target.affinity(Equipment.affinity(v))
+	return damage
 
 
 ## 衛兵に見えている一番近い魔物
@@ -50,9 +53,10 @@ static func step_fight(village: Village, v: Villager, budget: float) -> float:
 			var away: Vector2 = v.pos + (v.pos - target.pos).normalized() * 2.0
 			village.chase(v, Vector2i(floori(away.x), floori(away.y)), budget)
 			return budget
-		if float(v.timers["attack_cooldown"]) <= 0.0:
+		if float(v.timers["attack_cooldown"]) <= 0.0 and Magic.can_use_weapon(v):
 			v.timers["attack_cooldown"] = float(cfg()["attack_interval_minutes"])
-			target.take_damage(attack_damage(village, v))
+			target.take_damage(attack_damage(village, v, target))
+			Magic.pay_weapon(v)
 			Equipment.wear(village, v, "weapon")
 			village.gain_experience(v, "combat", float(cfg()["attack_interval_minutes"]))
 		return budget

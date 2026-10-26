@@ -45,9 +45,13 @@ func update(dt: float) -> void:
 	if active:
 		_update_raid(dt)
 		return
+	# 襲撃でないときも、巣の守りの魔物は動く
+	for m in monsters.duplicate():
+		if m.hp > 0.0:
+			m.update(village, dt)
 	if not can_start():
 		return
-	var chance: float = 1.0 - pow(1.0 - float(cfg["chance_per_hour"]), dt / 60.0)
+	var chance: float = 1.0 - pow(1.0 - float(cfg["chance_per_hour"]) * nest_multiplier(), dt / 60.0)
 	if village.rng.randf() < chance:
 		start_raid()
 
@@ -61,13 +65,32 @@ func start_raid() -> void:
 		var m := Monster.new()
 		m.id = next_monster_id
 		next_monster_id += 1
-		m.setup(str(cfg["monster"]))
+		m.setup(pick_monster_type())
 		m.pos = Vector2(_near_walkable(origin + Vector2i(i % 3, i / 3))) + Vector2(0.5, 0.5)
 		monsters.append(m)
 	active = true
 	warned = false
 	last_raid_at = village.clock.minutes
 	raid_started.emit(count)
+
+
+## 時代ごとの魔物の組み合わせ(data/raids.json の composition)から1体ぶんの種類を選ぶ
+func pick_monster_type() -> String:
+	var table: Dictionary = cfg["composition"].get(village.era(), cfg["composition"]["stone"])
+	var roll: float = village.rng.randf()
+	for type: String in table:
+		roll -= float(table[type])
+		if roll <= 0.0:
+			return type
+	return str(table.keys()[0])
+
+
+## 魔物の巣が残っている割合で襲撃の起こりやすさが変わる(巣を潰すと減る、M9-T03)
+func nest_multiplier() -> float:
+	var nests: Nests = village.system("nests") as Nests
+	if nests == null or nests.sites.is_empty():
+		return 1.0
+	return maxf(float(cfg["nest_raid_multiplier_min"]), float(nests.active_count()) / nests.sites.size())
 
 
 func _update_raid(dt: float) -> void:
@@ -77,12 +100,19 @@ func _update_raid(dt: float) -> void:
 			continue
 		m.update(village, dt)
 	var too_long: bool = village.clock.minutes - last_raid_at >= float(cfg["max_duration_hours"]) * 60.0
-	if monsters.is_empty() or too_long:
+	if raiders().is_empty() or too_long:
 		end_raid()
 
 
+## 襲撃に来た魔物(巣の守りは除く)
+func raiders() -> Array[Monster]:
+	var result: Array[Monster] = []
+	result.assign(monsters.filter(func(m: Monster) -> bool: return not m.has_meta("nest")))
+	return result
+
+
 func end_raid() -> void:
-	monsters.clear()
+	monsters.assign(monsters.filter(func(m: Monster) -> bool: return m.has_meta("nest")))
 	active = false
 	village.raise_alert("raid_end", Texts.t("alert_raid_end"), village.world.start)
 	raid_ended.emit()
@@ -102,6 +132,13 @@ func is_inside_village(pos: Vector2) -> bool:
 
 func _spawn_origin() -> Vector2i:
 	var start: Vector2i = village.world.start
+	# 巣が残っていれば、そのどれかから来る
+	var nests: Nests = village.system("nests") as Nests
+	if nests != null and nests.active_count() > 0:
+		var active: Array = nests.sites.filter(func(n: Dictionary) -> bool: return not n["destroyed"])
+		var nest: Dictionary = active[village.rng.randi_range(0, active.size() - 1)]
+		if village.pathing.is_reachable(_near_walkable(nest["cell"]), start):
+			return nest["cell"]
 	var distance: int = int(cfg["spawn_distance"])
 	for attempt in 32:
 		var angle: float = village.rng.randf() * TAU

@@ -2,5 +2,23 @@
 	"minutes_per_level": 120.0,
 	"speed_per_level": 0.05,
 	"max_level": 10,
-	"skills": {"chop": "伐採", "dig": "採掘", "build": "建設", "fixture": "設備", "craft": "加工", "cook": "料理", "hunt": "狩り", "combat": "戦い"}
+	"skills": {
+		"chop": "伐採",
+		"dig": "採掘",
+		"build": "建設",
+		"fixture": "設備",
+		"craft": "加工",
+		"cook": "料理",
+		"hunt": "狩り",
+		"combat": "戦い",
+		"smith": "鍛冶",
+		"mine": "炭鉱",
+		"magic": "魔法",
+		"farm": "農業",
+		"sow": "種まき",
+		"harvest": "収穫",
+		"feed": "世話",
+		"repair": "修理",
+		"plant": "植林"
+	}
 }

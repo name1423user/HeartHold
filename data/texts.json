@@ -247,5 +247,17 @@
 	"task_type_mine": "採掘(炭鉱)",
 	"task_type_smith": "鍛冶",
 	"broken_label": "⚠ 壊れている",
-	"fixture_era": "まだその時代ではありません"
+	"fixture_era": "まだその時代ではありません",
+	"alert_stolen": "盗賊に{item}を盗まれました",
+	"alert_nest_found": "魔物の巣を見つけました",
+	"alert_nest_destroyed": "魔物の巣を潰しました!襲撃が減ります",
+	"expedition_members": "視察隊は{min}〜{max}人で出します",
+	"alert_expedition_sent": "{count}人の視察隊が出発しました",
+	"alert_expedition_back": "視察隊が帰ってきました",
+	"alert_clue": "他の村の手がかりを見つけました: {name}と交易できます",
+	"alert_clue_none": "他の村の手がかりを見つけました",
+	"magic_not_mage": "魔術師だけが魔法を使えます",
+	"magic_no_mana": "魔素が足りません",
+	"alert_magic": "{name}が{spell}を唱えました",
+	"mana_label": "魔素"
 }

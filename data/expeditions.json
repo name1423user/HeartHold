@@ -1,0 +1,6 @@
+{
+	"min_members": 2,
+	"max_members": 6,
+	"return_when_health_below": 25.0,
+	"attack_range": 1.8
+}

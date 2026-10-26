@@ -1,0 +1,43 @@
+{
+	"max_mana": 100.0,
+	"mana_regen_per_hour": 4.0,
+	"tower_regen_per_hour": 20.0,
+	"tower_radius": 6.0,
+	"spells": {
+		"heal": {
+			"name": "治癒",
+			"mana": 30.0,
+			"treatment_multiplier": 0.5,
+			"radius": 0.0,
+			"needs": "mage_tower"
+		},
+		"barrier": {
+			"name": "結界",
+			"mana": 50.0,
+			"damage_multiplier": 0.5,
+			"minutes": 120.0,
+			"radius": 15.0,
+			"needs": "mage_tower"
+		},
+		"farsight": {
+			"name": "遠見",
+			"mana": 40.0,
+			"reveal_radius": 24,
+			"needs": "mage_tower"
+		},
+		"ward": {
+			"name": "上位の結界",
+			"mana": 80.0,
+			"damage_multiplier": 0.2,
+			"minutes": 180.0,
+			"radius": 25.0,
+			"needs": "magic_lab"
+		},
+		"clairvoyance": {
+			"name": "上位の遠見",
+			"mana": 70.0,
+			"reveal_radius": 48,
+			"needs": "magic_lab"
+		}
+	}
+}

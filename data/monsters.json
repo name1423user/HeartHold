@@ -7,6 +7,71 @@
 		"attack_interval_minutes": 1.0,
 		"speed_blocks_per_minute": 2.0,
 		"vision": 10.0,
-		"night_attack_multiplier": 1.3
+		"night_attack_multiplier": 1.3,
+		"affinity": {
+			"spear": 1.3,
+			"sling": 1.0
+		},
+		"building_damage": 1.0,
+		"traits": [
+			"fast"
+		],
+		"era": "stone"
+	},
+	"wolf": {
+		"name": "狼",
+		"hp": 20.0,
+		"attack": 6.0,
+		"range": 1.2,
+		"attack_interval_minutes": 0.7,
+		"speed_blocks_per_minute": 3.5,
+		"vision": 14.0,
+		"night_attack_multiplier": 1.5,
+		"affinity": {
+			"bow": 1.4,
+			"sling": 1.2,
+			"spear": 1.1
+		},
+		"building_damage": 0.3,
+		"era": "stone",
+		"night_only": true,
+		"model": "wolf"
+	},
+	"bandit": {
+		"name": "盗賊",
+		"hp": 40.0,
+		"attack": 7.0,
+		"range": 6.0,
+		"attack_interval_minutes": 1.2,
+		"speed_blocks_per_minute": 2.2,
+		"vision": 12.0,
+		"night_attack_multiplier": 1.0,
+		"affinity": {
+			"sword": 1.4,
+			"spear": 1.1
+		},
+		"building_damage": 0.5,
+		"era": "iron",
+		"steals": 3,
+		"model": "bandit"
+	},
+	"troll": {
+		"name": "トロル",
+		"hp": 140.0,
+		"attack": 18.0,
+		"range": 1.8,
+		"attack_interval_minutes": 2.0,
+		"speed_blocks_per_minute": 1.3,
+		"vision": 10.0,
+		"night_attack_multiplier": 1.2,
+		"affinity": {
+			"gun": 1.5,
+			"magic": 1.4,
+			"bow": 0.8
+		},
+		"building_damage": 3.0,
+		"era": "medieval",
+		"targets_buildings": true,
+		"model": "troll"
 	}
 }

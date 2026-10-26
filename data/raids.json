@@ -2,10 +2,37 @@
 	"grace_days": 5.0,
 	"min_cooldown_days": 3.0,
 	"chance_per_hour": 0.08,
-	"size": {"base": 2, "wealth_per_monster": 150.0, "per_building": 10.0, "max": 10},
+	"size": {
+		"base": 2,
+		"wealth_per_monster": 150.0,
+		"per_building": 10.0,
+		"max": 10
+	},
 	"spawn_distance": 60,
 	"village_margin": 6,
 	"min_village_radius": 20,
 	"max_duration_hours": 12.0,
-	"monster": "goblin"
+	"composition": {
+		"stone": {
+			"goblin": 1.0
+		},
+		"iron": {
+			"goblin": 0.6,
+			"wolf": 0.25,
+			"bandit": 0.15
+		},
+		"medieval": {
+			"goblin": 0.4,
+			"wolf": 0.2,
+			"bandit": 0.25,
+			"troll": 0.15
+		},
+		"early_modern": {
+			"goblin": 0.3,
+			"wolf": 0.15,
+			"bandit": 0.35,
+			"troll": 0.2
+		}
+	},
+	"nest_raid_multiplier_min": 0.25
 }

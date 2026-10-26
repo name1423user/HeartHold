@@ -246,6 +246,10 @@ func knock_out(v: Villager) -> void:
 
 ## 魔物などから受けた傷。体力0で気絶する
 func damage_villager(v: Villager, amount: float) -> void:
+	# 防具と結界の魔法で減らす(M9-T02, M9-T05)
+	amount *= Equipment.damage_taken(v) * (system("magic") as Magic).damage_multiplier(v)
+	for slot in ["head", "body"]:
+		Equipment.wear(self, v, slot)
 	v.needs.add("health", -amount)
 	if v.needs.get_value("health") <= 0.0 and v.state == Villager.State.NORMAL:
 		knock_out(v)

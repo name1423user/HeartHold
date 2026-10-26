@@ -1,0 +1,11 @@
+{
+	"count": [
+		2,
+		4
+	],
+	"min_distance": 55,
+	"hp": 150.0,
+	"defenders": 3,
+	"defender": "goblin",
+	"regrow_days": 0
+}

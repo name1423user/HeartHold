@@ -61,6 +61,22 @@ static func attack_range(v: Villager, on_tower: bool = false) -> float:
 	return float(d["range"]) * (float(d.get("tower_range_multiplier", 1.0)) if on_tower else 1.0)
 
 
+## 武器の系統(相性用)。素手は "bare"
+static func affinity(v: Villager) -> String:
+	var weapon: String = equipped(v, "weapon")
+	return str(def(weapon).get("affinity", "bare")) if not weapon.is_empty() else "bare"
+
+
+## 防具で受けるダメージの倍率(頭と体)
+static func damage_taken(v: Villager) -> float:
+	var mult: float = 1.0
+	for slot in ["head", "body"]:
+		var item: String = equipped(v, slot)
+		if not item.is_empty():
+			mult *= 1.0 - float(def(item).get("reduction", 0.0))
+	return mult
+
+
 static func is_ranged(v: Villager) -> bool:
 	var weapon: String = equipped(v, "weapon")
 	return not weapon.is_empty() and str(def(weapon).get("kind", "")) == "ranged"
