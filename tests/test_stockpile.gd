@@ -35,8 +35,7 @@ func test_no_accepting_storage_warns() -> void:
 	var v: Villager = village.add_villager("アンナ")
 	watch_signals(village)
 	_carry_and_run(v, "stone", 2)
-	var params: Array = get_signal_parameters(village, "alert_raised")
-	assert_eq(params.slice(0, 2), ["storage", "置き場所がありません"])
+	assert_eq(AlertsHelper.find(self, village, "storage").slice(0, 2), ["storage", "置き場所がありません"])
 	assert_true(a.inventory.is_empty())
 
 

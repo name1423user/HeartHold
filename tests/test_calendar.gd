@@ -46,4 +46,4 @@ func test_season_alert() -> void:
 	watch_signals(village)
 	village.clock.minutes = 7.0 * 1440.0 + 1.0
 	village.tick(1.0)
-	assert_signal_emitted_with_parameters(village, "alert_raised", ["season", "夏になりました", village.world.start])
+	assert_eq(AlertsHelper.find(self, village, "season"), ["season", "夏になりました", village.world.start])

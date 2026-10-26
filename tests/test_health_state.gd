@@ -34,7 +34,7 @@ func test_villager_left_alone_dies_after_half_a_day_with_alert() -> void:
 	assert_eq(patient.state, Villager.State.UNCONSCIOUS)
 	village.tick(2.0)
 	assert_eq(patient.state, Villager.State.DEAD, "運ばれなければ死亡")
-	assert_signal_emitted_with_parameters(village, "alert_raised", ["death", "クララが亡くなりました", patient.cell()])
+	assert_eq(AlertsHelper.find(self, village, "death"), ["death", "クララが亡くなりました", patient.cell()])
 	assert_true(village.tasks.of_type("rescue").is_empty())
 
 

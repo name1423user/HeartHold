@@ -33,11 +33,11 @@ func test_three_houses_five_residents_mood_sixty_levels_up_with_notice() -> void
 	watch_signals(village)
 	level.update()
 	assert_eq(level.level, 2)
-	assert_signal_emitted_with_parameters(village, "alert_raised", ["level", "村レベルが2(小さな村)になりました", village.world.start])
+	assert_eq(AlertsHelper.find(self, village, "level"), ["level", "村レベルが2(小さな村)になりました", village.world.start])
 	fifth.needs.set_value("mood", 0.0)
 
 
-func test_era_is_data_only_for_now() -> void:
+func test_era_name_from_level() -> void:
 	assert_eq(level.current_era(), "stone")
 	assert_eq(level.era_name(), "石と木の時代")
-	assert_false(bool(level.cfg["eras"]["iron"]["playable"]))
+	assert_true(bool(level.cfg["eras"]["iron"]["playable"]), "後回しだった時代も遊べる(M8-T01)")

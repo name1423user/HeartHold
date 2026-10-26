@@ -30,7 +30,7 @@ func test_starving_villager_loses_health_and_faints_within_a_day() -> void:
 		assert_lt(v.needs.get_value("health"), last_health, "体力が減り続ける")
 		last_health = v.needs.get_value("health")
 	assert_eq(v.state, Villager.State.UNCONSCIOUS, "体力0で気絶")
-	assert_signal_emitted_with_parameters(village, "alert_raised", ["faint", "ハンスが倒れました", v.cell()])
+	assert_eq(AlertsHelper.find(self, village, "faint"), ["faint", "ハンスが倒れました", v.cell()])
 
 
 func test_hungry_villager_eats_on_their_own() -> void:

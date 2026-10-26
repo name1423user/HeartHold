@@ -21,7 +21,7 @@ func test_axe_chops_faster_and_wears_out_then_breaks() -> void:
 	watch_signals(village)
 	village.wear_tool(v, "chop")
 	assert_eq(Equipment.equipped(v, "tool"), "", "0で壊れて素手に戻る")
-	assert_signal_emitted_with_parameters(village, "alert_raised", ["tool_broken", "ハンスの石の斧が壊れました", v.cell()])
+	assert_eq(AlertsHelper.find(self, village, "tool_broken"), ["tool_broken", "ハンスの石の斧が壊れました", v.cell()])
 
 
 func test_weapons_raise_attack_and_sling_has_range() -> void:

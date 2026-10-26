@@ -61,8 +61,7 @@ func test_full_storage_drops_items_and_warns() -> void:
 	v.carry_count = 2
 	watch_signals(village)
 	village.tick(5.0)
-	var params: Array = get_signal_parameters(village, "alert_raised")
-	assert_eq(params.slice(0, 2), ["storage", "倉庫がいっぱいです"])
+	assert_eq(AlertsHelper.find(self, village, "storage").slice(0, 2), ["storage", "倉庫がいっぱいです"])
 	var on_ground: int = 0
 	for cell: Vector2i in village.ground_items:
 		on_ground += int(village.ground_items[cell].get("log", 0))

@@ -49,6 +49,6 @@ func test_failed_write_warns_and_keeps_previous_save() -> void:
 	village.clock.minutes += 500.0
 	watch_signals(village)
 	assert_ne(autosave.save_now(), OK)
-	assert_signal_emitted_with_parameters(village, "alert_raised", ["save_failed", "セーブに失敗しました", village.world.start])
+	assert_eq(AlertsHelper.find(self, village, "save_failed"), ["save_failed", "セーブに失敗しました", village.world.start])
 	SaveGame.directory_override = DIR
 	assert_eq(SaveGame.load_village("auto_1").clock.minutes, previous, "前のセーブは上書きしない")

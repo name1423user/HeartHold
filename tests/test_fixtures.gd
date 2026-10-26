@@ -39,6 +39,7 @@ func test_builder_installs_wooden_bed_and_sleep_recovers_faster() -> void:
 	storage.inventory = {"plank": 6, "fur": 2}
 	var v: Villager = village.add_villager("ハンス")
 	Job.assign(village, v, "builder")
+	village.gain_experience(v, "build", float(Proficiency.cfg()["minutes_per_level"]))
 	assert_eq(v.home_id, house.id)
 	assert_true(BuildingFixture.order(village, house, "wooden_bed")["ok"])
 	_run_until(6, func() -> bool: return house.fixtures.has("wooden_bed"))
