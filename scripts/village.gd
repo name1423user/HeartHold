@@ -37,6 +37,7 @@ var raids: RaidDirector
 ## 魔物が村の境界に入っている(迎撃・避難の合図)
 var raid_alarm: bool = false
 var chief: Chief
+var fog: Fog
 
 
 func _init(target: WorldData) -> void:
@@ -55,6 +56,7 @@ func _init(target: WorldData) -> void:
 	raids = RaidDirector.new(self)
 	inspection.is_raid_active = func() -> bool: return raids.active
 	chief = Chief.new(self)
+	fog = Fog.new(self)
 
 
 static func create(seed: int) -> Village:
@@ -124,8 +126,8 @@ func _before_villagers(dt: float) -> void:
 	inspection.update(dt)
 
 
-func _after_villagers(_dt: float) -> void:
-	pass
+func _after_villagers(dt: float) -> void:
+	fog.update(dt)
 
 
 func _update_villager(v: Villager, dt: float) -> void:

@@ -1,0 +1,5 @@
+{
+	"vision_radius": 10,
+	"start_revealed_radius": 20,
+	"update_minutes": 1.0
+}
